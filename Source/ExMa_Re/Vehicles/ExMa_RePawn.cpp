@@ -38,7 +38,8 @@ AExMa_RePawn::AExMa_RePawn()
 	BackSpringArm->bDoCollisionTest = false;
 	BackSpringArm->bInheritPitch = false;
 	BackSpringArm->bInheritRoll = false;
-	BackSpringArm->bEnableCameraRotationLag = true;
+	BackSpringArm->bInheritYaw = false;
+	BackSpringArm->bEnableCameraRotationLag = false;
 	BackSpringArm->CameraRotationLagSpeed = 2.0f;
 	BackSpringArm->CameraLagMaxDistance = 50.0f;
 
@@ -101,10 +102,10 @@ void AExMa_RePawn::Tick(float Delta)
 	GetMesh()->SetAngularDamping(bMovingOnGround ? 0.0f : 3.0f);
 
 	// realign the camera yaw to face front
-	float CameraYaw = BackSpringArm->GetRelativeRotation().Yaw;
-	CameraYaw = FMath::FInterpTo(CameraYaw, 0.0f, Delta, 1.0f);
-
-	BackSpringArm->SetRelativeRotation(FRotator(0.0f, CameraYaw, 0.0f));
+	//float CameraYaw = BackSpringArm->GetRelativeRotation().Yaw;
+	//CameraYaw = FMath::FInterpTo(CameraYaw, 0.0f, Delta, 1.0f);
+	//
+	//BackSpringArm->SetRelativeRotation(FRotator(0.0f, CameraYaw, 0.0f));
 }
 
 void AExMa_RePawn::Steering(const FInputActionValue& Value)
@@ -170,10 +171,21 @@ void AExMa_RePawn::StopHandbrake(const FInputActionValue& Value)
 void AExMa_RePawn::LookAround(const FInputActionValue& Value)
 {
 	// get the flat angle value for the input 
-	float LookValue = Value.Get<float>();
+	FVector2D LookValue = Value.Get<FVector2D>();
+
+	FRotator CurrentRotation = BackSpringArm->GetRelativeRotation();
+
+	//TODO:
+	//* XSensitivity (Add here but set & implement in settings config)
+	float NewYaw = CurrentRotation.Yaw + LookValue.X ; 
+
+	//TODO:
+	//* YSensitivity (Add here but set & implement in settings config)
+	//min & max of clamp set by DT config
+	float NewPitch = FMath::Clamp(CurrentRotation.Pitch + LookValue.Y, -75.0f, 25.0f);
 
 	// add the input
-	BackSpringArm->AddLocalRotation(FRotator(0.0f, LookValue, 0.0f));
+	BackSpringArm->SetRelativeRotation(FRotator(NewPitch, NewYaw, 0.0f));
 }
 
 void AExMa_RePawn::ToggleCamera(const FInputActionValue& Value)
