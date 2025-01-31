@@ -2,14 +2,18 @@
 
 #pragma once
 
+#include "AbilitySystemInterface.h"
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "WheeledVehiclePawn.h"
+#include "ExMa_Re/ConfigStruct/VehicleConfigStruct.h"
 #include "ExMa_RePawn.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
 class UInputAction;
 class UChaosWheeledVehicleMovementComponent;
+class UExMa_VehicleAttributes;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
@@ -93,6 +97,42 @@ public:
 
 	// End Actor interface
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
+	float MaxCameraPitch = -60.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
+	float MinCameraPitch = 35.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
+	float CameraSensivity = 1;
+
+#pragma region Attributes
+
+public:
+
+	int GetHealth() const;
+	int GetMaxHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	UExMa_VehicleAttributes* GetAttributes();
+
+	UPROPERTY(EditAnywhere, Category = Attributes)
+	FName VehicleConfigRowName;
+
+	UPROPERTY(EditAnywhere, Category = Attributes)
+	UDataTable* DataTable;
+
+protected:
+	UPROPERTY(EditAnywhere, Category = Attributes)
+	class UExMa_VehicleAttributes* Attributes;
+
+	UFUNCTION()
+	virtual void SetupVehicleAttributes();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ApplyVehicleAttributes();
+
+#pragma endregion Attributes
 protected:
 
 	/** Handles steering input */
@@ -136,4 +176,11 @@ public:
 	FORCEINLINE UCameraComponent* GetBackCamera() const { return BackCamera; }
 	/** Returns the cast Chaos Vehicle Movement subobject */
 	FORCEINLINE const TObjectPtr<UChaosWheeledVehicleMovementComponent>& GetChaosVehicleMovement() const { return ChaosVehicleMovement; }
+
+protected:
+	virtual void BeginPlay() override;
+
+	//class UGoodHeroGameInstance* GameInstance;
+
+	
 };

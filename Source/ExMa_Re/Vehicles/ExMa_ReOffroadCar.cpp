@@ -39,11 +39,11 @@ AExMa_ReOffroadCar::AExMa_ReOffroadCar()
 	// Note: for faster iteration times, the vehicle setup can be tweaked in the Blueprint instead
 
 	// Set up the chassis
-	GetChaosVehicleMovement()->ChassisHeight = 160.0f;
-	GetChaosVehicleMovement()->DragCoefficient = 0.1f;
-	GetChaosVehicleMovement()->DownforceCoefficient = 0.1f;
-	GetChaosVehicleMovement()->CenterOfMassOverride = FVector(0.0f, 0.0f, 75.0f);
-	GetChaosVehicleMovement()->bEnableCenterOfMassOverride = true;
+	//GetChaosVehicleMovement()->ChassisHeight = 160.0f;
+	//GetChaosVehicleMovement()->DragCoefficient = 0.1f;
+	//GetChaosVehicleMovement()->DownforceCoefficient = 0.1f;
+	//GetChaosVehicleMovement()->CenterOfMassOverride = FVector(0.0f, 0.0f, 75.0f);
+	//GetChaosVehicleMovement()->bEnableCenterOfMassOverride = true;
 
 	// Set up the wheels
 	GetChaosVehicleMovement()->bLegacyWheelFrictionPosition = true;
@@ -67,12 +67,12 @@ AExMa_ReOffroadCar::AExMa_ReOffroadCar()
 
 	// Set up the engine
 	// NOTE: Check the Blueprint asset for the Torque Curve
-	GetChaosVehicleMovement()->EngineSetup.MaxTorque = 600.0f;
-	GetChaosVehicleMovement()->EngineSetup.MaxRPM = 5000.0f;
-	GetChaosVehicleMovement()->EngineSetup.EngineIdleRPM = 1200.0f;
-	GetChaosVehicleMovement()->EngineSetup.EngineBrakeEffect = 0.05f;
-	GetChaosVehicleMovement()->EngineSetup.EngineRevUpMOI = 5.0f;
-	GetChaosVehicleMovement()->EngineSetup.EngineRevDownRate = 600.0f;
+	//GetChaosVehicleMovement()->EngineSetup.MaxTorque = 600.0f;
+	//GetChaosVehicleMovement()->EngineSetup.MaxRPM = 5000.0f;
+	//GetChaosVehicleMovement()->EngineSetup.EngineIdleRPM = 1200.0f;
+	//GetChaosVehicleMovement()->EngineSetup.EngineBrakeEffect = 0.05f;
+	//GetChaosVehicleMovement()->EngineSetup.EngineRevUpMOI = 5.0f;
+	//GetChaosVehicleMovement()->EngineSetup.EngineRevDownRate = 600.0f;
 
 	// Set up the differential
 	GetChaosVehicleMovement()->DifferentialSetup.DifferentialType = EVehicleDifferential::AllWheelDrive;
@@ -82,4 +82,9 @@ AExMa_ReOffroadCar::AExMa_ReOffroadCar()
 	// NOTE: Check the Blueprint asset for the Steering Curve
 	GetChaosVehicleMovement()->SteeringSetup.SteeringType = ESteeringType::AngleRatio;
 	GetChaosVehicleMovement()->SteeringSetup.AngleRatio = 0.7f;
+}
+
+void AExMa_ReOffroadCar::BeginPlay()
+{
+	Super::BeginPlay();
 }

@@ -9,6 +9,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "ExMa_VehicleAttributes.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
@@ -52,6 +53,8 @@ AExMa_RePawn::AExMa_RePawn()
 
 	// get the Chaos Wheeled movement component
 	ChaosVehicleMovement = CastChecked<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
+
+	Attributes = CreateDefaultSubobject<UExMa_VehicleAttributes>(TEXT("AttributeSet"));
 
 }
 
@@ -177,12 +180,12 @@ void AExMa_RePawn::LookAround(const FInputActionValue& Value)
 
 	//TODO:
 	//* XSensitivity (Add here but set & implement in settings config)
-	float NewYaw = CurrentRotation.Yaw + LookValue.X ; 
+	float NewYaw = CurrentRotation.Yaw + LookValue.X * CameraSensivity;
 
 	//TODO:
 	//* YSensitivity (Add here but set & implement in settings config)
 	//min & max of clamp set by DT config
-	float NewPitch = FMath::Clamp(CurrentRotation.Pitch + LookValue.Y, -75.0f, 25.0f);
+	float NewPitch = FMath::Clamp(CurrentRotation.Pitch + LookValue.Y * CameraSensivity, MaxCameraPitch, MinCameraPitch);
 
 	// add the input
 	BackSpringArm->SetRelativeRotation(FRotator(NewPitch, NewYaw, 0.0f));
@@ -214,6 +217,80 @@ void AExMa_RePawn::ResetVehicle(const FInputActionValue& Value)
 	GetMesh()->SetPhysicsLinearVelocity(FVector::ZeroVector);
 
 	UE_LOG(LogTemplateVehicle, Error, TEXT("Reset Vehicle"));
+}
+
+void AExMa_RePawn::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetupVehicleAttributes();
+}
+
+int AExMa_RePawn::GetHealth() const
+{
+	return Attributes->GetHealth();
+}
+
+int AExMa_RePawn::GetMaxHealth() const
+{
+	return Attributes->GetMaxHealth();
+}
+
+UExMa_VehicleAttributes* AExMa_RePawn::GetAttributes()
+{
+	return Attributes;
+}
+
+void AExMa_RePawn::SetupVehicleAttributes()
+{
+	FVehicleConfigStruct ConfigStruct;
+	if (const FVehicleConfigStruct* ConfigStructRow = DataTable->FindRow<FVehicleConfigStruct>(VehicleConfigRowName, ""))
+	{
+		ConfigStruct = *ConfigStructRow;
+	}
+
+	Attributes->InitHealth(ConfigStruct.MaxHealth);
+	Attributes->InitMaxHealth(ConfigStruct.MaxHealth);
+	Attributes->InitArmor(ConfigStruct.Armor);
+	Attributes->InitGasTankSize(ConfigStruct.GasTankSize);
+	Attributes->InitTrankSize(ConfigStruct.TrankSize);
+	Attributes->InitMaxTorque(ConfigStruct.MaxTorque);
+	Attributes->InitMaxRPM(ConfigStruct.MaxRPM);
+	Attributes->InitEngineIdleRPM(ConfigStruct.EngineIdleRPM);
+	Attributes->InitEngineBrakeEffect(ConfigStruct.EngineBrakeEffect);
+	Attributes->InitEngineRPMSpeedup(ConfigStruct.EngineRPMSpeedup);
+	Attributes->InitEngineRPMSlowdown(ConfigStruct.EngineRPMSlowdown);
+	Attributes->InitTopSpeed(ConfigStruct.TopSpeed);
+	Attributes->InitEnginePower(ConfigStruct.EnginePower);
+	Attributes->InitChassisHeight(ConfigStruct.ChassisHeight);
+	Attributes->InitDragCoefficient(ConfigStruct.DragCoefficient);
+	Attributes->InitDownforceCoefficient(ConfigStruct.DownforceCoefficient);
+	Attributes->InitWeight(ConfigStruct.Weight);
+	Attributes->InitBulletResistance(ConfigStruct.BulletResistance);
+	Attributes->InitExplosionResistance(ConfigStruct.ExplosionResistance);
+	Attributes->InitEnergyResistance(ConfigStruct.EnergyResistance);
+
+	ApplyVehicleAttributes();
+}
+
+void AExMa_RePawn::ApplyVehicleAttributes()
+{
+	// Set up the engine
+	// NOTE: Check the Blueprint asset for the Torque Curve
+	GetChaosVehicleMovement()->EngineSetup.MaxTorque = Attributes->MaxTorque.GetCurrentValue();;
+	GetChaosVehicleMovement()->EngineSetup.MaxRPM = Attributes->MaxRPM.GetCurrentValue();
+	GetChaosVehicleMovement()->EngineSetup.EngineIdleRPM = Attributes->EngineIdleRPM.GetCurrentValue();
+	GetChaosVehicleMovement()->EngineSetup.EngineBrakeEffect = Attributes->EngineBrakeEffect.GetCurrentValue();
+	GetChaosVehicleMovement()->EngineSetup.EngineRevUpMOI = Attributes->EngineRPMSpeedup.GetCurrentValue();
+	GetChaosVehicleMovement()->EngineSetup.EngineRevDownRate = Attributes->EngineRPMSlowdown.GetCurrentValue();
+
+	// Set up the chassis
+	GetChaosVehicleMovement()->ChassisHeight = Attributes->ChassisHeight.GetCurrentValue();;
+	GetChaosVehicleMovement()->DragCoefficient = Attributes->DragCoefficient.GetCurrentValue();;
+	GetChaosVehicleMovement()->DownforceCoefficient = Attributes->DownforceCoefficient.GetCurrentValue();
+	GetChaosVehicleMovement()->CenterOfMassOverride = FVector(0.0f, 0.0f, 75.0f);
+	GetChaosVehicleMovement()->bEnableCenterOfMassOverride = true;
+
 }
 
 #undef LOCTEXT_NAMESPACE

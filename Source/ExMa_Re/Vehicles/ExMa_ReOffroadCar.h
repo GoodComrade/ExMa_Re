@@ -37,4 +37,7 @@ class EXMA_RE_API AExMa_ReOffroadCar : public AExMa_RePawn
 public:
 
 	AExMa_ReOffroadCar();
+
+protected:
+	virtual void BeginPlay() override;
 };
