@@ -7,6 +7,7 @@
 #include "GameplayEffectTypes.h"
 #include "WheeledVehiclePawn.h"
 #include "ExMa_Re/ConfigStruct/VehicleConfigStruct.h"
+#include "ExMa_Re/UI/ExMaHUD.h"
 #include "ExMa_RePawn.generated.h"
 
 class UCameraComponent;
@@ -14,6 +15,7 @@ class USpringArmComponent;
 class UInputAction;
 class UChaosWheeledVehicleMovementComponent;
 class UExMa_VehicleAttributes;
+class UInventoryComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
@@ -46,6 +48,10 @@ class AExMa_RePawn : public AWheeledVehiclePawn
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* BackCamera;
 
+	/** Character inventory component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	UInventoryComponent* InventoryComponent;
+
 	/** Cast pointer to the Chaos Vehicle movement component */
 	TObjectPtr<UChaosWheeledVehicleMovementComponent> ChaosVehicleMovement;
 
@@ -74,6 +80,10 @@ protected:
 	/** Toggle Camera Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* ToggleCameraAction;
+
+	/** Toggle Inventory Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ToggleInventoryAction;
 
 	/** Reset Vehicle Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -105,6 +115,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
 	float CameraSensivity = 1;
+
+	UFUNCTION()
+	UInventoryComponent* GetInventoryComponent();
 
 #pragma region Attributes
 
@@ -158,6 +171,9 @@ protected:
 	/** Handles toggle camera input */
 	void ToggleCamera(const FInputActionValue& Value);
 
+	/** Handles toggle inventory input */
+	void ToggleInventory(const FInputActionValue& Value);
+
 	/** Handles reset vehicle input */
 	void ResetVehicle(const FInputActionValue& Value);
 
@@ -182,5 +198,8 @@ protected:
 
 	//class UGoodHeroGameInstance* GameInstance;
 
-	
+private:
+
+	UPROPERTY()
+	AExMaHUD* HUD;
 };

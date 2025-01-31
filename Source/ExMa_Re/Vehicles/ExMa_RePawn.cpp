@@ -3,6 +3,8 @@
 #include "ExMa_RePawn.h"
 #include "ExMa_Re/Wheels/ExMa_ReWheelFront.h"
 #include "ExMa_Re/Wheels/ExMa_ReWheelRear.h"
+#include "ExMa_Re/Components/InventoryComponent.h"
+#include "ExMa_Re/UI/ExMaHUD.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -55,6 +57,7 @@ AExMa_RePawn::AExMa_RePawn()
 	ChaosVehicleMovement = CastChecked<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
 
 	Attributes = CreateDefaultSubobject<UExMa_VehicleAttributes>(TEXT("AttributeSet"));
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 
 }
 
@@ -86,9 +89,13 @@ void AExMa_RePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 
 		// toggle camera 
 		EnhancedInputComponent->BindAction(ToggleCameraAction, ETriggerEvent::Triggered, this, &AExMa_RePawn::ToggleCamera);
+		
+		// toggle inventory 
+		EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Triggered, this, &AExMa_RePawn::ToggleInventory);
 
 		// reset the vehicle 
 		EnhancedInputComponent->BindAction(ResetVehicleAction, ETriggerEvent::Triggered, this, &AExMa_RePawn::ResetVehicle);
+
 	}
 	else
 	{
@@ -200,6 +207,12 @@ void AExMa_RePawn::ToggleCamera(const FInputActionValue& Value)
 	BackCamera->SetActive(!bFrontCameraActive);
 }
 
+void AExMa_RePawn::ToggleInventory(const FInputActionValue& Value)
+{
+	if (HUD)
+		HUD->ToggleInventoryVisibility();
+}
+
 void AExMa_RePawn::ResetVehicle(const FInputActionValue& Value)
 {
 	// reset to a location slightly above our current one
@@ -223,7 +236,17 @@ void AExMa_RePawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+	HUD = Cast<AExMaHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+	if (HUD)
+		HUD->InitInventoryWidget(GetInventoryComponent());
+
 	SetupVehicleAttributes();
+}
+
+UInventoryComponent* AExMa_RePawn::GetInventoryComponent()
+{
+	return InventoryComponent;
 }
 
 int AExMa_RePawn::GetHealth() const
