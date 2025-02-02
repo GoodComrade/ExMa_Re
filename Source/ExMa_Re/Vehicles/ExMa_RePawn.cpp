@@ -268,9 +268,7 @@ void AExMa_RePawn::SetupVehicleAttributes()
 {
 	FVehicleConfigStruct ConfigStruct;
 	if (const FVehicleConfigStruct* ConfigStructRow = DataTable->FindRow<FVehicleConfigStruct>(VehicleConfigRowName, ""))
-	{
 		ConfigStruct = *ConfigStructRow;
-	}
 
 	Attributes->InitHealth(ConfigStruct.MaxHealth);
 	Attributes->InitMaxHealth(ConfigStruct.MaxHealth);
