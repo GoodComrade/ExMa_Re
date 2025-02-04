@@ -43,16 +43,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RemoveItem(UItemObject* ItemToRemove);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	bool IsRoomAvaliable(UItemObject* ItemToCheck, int TopLeftIndex);
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FTileStruct IndexToTile(int Index);
 
-	UFUNCTION()
-	int TileToIndex(FTileStruct TileToConvert) const;
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	int TileToIndex(FTileStruct TileToConvert);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsTileValid(FTileStruct TileToCheck);
+
+	UFUNCTION(BlueprintCallable)
+	void AddItemAt(UItemObject* ItemObject, int TopLeftIndex);
 
 private:
 
@@ -62,11 +66,8 @@ private:
 	UFUNCTION()
 	UItemObject* GetItemAtIndex(int Index);
 
-	UFUNCTION()
-	void AddItemAt(UItemObject* ItemObject, int TopLeftIndex);
-
 	UPROPERTY()
-	bool IsDirty;
+	bool bIsDirty = false;
 
 protected:
 	// Called when the game starts

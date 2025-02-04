@@ -46,11 +46,37 @@ bool UInventoryComponent::TryAddItem(UItemObject* ItemToAdd)
 		}
 	}
 	
+	//Try fit the rotated ItemObject. Return false if fails to add neither
+	ItemToAdd->Rotate();
+
+	for (int Index = 0; Index < Items.Num(); Index++)
+	{
+		if (IsRoomAvaliable(ItemToAdd, Index))
+		{
+			AddItemAt(ItemToAdd, Index);
+			return true;
+		}
+	}
+
 	return false;
 }
 
 void UInventoryComponent::RemoveItem(UItemObject* ItemToRemove)
 {
+	if (ItemToRemove->IsValidLowLevel() == false)
+		return;
+
+	for (int Index = 0; Index < Items.Num(); Index++)
+	{
+		if (Items[Index] == ItemToRemove)
+		{
+			Items[Index] = nullptr;
+			
+		}
+	}
+	
+	//OnInventoryChanged.Broadcast();
+	bIsDirty = true;
 }
 
 bool UInventoryComponent::IsRoomAvaliable(UItemObject* ItemToCheck, int TopLeftIndex)
@@ -98,7 +124,7 @@ FTileStruct UInventoryComponent::IndexToTile(int Index)
 	return StructToReturn;
 }
 
-int UInventoryComponent::TileToIndex(FTileStruct TileToConvert) const
+int UInventoryComponent::TileToIndex(FTileStruct TileToConvert)
 {
 	return TileToConvert.X + TileToConvert.Y * Columns;
 }
@@ -140,7 +166,8 @@ void UInventoryComponent::AddItemAt(UItemObject* ItemObject, int TopLeftIndex)
 		}
 	}
 
-	IsDirty = true;
+	//OnInventoryChanged.Broadcast();
+	bIsDirty = true;
 }
 
 // Called when the game starts
@@ -160,9 +187,9 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (IsDirty)
+	if (bIsDirty)
 	{
-		IsDirty = false;
+		bIsDirty = false;
 		OnInventoryChanged.Broadcast();
 	}
 }

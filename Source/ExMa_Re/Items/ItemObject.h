@@ -15,20 +15,29 @@ class EXMA_RE_API UItemObject : public UObject
 	GENERATED_BODY()
 	
 public:
-	UFUNCTION()
-	FVector2D GetDimentions() const { return Dimensions; }
+	UFUNCTION(BlueprintCallable)
+	FVector2D GetDimentions() const { return bIsRotated ? FVector2D(Dimensions.Y, Dimensions.X) : Dimensions; };
 
 	UFUNCTION(BlueprintCallable)
-	UMaterialInterface* GetIcon() const { return IsRotated ? IconRotated : Icon; }
+	UMaterialInterface* GetIcon() const { return bIsRotated ? IconRotated : Icon; }
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
+	TSubclassOf<class AItemActor> GetItemActorClass() const { return ItemActorClass; };
+
+	UFUNCTION(BlueprintCallable)
 	void SetDimentions(int DimentionX, int DimentionY);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SetIcons(UMaterialInterface* InIcon, UMaterialInterface* InIconRotated);
 
 	UFUNCTION(BlueprintCallable)
 	void SetItemActorClass(TSubclassOf<AItemActor> InItemActorClass);
+
+	UFUNCTION(BlueprintCallable)
+	void Rotate();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsRotated() const { return bIsRotated; };
 
 private:
 
@@ -42,8 +51,8 @@ private:
 	UMaterialInterface* IconRotated;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn = "true", InstanceEditable = "true"))
-	TSubclassOf<AItemActor> ItemActorClass;
+	TSubclassOf<class AItemActor> ItemActorClass;
 
 	UPROPERTY()
-	bool IsRotated;
+	bool bIsRotated;
 };

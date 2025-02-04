@@ -23,6 +23,11 @@ AItemActor::AItemActor()
 	CollectSphere->OnComponentBeginOverlap.AddDynamic(this, &AItemActor::AItemActor::OnCollectSphereBeginOverlap);
 }
 
+void AItemActor::SetItemObject(UItemObject* ItemObjectToSet)
+{
+	ItemObject = ItemObjectToSet;
+}
+
 // Called when the game starts or when spawned
 void AItemActor::BeginPlay()
 {

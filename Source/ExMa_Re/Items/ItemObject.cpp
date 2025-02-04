@@ -19,3 +19,8 @@ void UItemObject::SetItemActorClass(TSubclassOf<AItemActor> InItemActorClass)
 {
 	ItemActorClass = InItemActorClass;
 }
+
+void UItemObject::Rotate()
+{
+	bIsRotated = !bIsRotated;
+}

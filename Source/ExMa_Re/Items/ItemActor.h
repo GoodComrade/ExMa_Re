@@ -9,7 +9,7 @@
 #include "ExMa_Re/ConfigStruct/ItemConfigStruct.h"
 #include "ItemActor.generated.h"
 
-class UitemObject;
+class UItemObject;
 
 UCLASS()
 class EXMA_RE_API AItemActor : public AActor
@@ -20,6 +20,8 @@ public:
 	// Sets default values for this actor's properties
 	AItemActor();
 
+	UFUNCTION()
+	void SetItemObject(UItemObject* ItemObjectToSet);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
