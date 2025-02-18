@@ -11,8 +11,9 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryChanged);
 
 class UItemObject;
+class AItemActor;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class EXMA_RE_API UInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -36,7 +37,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TMap<UItemObject*, FTileStruct> GetAllItems() const;
-	//TODO: rework this logic to adding multiple items
+
+	UFUNCTION(BlueprintCallable)
+	TArray<UItemObject*> GetItems() const { return Items; };
+
 	UFUNCTION(BlueprintCallable)
 	bool TryAddItem(UItemObject* ItemToAdd);
 	

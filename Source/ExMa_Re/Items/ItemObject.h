@@ -15,6 +15,7 @@ class EXMA_RE_API UItemObject : public UObject
 	GENERATED_BODY()
 	
 public:
+
 	UFUNCTION(BlueprintCallable)
 	FVector2D GetDimentions() const { return bIsRotated ? FVector2D(Dimensions.Y, Dimensions.X) : Dimensions; };
 
@@ -30,6 +31,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetIcons(UMaterialInterface* InIcon, UMaterialInterface* InIconRotated);
 
+	//TODO: Remove this because all ItemObjects are will contain as multiple objects in chest item actors.
+	//Then we will not need to set scene actor to spawn fro each item object.
 	UFUNCTION(BlueprintCallable)
 	void SetItemActorClass(TSubclassOf<AItemActor> InItemActorClass);
 
@@ -40,7 +43,6 @@ public:
 	bool IsRotated() const { return bIsRotated; };
 
 private:
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn = "true", InstanceEditable = "true"))
 	FVector2D Dimensions;
 

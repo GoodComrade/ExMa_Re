@@ -7,6 +7,8 @@
 #include "ExMa_Re/Items/ItemObject.h"
 #include "ExMa_Re/Vehicles/ExMa_RePawn.h"
 #include "ExMa_Re/ConfigStruct/ItemConfigStruct.h"
+#include "ExMa_Re/Components/InventoryComponent.h"
+#include "ExMa_Re/Structs/TileStruct.h"
 
 // Sets default values
 AItemActor::AItemActor()
@@ -17,58 +19,71 @@ AItemActor::AItemActor()
 	ActorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ActorMesh"));
 	ActorMesh->SetupAttachment(RootComponent);
 
-	CollectSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollectSphere"));
-	CollectSphere->SetupAttachment(ActorMesh);
-
-	CollectSphere->OnComponentBeginOverlap.AddDynamic(this, &AItemActor::AItemActor::OnCollectSphereBeginOverlap);
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 }
 
-void AItemActor::SetItemObject(UItemObject* ItemObjectToSet)
+bool AItemActor::TryTransferStoredItems(UInventoryComponent* InventoryToTransfer)
 {
-	ItemObject = ItemObjectToSet;
+	UE_LOG(LogTemp, Warning, TEXT("AItemActor: Items to transfer %i"), InventoryComponent->GetAllItems().Num());
+
+	for (TPair<UItemObject*, FTileStruct> ItemObject : InventoryComponent->GetAllItems())
+	{
+		if (InventoryToTransfer->TryAddItem(ItemObject.Key) == false)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AItemActor: FailedToTransferItem"));
+			return false;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AItemActor: ItemTransferedSuccess."));
+			InventoryComponent->RemoveItem(ItemObject.Key);
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("AItemActor: AllItemsTransfered! Destroy empty crate!"));
+	Destroy();
+
+	return true;
 }
 
 // Called when the game starts or when spawned
 void AItemActor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (ItemObject->IsValidLowLevel() == false)
-		ItemObject = GetDefaultItemObject();
-	
+		
+	PopulateInventory();
 }
 
-UItemObject* AItemActor::GetDefaultItemObject()
+void AItemActor::PopulateInventory()
 {
-	FItemConfigStruct ConfigStruct;
-	if (const FItemConfigStruct* ConfigStructRow = ItemsDataTable->FindRow<FItemConfigStruct>(ItemConfigRowName, ""))
-		ConfigStruct = *ConfigStructRow;
-
-	UItemObject* DefaultItem = NewObject<UItemObject>(UItemObject::StaticClass());
-
-	if (DefaultItem == nullptr)
+	for (FName ItemConfigName : StoredItemsNames)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("DEFAULT ITEM ISN'T CREATED!"));
-		return nullptr;
+		UE_LOG(LogTemp, Warning, TEXT("AItemActor: CreatingItemObject %s"), *ItemConfigName.ToString());
+
+		FItemConfigStruct ConfigStruct;
+		if (const FItemConfigStruct* ConfigStructRow = ItemsDataTable->FindRow<FItemConfigStruct>(ItemConfigName, ""))
+			ConfigStruct = *ConfigStructRow;
+
+		UItemObject* StoredItem = NewObject<UItemObject>(UItemObject::StaticClass());
+
+		if (StoredItem == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("StoredItem '%s' ITEM ISN'T CREATED!"), *ItemConfigName.ToString());
+			return;
+		}
+
+		StoredItem->SetDimentions(ConfigStruct.SizeX, ConfigStruct.SizeY);
+		StoredItem->SetIcons(ConfigStruct.Icon, ConfigStruct.IconRotated);
+
+		if (InventoryComponent->TryAddItem(StoredItem))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AItemActor: ItemObject %s add SUCCESS"), *ItemConfigName.ToString());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("AItemActor: ItemObject %s ADD FAILED"), *ItemConfigName.ToString());
+		}
 	}
-
-	DefaultItem->SetDimentions(ConfigStruct.SizeX, ConfigStruct.SizeY);
-	DefaultItem->SetIcons(ConfigStruct.Icon, ConfigStruct.IconRotated);
-
-	return DefaultItem;
-}
-
-void AItemActor::OnCollectSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (AExMa_RePawn* PlayerPawn = Cast<AExMa_RePawn>(OtherActor))
-	{
-		if (PlayerPawn->GetInventoryComponent()->TryAddItem(ItemObject))
-			Destroy();
-	}
-}
-
-void AItemActor::OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
 }
 
 // Called every frame

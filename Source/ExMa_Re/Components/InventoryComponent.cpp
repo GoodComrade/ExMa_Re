@@ -10,9 +10,7 @@
 UInventoryComponent::UInventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
 }
-
 
 TMap<UItemObject*, FTileStruct> UInventoryComponent::GetAllItems() const
 {

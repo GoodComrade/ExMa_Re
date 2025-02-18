@@ -8,6 +8,7 @@
 #include "WheeledVehiclePawn.h"
 #include "ExMa_Re/ConfigStruct/VehicleConfigStruct.h"
 #include "ExMa_Re/UI/ExMaHUD.h"
+#include "Components/SphereComponent.h"
 #include "ExMa_RePawn.generated.h"
 
 class UCameraComponent;
@@ -16,10 +17,10 @@ class UInputAction;
 class UChaosWheeledVehicleMovementComponent;
 class UExMa_VehicleAttributes;
 class UInventoryComponent;
+class AItemActor;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
-
 /**
  *  Vehicle Pawn class
  *  Handles common functionality for all vehicle types,
@@ -32,29 +33,40 @@ class AExMa_RePawn : public AWheeledVehiclePawn
 {
 	GENERATED_BODY()
 
-	/** Spring Arm for the front camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* FrontSpringArm;
+public:
+	AExMa_RePawn();
 
-	/** Front Camera component */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FrontCamera;
+	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
-	/** Spring Arm for the back camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* BackSpringArm;
+	virtual void Tick(float Delta) override;
 
-	/** Back Camera component */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* BackCamera;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
+	float MaxCameraPitch = -60.f;
 
-	/** Character inventory component */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
-	UInventoryComponent* InventoryComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
+	float MinCameraPitch = 35.f;
 
-	/** Cast pointer to the Chaos Vehicle movement component */
-	TObjectPtr<UChaosWheeledVehicleMovementComponent> ChaosVehicleMovement;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
+	float CameraSensivity = 1;
 
+	//UFUNCTION(BlueprintImplementableEvent)
+	//FInteractionDispatcher OnChangeInteractedActor;
+
+private:
+	UPROPERTY()
+	AExMaHUD* HUD;
+
+protected:
+	virtual void BeginPlay() override;
+
+	bool bIsPickingItems;
+
+	UPROPERTY()
+	TArray<AItemActor*> InterractedCrates;
+
+	void ProcessPickupItems();
+
+#pragma region Vehicle
 protected:
 
 	/** Steering Action */
@@ -92,60 +104,9 @@ protected:
 	/** Keeps track of which camera is active */
 	bool bFrontCameraActive = false;
 
-public:
-	AExMa_RePawn();
+#pragma endregion InputActions
 
-	// Begin Pawn interface
-
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
-
-	// End Pawn interface
-
-	// Begin Actor interface
-
-	virtual void Tick(float Delta) override;
-
-	// End Actor interface
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
-	float MaxCameraPitch = -60.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
-	float MinCameraPitch = 35.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
-	float CameraSensivity = 1;
-
-	UFUNCTION()
-	UInventoryComponent* GetInventoryComponent();
-
-#pragma region Attributes
-
-public:
-
-	int GetHealth() const;
-	int GetMaxHealth() const;
-
-	UFUNCTION(BlueprintCallable)
-	UExMa_VehicleAttributes* GetAttributes();
-
-	UPROPERTY(EditAnywhere, Category = Attributes)
-	FName VehicleConfigRowName;
-
-	UPROPERTY(EditAnywhere, Category = Attributes)
-	UDataTable* DataTable;
-
-protected:
-	UPROPERTY(EditAnywhere, Category = Attributes)
-	class UExMa_VehicleAttributes* Attributes;
-
-	UFUNCTION()
-	virtual void SetupVehicleAttributes();
-
-	UFUNCTION(BlueprintCallable)
-	virtual void ApplyVehicleAttributes();
-
-#pragma endregion Attributes
+#pragma region Vehicle
 protected:
 
 	/** Handles steering input */
@@ -178,28 +139,93 @@ protected:
 	void ResetVehicle(const FInputActionValue& Value);
 
 	/** Called when the brake lights are turned on or off */
-	UFUNCTION(BlueprintImplementableEvent, Category="Vehicle")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Vehicle")
 	void BrakeLights(bool bBraking);
+#pragma endregion ActionBindings
+
+#pragma region Vehicle
 
 public:
-	/** Returns the front spring arm subobject */
-	FORCEINLINE USpringArmComponent* GetFrontSpringArm() const { return FrontSpringArm; }
-	/** Returns the front camera subobject */
-	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FrontCamera; }
-	/** Returns the back spring arm subobject */
-	FORCEINLINE USpringArmComponent* GetBackSpringArm() const { return BackSpringArm; }
-	/** Returns the back camera subobject */
-	FORCEINLINE UCameraComponent* GetBackCamera() const { return BackCamera; }
-	/** Returns the cast Chaos Vehicle Movement subobject */
-	FORCEINLINE const TObjectPtr<UChaosWheeledVehicleMovementComponent>& GetChaosVehicleMovement() const { return ChaosVehicleMovement; }
+
+	int GetHealth() const;
+	int GetMaxHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	UExMa_VehicleAttributes* GetAttributes();
+
+	UPROPERTY(EditAnywhere, Category = Attributes)
+	FName VehicleConfigRowName;
+
+	UPROPERTY(EditAnywhere, Category = Attributes)
+	UDataTable* DataTable;
 
 protected:
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, Category = Attributes)
+	class UExMa_VehicleAttributes* Attributes;
 
-	//class UGoodHeroGameInstance* GameInstance;
+	UFUNCTION()
+	virtual void SetupVehicleAttributes();
 
-private:
+	UFUNCTION(BlueprintCallable)
+	virtual void ApplyVehicleAttributes();
 
-	UPROPERTY()
-	AExMaHUD* HUD;
+#pragma endregion Attributes
+
+#pragma region VehicleComponents
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	USphereComponent* CollectSphere;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* FrontSpringArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* FrontCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* BackSpringArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* BackCamera;
+
+	/** Character inventory component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	UInventoryComponent* InventoryComponent;
+
+	/** Inventory component to drop items from main inventory */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	UInventoryComponent* OutInventoryComponent;
+
+	/** Cast pointer to the Chaos Vehicle movement component */
+	TObjectPtr<UChaosWheeledVehicleMovementComponent> ChaosVehicleMovement;
+#pragma endregion Pointers
+
+#pragma region VehicleComponents
+public:
+	FORCEINLINE USpringArmComponent* GetFrontSpringArm() const { return FrontSpringArm; }
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FrontCamera; }
+	FORCEINLINE USpringArmComponent* GetBackSpringArm() const { return BackSpringArm; }
+	FORCEINLINE UCameraComponent* GetBackCamera() const { return BackCamera; }
+	FORCEINLINE const TObjectPtr<UChaosWheeledVehicleMovementComponent>& GetChaosVehicleMovement() const { return ChaosVehicleMovement; }
+
+	UFUNCTION()
+	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; };
+
+	UFUNCTION()
+	UInventoryComponent* GetOutInventoryComponent() const { return OutInventoryComponent; };
+#pragma endregion Getters
+
+#pragma region VehicleComponents
+protected:
+	//TODO: show player pickup UI hint with binded hotkey instead of straigth pickup
+	UFUNCTION()
+	void OnCollectSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+#pragma endregion Bindings
 };

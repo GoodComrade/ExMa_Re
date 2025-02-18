@@ -10,8 +10,9 @@
 #include "ItemActor.generated.h"
 
 class UItemObject;
+class UInventoryComponent;
 
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class EXMA_RE_API AItemActor : public AActor
 {
 	GENERATED_BODY()
@@ -21,44 +22,31 @@ public:
 	AItemActor();
 
 	UFUNCTION()
-	void SetItemObject(UItemObject* ItemObjectToSet);
+	UInventoryComponent* GetInventoryComponentRef() const { return InventoryComponent; };
+
+	UFUNCTION()
+	bool TryTransferStoredItems(UInventoryComponent* InventoryToTransfer);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	virtual UItemObject* GetDefaultItemObject();
-
-	//TODO: show player pickup dialogue with hotkey instead of straigth pickup
-	UFUNCTION()
-	void OnCollectSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-		UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex,
-		bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-		UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex,
-		bool bFromSweep, const FHitResult& SweepResult);
+	void PopulateInventory();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* ActorMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	USphereComponent* CollectSphere;
-
+	//TODO: Implement more proper way to set this array
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn = "true", InstanceEditable = "true"))
-	UItemObject* ItemObject;
-
-	//TODO: Implement logic of populationg this array
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn = "true", InstanceEditable = "true"))
-	TArray<UItemObject*> StoredItems;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn = "true", InstanceEditable = "true"))
-	FName ItemConfigRowName;
+	TArray<FName> StoredItemsNames;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn = "true", InstanceEditable = "true"))
 	UDataTable* ItemsDataTable;
 
+	/** Character inventory component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	UInventoryComponent* InventoryComponent;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

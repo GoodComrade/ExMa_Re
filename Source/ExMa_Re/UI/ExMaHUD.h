@@ -7,6 +7,7 @@
 #include "ExMa_Re/Components/InventoryComponent.h"
 #include "ExMaHUD.generated.h"
 
+class UMainInteractionWidget;
 class UExMa_InventoryWidget;
 
 UCLASS()
@@ -22,10 +23,21 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void InitInventoryWidget(UInventoryComponent* InInventoryComponentRef);
+	void InitInteractionWidget(UInventoryComponent* InInventoryComponentRef, UInventoryComponent* InOutInventoryComponentRef);
 
 	UFUNCTION(BlueprintCallable)
-	void ToggleInventoryVisibility();
+	void ToggleWidgetVisibility();
+
+	//TODO: Rework this to hint factory because we will need different hints about picked items & NPC radio messages in future
+	UFUNCTION(BlueprintCallable)
+	void InitPickupHintWidget();
+
+	UFUNCTION(BlueprintCallable)
+	void TogglePickupHintVisibility();
+
+	//TODO: Implement states of main interaction widget
+	UFUNCTION(BlueprintCallable)
+	void ChangeMainWidgetState();
 
 protected:
 	// Called when the game starts or when spawned
@@ -35,7 +47,11 @@ protected:
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Menus")
-	TSubclassOf<UExMa_InventoryWidget> InventoryWidgetclass;
+	TSubclassOf<UMainInteractionWidget> MainWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hints")
+	TSubclassOf<UUserWidget> PickupHintClass;
 	
-	UExMa_InventoryWidget* InventoryWidgetRef;
+	UMainInteractionWidget* MainWidgetRef;
+	UUserWidget* PickupHintRef;
 };

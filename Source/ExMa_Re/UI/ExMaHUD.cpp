@@ -4,6 +4,7 @@
 #include "UI/ExMaHUD.h"
 #include "ExMa_Re/Components/InventoryComponent.h"
 #include "ExMa_Re/UI/ExMa_InventoryWidget.h"
+#include "ExMa_Re/UI/MainInteractionWidget.h"
 
 AExMaHUD::AExMaHUD()
 {
@@ -26,21 +27,23 @@ void AExMaHUD::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AExMaHUD::InitInventoryWidget(UInventoryComponent* InInventoryComponentRef)
+void AExMaHUD::InitInteractionWidget(UInventoryComponent* InInventoryComponentRef, UInventoryComponent* InOutInventoryComponentRef)
 {
-    InventoryWidgetRef = CreateWidget<UExMa_InventoryWidget>(GetOwningPlayerController(), InventoryWidgetclass);
-    if (InventoryWidgetRef)
+    MainWidgetRef = CreateWidget<UMainInteractionWidget>(GetOwningPlayerController(), MainWidgetClass);
+
+    if (MainWidgetRef)
     {
-        InventoryWidgetRef->SetPlayerController(GetOwningPlayerController());
-        InventoryWidgetRef->SetInventoryComponentRef(InInventoryComponentRef);
+        MainWidgetRef->SetPlayerController(GetOwningPlayerController());
+        MainWidgetRef->SetInventoryComponentRef(InInventoryComponentRef);
+        MainWidgetRef->SetOutInventoryComponentRef(InOutInventoryComponentRef);
     }
 }
 
-void AExMaHUD::ToggleInventoryVisibility()
+void AExMaHUD::ToggleWidgetVisibility()
 {
-    if (InventoryWidgetRef->IsInViewport())
+    if (MainWidgetRef->IsInViewport())
     {
-        InventoryWidgetRef->RemoveFromParent();
+        MainWidgetRef->RemoveFromParent();
 
         FInputModeGameOnly InputMode;
         GetOwningPlayerController()->SetInputMode(InputMode);
@@ -48,14 +51,32 @@ void AExMaHUD::ToggleInventoryVisibility()
     }
     else
     {
-        InventoryWidgetRef->AddToViewport();
+        MainWidgetRef->AddToViewport();
 
         FInputModeGameAndUI InputMode;
-        InputMode.SetWidgetToFocus(InventoryWidgetRef->TakeWidget());
+        InputMode.SetWidgetToFocus(MainWidgetRef->TakeWidget());
         InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
         InputMode.SetHideCursorDuringCapture(false);
 
         GetOwningPlayerController()->SetInputMode(InputMode);
         GetOwningPlayerController()->SetShowMouseCursor(true);
     }
+}
+
+//TODO: Rework this to hint factory because we will need different hints about picked items & NPC radio messages in future
+void AExMaHUD::InitPickupHintWidget()
+{
+    PickupHintRef = CreateWidget<UUserWidget>(GetOwningPlayerController(), PickupHintClass);
+}
+
+void AExMaHUD::TogglePickupHintVisibility()
+{
+    if (PickupHintRef->IsInViewport())
+        PickupHintRef->RemoveFromParent();
+    else
+        PickupHintRef->AddToViewport();
+}
+
+void AExMaHUD::ChangeMainWidgetState()
+{
 }

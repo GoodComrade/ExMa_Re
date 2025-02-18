@@ -8,7 +8,7 @@
 #include "Kismet/KismetSystemLibrary.h" 
 #include "Engine/CollisionProfile.h"
 
-
+//TODO: Change this logic to spawn one certain ItemActor with droppedItemObjects
 void AExMa_GameState::SpawnItemFromActor(UItemObject* ItemObjectToSpawn, AActor* ActorFromSpawn, bool GroundClamp)
 {
 	FVector SpawnLocation = ActorFromSpawn->GetActorLocation() + (ActorFromSpawn->GetActorForwardVector() * -1 * 1000.f);
@@ -37,14 +37,14 @@ void AExMa_GameState::SpawnItemFromActor(UItemObject* ItemObjectToSpawn, AActor*
 		}
 	}
 
-	if (UWorld* World = GetWorld())
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-		AItemActor* ItemActor = World->SpawnActor<AItemActor>(ItemObjectToSpawn->GetItemActorClass(), SpawnLocation, FRotator(), SpawnParams);
-
-		if(ItemActor != nullptr)
-			ItemActor->SetItemObject(ItemObjectToSpawn);
-	}
+	//if (UWorld* World = GetWorld())
+	//{
+	//	FActorSpawnParameters SpawnParams;
+	//	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	//
+	//	AItemActor* ItemActor = World->SpawnActor<AItemActor>(ItemObjectToSpawn->GetItemActorClass(), SpawnLocation, FRotator(), SpawnParams);
+	//
+	//	if(ItemActor != nullptr)
+	//		ItemActor->SetItemObject(ItemObjectToSpawn);
+	//}
 }

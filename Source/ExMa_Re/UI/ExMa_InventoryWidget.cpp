@@ -9,21 +9,23 @@ void UExMa_InventoryWidget::NativeConstruct()
 	Super::NativeConstruct();
 }
 
-void UExMa_InventoryWidget::SetPlayerController(APlayerController* InPlayerController)
+void UExMa_InventoryWidget::SetComponents(APlayerController* InPlayerController, UInventoryComponent* InInventoryComponentRef)
 {
-	PlayerController = InPlayerController;
-}
+	if (InPlayerController == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UExMa_InventoryWidget: InPlayerComponent IS NULL"));
+		return;
+	}
 
-void UExMa_InventoryWidget::SetInventoryComponentRef(UInventoryComponent* InInventoryComponentRef)
-{
+	PlayerController = InPlayerController;
+
 	if (InInventoryComponentRef == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UExMa_InventoryWidget: InventoryComponentRef IS NULL"));
 		return;
-	
+	}
+
 	InventoryComponentRef = InInventoryComponentRef;
-	
-	if (InventoryComponentRef == nullptr)
-		return;
-	
 	TileSize = InventoryComponentRef->TileSize;
 }
 

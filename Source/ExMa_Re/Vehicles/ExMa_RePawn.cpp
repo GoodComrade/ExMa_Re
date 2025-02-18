@@ -5,6 +5,8 @@
 #include "ExMa_Re/Wheels/ExMa_ReWheelRear.h"
 #include "ExMa_Re/Components/InventoryComponent.h"
 #include "ExMa_Re/UI/ExMaHUD.h"
+#include "ExMa_Re/Items/ItemActor.h"
+#include "ExMa_Re/Items/ItemObject.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -58,6 +60,12 @@ AExMa_RePawn::AExMa_RePawn()
 
 	Attributes = CreateDefaultSubobject<UExMa_VehicleAttributes>(TEXT("AttributeSet"));
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
+	OutInventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("OutInventoryComponent"));
+
+	CollectSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollectSphere"));
+	CollectSphere->SetupAttachment(GetMesh());
+
+	CollectSphere->OnComponentBeginOverlap.AddDynamic(this, &AExMa_RePawn::OnCollectSphereBeginOverlap);
 
 }
 
@@ -101,6 +109,21 @@ void AExMa_RePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 	{
 		UE_LOG(LogTemplateVehicle, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void AExMa_RePawn::BeginPlay()
+{
+	Super::BeginPlay();
+
+	HUD = Cast<AExMaHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+	if (HUD)
+	{
+		HUD->InitInteractionWidget(GetInventoryComponent(), GetOutInventoryComponent());
+		HUD->InitPickupHintWidget();
+	}
+
+	SetupVehicleAttributes();
 }
 
 void AExMa_RePawn::Tick(float Delta)
@@ -209,8 +232,31 @@ void AExMa_RePawn::ToggleCamera(const FInputActionValue& Value)
 
 void AExMa_RePawn::ToggleInventory(const FInputActionValue& Value)
 {
+	if (bIsPickingItems && InterractedCrates.Num() > 0)
+	{
+		ProcessPickupItems();
+		return;
+	}
+
 	if (HUD)
-		HUD->ToggleInventoryVisibility();
+		HUD->ToggleWidgetVisibility();
+}
+
+void AExMa_RePawn::ProcessPickupItems()
+{
+	for (AItemActor* ItemActor : InterractedCrates)
+	{
+		if (ItemActor->TryTransferStoredItems(InventoryComponent) == false)
+		{
+			if (HUD)
+				HUD->ToggleWidgetVisibility();
+		}
+		else
+		{
+			bIsPickingItems = false;
+		}
+	}
+	
 }
 
 void AExMa_RePawn::ResetVehicle(const FInputActionValue& Value)
@@ -230,23 +276,6 @@ void AExMa_RePawn::ResetVehicle(const FInputActionValue& Value)
 	GetMesh()->SetPhysicsLinearVelocity(FVector::ZeroVector);
 
 	UE_LOG(LogTemplateVehicle, Error, TEXT("Reset Vehicle"));
-}
-
-void AExMa_RePawn::BeginPlay()
-{
-	Super::BeginPlay();
-
-	HUD = Cast<AExMaHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-
-	if (HUD)
-		HUD->InitInventoryWidget(GetInventoryComponent());
-
-	SetupVehicleAttributes();
-}
-
-UInventoryComponent* AExMa_RePawn::GetInventoryComponent()
-{
-	return InventoryComponent;
 }
 
 int AExMa_RePawn::GetHealth() const
@@ -312,6 +341,49 @@ void AExMa_RePawn::ApplyVehicleAttributes()
 	GetChaosVehicleMovement()->CenterOfMassOverride = FVector(0.0f, 0.0f, 75.0f);
 	GetChaosVehicleMovement()->bEnableCenterOfMassOverride = true;
 
+}
+
+//TODO: show player pickup UI hint with binded hotkey instead of straigth pickup
+void AExMa_RePawn::OnCollectSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn: Overlap with something"));
+
+	if (AItemActor* Chest = Cast<AItemActor>(OtherActor))
+		InterractedCrates.AddUnique(Chest);
+	
+	if (InterractedCrates.Num() > 0)
+	{
+		bIsPickingItems = true;
+
+		if (HUD)
+			HUD->TogglePickupHintVisibility();
+	}
+
+	//if (AItemActor* Chest = Cast<AItemActor>(OtherActor))
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn: Overlap with AItemActor. His amount of stored items is: %i"), Chest->GetStoredItems().Num());
+	//
+	//	for(UItemObject* ItemObject : Chest->GetStoredItems())
+	//	{
+	//		OutInventoryComponent->TryAddItem(ItemObject);
+	//	}
+	//	//if (PlayerPawn->GetInventoryComponent()->TryAddItem(ItemObject))
+	//	//	Destroy();
+	//}
+}
+
+void AExMa_RePawn::OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (AItemActor* Chest = Cast<AItemActor>(OtherActor))
+		InterractedCrates.Remove(Chest);
+
+	if (InterractedCrates.Num() <= 0)
+	{
+		bIsPickingItems = false;
+
+		if (HUD)
+			HUD->TogglePickupHintVisibility();
+	}
 }
 
 #undef LOCTEXT_NAMESPACE

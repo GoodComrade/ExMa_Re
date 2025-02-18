@@ -17,10 +17,9 @@ class EXMA_RE_API UExMa_InventoryWidget : public UUserWidget
 	
 public:
     virtual void NativeConstruct() override;
-    void SetPlayerController(APlayerController* InPlayerController);
 
-    UFUNCTION()
-    void SetInventoryComponentRef(UInventoryComponent* InInventoryComponentRef);
+    UFUNCTION(BlueprintCallable)
+    void SetComponents(APlayerController* InPlayerController, UInventoryComponent* InInventoryComponentRef);
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Constants", meta = (ExposeOnSpawn = "true", InstanceEditable = "true"))
