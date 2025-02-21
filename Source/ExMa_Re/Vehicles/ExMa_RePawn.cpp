@@ -66,6 +66,7 @@ AExMa_RePawn::AExMa_RePawn()
 	CollectSphere->SetupAttachment(GetMesh());
 
 	CollectSphere->OnComponentBeginOverlap.AddDynamic(this, &AExMa_RePawn::OnCollectSphereBeginOverlap);
+	CollectSphere->OnComponentEndOverlap.AddDynamic(this, &AExMa_RePawn::OnCollectSphereEndOverlap);
 
 }
 
@@ -244,19 +245,47 @@ void AExMa_RePawn::ToggleInventory(const FInputActionValue& Value)
 
 void AExMa_RePawn::ProcessPickupItems()
 {
-	for (AItemActor* ItemActor : InterractedCrates)
+	bool bIsFullProcessComplete = true;
+
+	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount before transfer: %i"), InterractedCrates.Num());
+
+	TArray<AItemActor*> ItemActors = TArray<AItemActor*>(&InterractedCrates.GetData()[0], InterractedCrates.Num());
+	for (AItemActor* ItemActor : ItemActors)
 	{
 		if (ItemActor->TryTransferStoredItems(InventoryComponent) == false)
 		{
-			if (HUD)
-				HUD->ToggleWidgetVisibility();
-		}
-		else
-		{
 			bIsPickingItems = false;
+			bIsFullProcessComplete = false;
 		}
 	}
-	
+
+	//Remove empty & deleted crates from interacted array
+	//for (int Index = 0; Index < InterractedCrates.Num(); Index++)
+	//{
+	//	AItemActor* ActorToRemove = InterractedCrates[Index];
+	//
+	//	if (ActorToRemove == NULL)
+	//	{
+	//		InterractedCrates.RemoveAt(Index);
+	//		Index--;
+	//		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: EPMTYcRATE IS REMOVED FROM INTERACTION ARRAY"));
+	//	}
+	//}
+
+	//If have items to transfer but player inventory is already full
+	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount after transfer: %i"), InterractedCrates.Num());
+
+	if (bIsFullProcessComplete == false)
+	{
+		for (AItemActor* ItemActor : InterractedCrates)
+		{
+			if(ItemActor->GetStoredItemsAmount() > 0)
+				ItemActor->TryCopyStoredItems(OutInventoryComponent);
+		}
+
+		if (HUD)
+			HUD->ToggleWidgetVisibility();
+	}
 }
 
 void AExMa_RePawn::ResetVehicle(const FInputActionValue& Value)
@@ -346,17 +375,18 @@ void AExMa_RePawn::ApplyVehicleAttributes()
 //TODO: show player pickup UI hint with binded hotkey instead of straigth pickup
 void AExMa_RePawn::OnCollectSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn: Overlap with something"));
-
 	if (AItemActor* Chest = Cast<AItemActor>(OtherActor))
+	{
 		InterractedCrates.AddUnique(Chest);
+		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: Add interacted crate to array"));
+	}
 	
 	if (InterractedCrates.Num() > 0)
 	{
 		bIsPickingItems = true;
 
 		if (HUD)
-			HUD->TogglePickupHintVisibility();
+			HUD->TogglePickupHintVisibility(true);
 	}
 
 	//if (AItemActor* Chest = Cast<AItemActor>(OtherActor))
@@ -372,17 +402,25 @@ void AExMa_RePawn::OnCollectSphereBeginOverlap(UPrimitiveComponent* OverlappedCo
 	//}
 }
 
-void AExMa_RePawn::OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AExMa_RePawn::OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex)
 {
 	if (AItemActor* Chest = Cast<AItemActor>(OtherActor))
-		InterractedCrates.Remove(Chest);
-
+	{
+		if (InterractedCrates.Contains(Chest))
+		{
+			Chest->ClearCopiedItemsFrom(OutInventoryComponent);
+			int32 IndexToRemove = InterractedCrates.Find(Chest);
+			InterractedCrates.RemoveAt(IndexToRemove);
+			UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: Remove interacted crate to array"));
+		}
+	}
+	
 	if (InterractedCrates.Num() <= 0)
 	{
 		bIsPickingItems = false;
 
 		if (HUD)
-			HUD->TogglePickupHintVisibility();
+			HUD->TogglePickupHintVisibility(false);
 	}
 }
 

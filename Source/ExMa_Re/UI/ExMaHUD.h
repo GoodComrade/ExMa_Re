@@ -33,7 +33,7 @@ public:
 	void InitPickupHintWidget();
 
 	UFUNCTION(BlueprintCallable)
-	void TogglePickupHintVisibility();
+	void TogglePickupHintVisibility(bool bNewState);
 
 	//TODO: Implement states of main interaction widget
 	UFUNCTION(BlueprintCallable)

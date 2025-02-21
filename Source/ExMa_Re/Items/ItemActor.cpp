@@ -24,26 +24,76 @@ AItemActor::AItemActor()
 
 bool AItemActor::TryTransferStoredItems(UInventoryComponent* InventoryToTransfer)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AItemActor: Items to transfer %i"), InventoryComponent->GetAllItems().Num());
+	if (InventoryComponent->GetAllItems().Num() <= 0)
+		return false;
+
+	UE_LOG(LogTemp, Warning, TEXT("AItemActor:: Items to transfer %i"), InventoryComponent->GetAllItems().Num());
 
 	for (TPair<UItemObject*, FTileStruct> ItemObject : InventoryComponent->GetAllItems())
 	{
 		if (InventoryToTransfer->TryAddItem(ItemObject.Key) == false)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AItemActor: FailedToTransferItem"));
+			UE_LOG(LogTemp, Warning, TEXT("AItemActor:: FailedToTransferItem"));
 			return false;
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AItemActor: ItemTransferedSuccess."));
+			UE_LOG(LogTemp, Warning, TEXT("AItemActor:: ItemTransferedSuccess."));
 			InventoryComponent->RemoveItem(ItemObject.Key);
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("AItemActor: AllItemsTransfered! Destroy empty crate!"));
+	UE_LOG(LogTemp, Warning, TEXT("AItemActor:: AllItemsTransfered! Destroy empty crate!"));
 	Destroy();
 
 	return true;
+}
+
+bool AItemActor::TryCopyStoredItems(UInventoryComponent* InventoryToCopy)
+{
+	if (InventoryComponent->GetAllItems().Num() <= 0)
+		return false;
+
+	UE_LOG(LogTemp, Warning, TEXT("AItemActor:: Items to Copy %i"), InventoryComponent->GetAllItems().Num());
+
+	for (TPair<UItemObject*, FTileStruct> ItemObject : InventoryComponent->GetAllItems())
+	{
+		if (InventoryToCopy->TryAddItem(ItemObject.Key) == false)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AItemActor:: FailedToCopyItem"));
+			return false;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AItemActor:: ItemCopySuccess."));
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("AItemActor:: AllItemsCopied!"));
+
+	return true;
+}
+
+void AItemActor::ClearCopiedItemsFrom(UInventoryComponent* InventoryToRemoveFrom)
+{
+	if (InventoryToRemoveFrom->GetAllItems().Num() <= 0 || InventoryComponent->GetAllItems().Num() <= 0)
+		return;
+
+	UE_LOG(LogTemp, Warning, TEXT("AItemActor:: Items to remove from %i"), InventoryToRemoveFrom->GetAllItems().Num());
+
+	for (TPair<UItemObject*, FTileStruct> ItemObject : InventoryToRemoveFrom->GetAllItems())
+	{
+		if (InventoryComponent->IsContainsItem(ItemObject.Key))
+		{
+			InventoryToRemoveFrom->RemoveItem(ItemObject.Key);
+			UE_LOG(LogTemp, Warning, TEXT("AItemActor:: Removed copied item"));
+		}
+	}
+}
+
+int32 AItemActor::GetStoredItemsAmount()
+{
+	return InventoryComponent->GetAllItems().Num();
 }
 
 // Called when the game starts or when spawned
@@ -58,7 +108,7 @@ void AItemActor::PopulateInventory()
 {
 	for (FName ItemConfigName : StoredItemsNames)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AItemActor: CreatingItemObject %s"), *ItemConfigName.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("AItemActor:: CreatingItemObject %s"), *ItemConfigName.ToString());
 
 		FItemConfigStruct ConfigStruct;
 		if (const FItemConfigStruct* ConfigStructRow = ItemsDataTable->FindRow<FItemConfigStruct>(ItemConfigName, ""))
@@ -68,7 +118,7 @@ void AItemActor::PopulateInventory()
 
 		if (StoredItem == nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("StoredItem '%s' ITEM ISN'T CREATED!"), *ItemConfigName.ToString());
+			UE_LOG(LogTemp, Warning, TEXT("AItemActor:: StoredItem '%s' ITEM ISN'T CREATED!"), *ItemConfigName.ToString());
 			return;
 		}
 
@@ -77,11 +127,11 @@ void AItemActor::PopulateInventory()
 
 		if (InventoryComponent->TryAddItem(StoredItem))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AItemActor: ItemObject %s add SUCCESS"), *ItemConfigName.ToString());
+			UE_LOG(LogTemp, Warning, TEXT("AItemActor:: ItemObject %s add SUCCESS"), *ItemConfigName.ToString());
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("AItemActor: ItemObject %s ADD FAILED"), *ItemConfigName.ToString());
+			UE_LOG(LogTemp, Error, TEXT("AItemActor:: ItemObject %s ADD FAILED"), *ItemConfigName.ToString());
 		}
 	}
 }

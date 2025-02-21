@@ -69,12 +69,12 @@ void AExMaHUD::InitPickupHintWidget()
     PickupHintRef = CreateWidget<UUserWidget>(GetOwningPlayerController(), PickupHintClass);
 }
 
-void AExMaHUD::TogglePickupHintVisibility()
+void AExMaHUD::TogglePickupHintVisibility(bool bNewState)
 {
-    if (PickupHintRef->IsInViewport())
-        PickupHintRef->RemoveFromParent();
-    else
+    if (bNewState)
         PickupHintRef->AddToViewport();
+    else
+        PickupHintRef->RemoveFromParent();
 }
 
 void AExMaHUD::ChangeMainWidgetState()

@@ -27,6 +27,15 @@ public:
 	UFUNCTION()
 	bool TryTransferStoredItems(UInventoryComponent* InventoryToTransfer);
 
+	UFUNCTION()
+	bool TryCopyStoredItems(UInventoryComponent* InventoryToCopy);
+
+	UFUNCTION()
+	void ClearCopiedItemsFrom(UInventoryComponent* InventoryToRemoveFrom);
+
+	UFUNCTION()
+	int32 GetStoredItemsAmount();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

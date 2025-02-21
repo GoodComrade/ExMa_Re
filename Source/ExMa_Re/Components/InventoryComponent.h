@@ -62,6 +62,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddItemAt(UItemObject* ItemObject, int TopLeftIndex);
 
+	UFUNCTION(BlueprintCallable)
+	bool IsContainsItem(UItemObject* ItemObjectToCheck);
+
 private:
 
 	UPROPERTY()

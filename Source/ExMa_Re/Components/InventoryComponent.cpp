@@ -20,7 +20,7 @@ TMap<UItemObject*, FTileStruct> UInventoryComponent::GetAllItems() const
 	{
 		FTileStruct Tile = const_cast<UInventoryComponent*>(this)->IndexToTile(CurrentItemObjectIndex);
 
-		if (Items[CurrentItemObjectIndex]->IsValidLowLevel())
+		if (Items[CurrentItemObjectIndex] != NULL)
 		{
 			if (AllItems.Contains(Items[CurrentItemObjectIndex]) == false)
 				AllItems.Add(Items[CurrentItemObjectIndex], Tile);
@@ -61,7 +61,7 @@ bool UInventoryComponent::TryAddItem(UItemObject* ItemToAdd)
 
 void UInventoryComponent::RemoveItem(UItemObject* ItemToRemove)
 {
-	if (ItemToRemove->IsValidLowLevel() == false)
+	if (ItemToRemove == NULL)
 		return;
 
 	for (int Index = 0; Index < Items.Num(); Index++)
@@ -166,6 +166,11 @@ void UInventoryComponent::AddItemAt(UItemObject* ItemObject, int TopLeftIndex)
 
 	//OnInventoryChanged.Broadcast();
 	bIsDirty = true;
+}
+
+bool UInventoryComponent::IsContainsItem(UItemObject* ItemObjectToCheck)
+{
+	return GetAllItems().Contains(ItemObjectToCheck);
 }
 
 // Called when the game starts
