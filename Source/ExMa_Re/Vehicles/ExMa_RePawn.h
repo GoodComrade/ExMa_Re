@@ -18,6 +18,7 @@ class UChaosWheeledVehicleMovementComponent;
 class UExMa_VehicleAttributes;
 class UInventoryComponent;
 class AItemActor;
+class AExMa_GameState;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
@@ -56,6 +57,8 @@ private:
 	UPROPERTY()
 	AExMaHUD* HUD;
 
+	AExMa_GameState* GetGameState();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -65,6 +68,11 @@ protected:
 	TArray<AItemActor*> InterractedCrates;
 
 	void ProcessPickupItems();
+
+	UPROPERTY(EditAnywhere, Category = Spawnable)
+	TSubclassOf<AItemActor> CrateClass;
+
+	void ProcessSpawnCrate();
 
 #pragma region Vehicle
 protected:

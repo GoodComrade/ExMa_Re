@@ -5,6 +5,7 @@
 #include "ExMa_Re/Components/InventoryComponent.h"
 #include "ExMa_Re/UI/ExMa_InventoryWidget.h"
 #include "ExMa_Re/UI/MainInteractionWidget.h"
+#include "ExMa_Re/Game/ExMa_GameState.h"
 
 AExMaHUD::AExMaHUD()
 {
@@ -20,6 +21,21 @@ void AExMaHUD::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
     //ShowInGameUI();
+}
+
+AExMa_GameState* AExMaHUD::GetGameState()
+{
+    UWorld* World = GetWorld();
+
+    if(World == nullptr)
+        return nullptr;
+
+    AExMa_GameState* GameState = World->GetGameState<AExMa_GameState>();
+
+    if(GameState == nullptr)
+        return nullptr;
+
+    return GameState;
 }
 
 void AExMaHUD::Tick(float DeltaTime)
@@ -39,9 +55,9 @@ void AExMaHUD::InitInteractionWidget(UInventoryComponent* InInventoryComponentRe
     }
 }
 
-void AExMaHUD::ToggleWidgetVisibility()
+void AExMaHUD::ToggleWidgetVisibility(bool bIsEnbale)
 {
-    if (MainWidgetRef->IsInViewport())
+    if (bIsEnbale == false)
     {
         MainWidgetRef->RemoveFromParent();
 
@@ -61,6 +77,11 @@ void AExMaHUD::ToggleWidgetVisibility()
         GetOwningPlayerController()->SetInputMode(InputMode);
         GetOwningPlayerController()->SetShowMouseCursor(true);
     }
+
+    if (GetGameState() == nullptr)
+        return;
+
+    GetGameState()->SetGamePause(bIsEnbale);
 }
 
 //TODO: Rework this to hint factory because we will need different hints about picked items & NPC radio messages in future

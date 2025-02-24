@@ -7,11 +7,13 @@
 #include "ExMa_Re/Items/ItemActor.h"
 #include "Kismet/KismetSystemLibrary.h" 
 #include "Engine/CollisionProfile.h"
+#include "ExMa_Re/Components/InventoryComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 //TODO: Change this logic to spawn one certain ItemActor with droppedItemObjects
-void AExMa_GameState::SpawnItemFromActor(UItemObject* ItemObjectToSpawn, AActor* ActorFromSpawn, bool GroundClamp)
+void AExMa_GameState::SpawnCrateActorFromPawn(TSubclassOf<AItemActor> ItemActorToSpawn, UInventoryComponent* InventoryToCopy, AActor* ActorFromSpawn, bool GroundClamp)
 {
-	FVector SpawnLocation = ActorFromSpawn->GetActorLocation() + (ActorFromSpawn->GetActorForwardVector() * -1 * 1000.f);
+	FVector SpawnLocation = ActorFromSpawn->GetActorLocation() + (ActorFromSpawn->GetActorRightVector() * 600.f);
 	FVector LineTraceEndLocation = SpawnLocation - FVector(0, 0, 1000);
 	ETraceTypeQuery TraceChannel = UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility);
 	const TArray<AActor*> ActorsToIgnore;
@@ -37,14 +39,24 @@ void AExMa_GameState::SpawnItemFromActor(UItemObject* ItemObjectToSpawn, AActor*
 		}
 	}
 
-	//if (UWorld* World = GetWorld())
-	//{
-	//	FActorSpawnParameters SpawnParams;
-	//	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	//
-	//	AItemActor* ItemActor = World->SpawnActor<AItemActor>(ItemObjectToSpawn->GetItemActorClass(), SpawnLocation, FRotator(), SpawnParams);
-	//
-	//	if(ItemActor != nullptr)
-	//		ItemActor->SetItemObject(ItemObjectToSpawn);
-	//}
+	if (UWorld* World = GetWorld())
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	
+		AItemActor* ItemActor = World->SpawnActor<AItemActor>(ItemActorToSpawn, SpawnLocation + FVector(0, 150, 0), FRotator(), SpawnParams);
+	
+		if(ItemActor != nullptr)
+			ItemActor->RecieveItemsWithOverride(InventoryToCopy);
+	}
+}
+
+void AExMa_GameState::SetGamePause(bool bIsPause)
+{
+	UWorld* World = GetWorld();
+
+	if (World == nullptr)
+		return;
+
+	UGameplayStatics::SetGamePaused(World, bIsPause);
 }

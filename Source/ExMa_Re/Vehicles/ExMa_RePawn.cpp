@@ -7,6 +7,8 @@
 #include "ExMa_Re/UI/ExMaHUD.h"
 #include "ExMa_Re/Items/ItemActor.h"
 #include "ExMa_Re/Items/ItemObject.h"
+#include "ExMa_Re/Game/ExMa_GameState.h"
+
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -15,6 +17,8 @@
 #include "InputActionValue.h"
 #include "ExMa_VehicleAttributes.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
+
+#include "Kismet/GameplayStatics.h"
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
@@ -110,6 +114,21 @@ void AExMa_RePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 	{
 		UE_LOG(LogTemplateVehicle, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+AExMa_GameState* AExMa_RePawn::GetGameState()
+{
+	UWorld* World = GetWorld();
+
+	if (World == nullptr)
+		return nullptr;
+
+	AExMa_GameState* GameState = World->GetGameState<AExMa_GameState>();
+
+	if (GameState == nullptr)
+		return nullptr;
+
+	return GameState;
 }
 
 void AExMa_RePawn::BeginPlay()
@@ -233,20 +252,28 @@ void AExMa_RePawn::ToggleCamera(const FInputActionValue& Value)
 
 void AExMa_RePawn::ToggleInventory(const FInputActionValue& Value)
 {
+	UWorld* World = GetWorld();
+
+	if (World == nullptr)
+		return;
+
 	if (bIsPickingItems && InterractedCrates.Num() > 0)
 	{
 		ProcessPickupItems();
 		return;
 	}
 
+	if (UGameplayStatics::IsGamePaused(World) && OutInventoryComponent->GetAllItems().Num() > 0)
+	{
+		ProcessSpawnCrate();
+	}
+
 	if (HUD)
-		HUD->ToggleWidgetVisibility();
+		HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(World));
 }
 
 void AExMa_RePawn::ProcessPickupItems()
 {
-	bool bIsFullProcessComplete = true;
-
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount before transfer: %i"), InterractedCrates.Num());
 
 	TArray<AItemActor*> ItemActors = TArray<AItemActor*>(&InterractedCrates.GetData()[0], InterractedCrates.Num());
@@ -255,37 +282,33 @@ void AExMa_RePawn::ProcessPickupItems()
 		if (ItemActor->TryTransferStoredItems(InventoryComponent) == false)
 		{
 			bIsPickingItems = false;
-			bIsFullProcessComplete = false;
+
+			//If have items to transfer but player inventory is already full.
+			//Transfer unplaced items into out inventory.
+			for (AItemActor* OutItemActor : ItemActors)
+			{
+				OutItemActor->TryTransferStoredItems(OutInventoryComponent);
+			}
+
+			UWorld* World = GetWorld();
+
+			if (World == nullptr)
+				return;
+
+			if (HUD)
+				HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(World));
 		}
 	}
 
-	//Remove empty & deleted crates from interacted array
-	//for (int Index = 0; Index < InterractedCrates.Num(); Index++)
-	//{
-	//	AItemActor* ActorToRemove = InterractedCrates[Index];
-	//
-	//	if (ActorToRemove == NULL)
-	//	{
-	//		InterractedCrates.RemoveAt(Index);
-	//		Index--;
-	//		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: EPMTYcRATE IS REMOVED FROM INTERACTION ARRAY"));
-	//	}
-	//}
-
-	//If have items to transfer but player inventory is already full
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount after transfer: %i"), InterractedCrates.Num());
+}
 
-	if (bIsFullProcessComplete == false)
-	{
-		for (AItemActor* ItemActor : InterractedCrates)
-		{
-			if(ItemActor->GetStoredItemsAmount() > 0)
-				ItemActor->TryCopyStoredItems(OutInventoryComponent);
-		}
+void AExMa_RePawn::ProcessSpawnCrate()
+{
+	if (GetGameState() == nullptr)
+		return;
 
-		if (HUD)
-			HUD->ToggleWidgetVisibility();
-	}
+	GetGameState()->SpawnCrateActorFromPawn(CrateClass, GetOutInventoryComponent(), this, true);
 }
 
 void AExMa_RePawn::ResetVehicle(const FInputActionValue& Value)
@@ -408,7 +431,6 @@ void AExMa_RePawn::OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComp
 	{
 		if (InterractedCrates.Contains(Chest))
 		{
-			Chest->ClearCopiedItemsFrom(OutInventoryComponent);
 			int32 IndexToRemove = InterractedCrates.Find(Chest);
 			InterractedCrates.RemoveAt(IndexToRemove);
 			UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: Remove interacted crate to array"));

@@ -8,6 +8,8 @@
 
 class UItemObject;
 class AActor;
+class AItemActor;
+class UInventoryComponent;
 
 UCLASS()
 class EXMA_RE_API AExMa_GameState : public AGameStateBase
@@ -16,5 +18,8 @@ class EXMA_RE_API AExMa_GameState : public AGameStateBase
 	
 public:
 	UFUNCTION(BlueprintCallable)
-	void SpawnItemFromActor(UItemObject* ItemObjectToSpawn, AActor* ActorFromSpawn, bool GroundClamp);
+	void SpawnCrateActorFromPawn(TSubclassOf<AItemActor> ItemActorToSpawn, UInventoryComponent* InventoryToCopy, AActor* ActorFromSpawn, bool GroundClamp);
+
+	UFUNCTION(BlueprintCallable)
+	void SetGamePause(bool bIsPause);
 };

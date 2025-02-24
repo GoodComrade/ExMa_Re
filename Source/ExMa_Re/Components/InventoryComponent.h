@@ -48,6 +48,9 @@ public:
 	void RemoveItem(UItemObject* ItemToRemove);
 
 	UFUNCTION(BlueprintCallable)
+	void RemoveAllItems();
+
+	UFUNCTION(BlueprintCallable)
 	bool IsRoomAvaliable(UItemObject* ItemToCheck, int TopLeftIndex);
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)

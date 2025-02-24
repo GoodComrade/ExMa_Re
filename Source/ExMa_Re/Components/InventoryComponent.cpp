@@ -73,8 +73,19 @@ void UInventoryComponent::RemoveItem(UItemObject* ItemToRemove)
 		}
 	}
 	
-	//OnInventoryChanged.Broadcast();
-	bIsDirty = true;
+	OnInventoryChanged.Broadcast();
+	//bIsDirty = true;
+}
+
+void UInventoryComponent::RemoveAllItems()
+{
+	for (int Index = 0; Index < Items.Num(); Index++)
+	{
+		Items[Index] = nullptr;
+	}
+
+	OnInventoryChanged.Broadcast();
+	//bIsDirty = true;
 }
 
 bool UInventoryComponent::IsRoomAvaliable(UItemObject* ItemToCheck, int TopLeftIndex)
@@ -164,8 +175,8 @@ void UInventoryComponent::AddItemAt(UItemObject* ItemObject, int TopLeftIndex)
 		}
 	}
 
-	//OnInventoryChanged.Broadcast();
-	bIsDirty = true;
+	OnInventoryChanged.Broadcast();
+	//bIsDirty = true;
 }
 
 bool UInventoryComponent::IsContainsItem(UItemObject* ItemObjectToCheck)

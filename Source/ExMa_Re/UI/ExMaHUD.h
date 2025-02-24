@@ -9,6 +9,7 @@
 
 class UMainInteractionWidget;
 class UExMa_InventoryWidget;
+class AExMa_GameState;
 
 UCLASS()
 class EXMA_RE_API AExMaHUD : public AHUD
@@ -26,7 +27,7 @@ public:
 	void InitInteractionWidget(UInventoryComponent* InInventoryComponentRef, UInventoryComponent* InOutInventoryComponentRef);
 
 	UFUNCTION(BlueprintCallable)
-	void ToggleWidgetVisibility();
+	void ToggleWidgetVisibility(bool bIsEnbale);
 
 	//TODO: Rework this to hint factory because we will need different hints about picked items & NPC radio messages in future
 	UFUNCTION(BlueprintCallable)
@@ -54,4 +55,7 @@ protected:
 	
 	UMainInteractionWidget* MainWidgetRef;
 	UUserWidget* PickupHintRef;
+
+private:
+	AExMa_GameState* GetGameState();
 };
