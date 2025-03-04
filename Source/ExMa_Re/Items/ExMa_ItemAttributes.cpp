@@ -16,12 +16,12 @@ float UExMa_ItemAttributes::GetAttribute(const EItemAttributeType ItemAttributeT
         return Health.GetCurrentValue();
     case EItemAttributeType::MaxHealth:
         return MaxHealth.GetCurrentValue();
-    case EItemAttributeType::Size:
-        return Size.GetCurrentValue();
     case EItemAttributeType::Type:
         return Type.GetCurrentValue();
     case EItemAttributeType::Weight:
         return Weight.GetCurrentValue();
+    case EItemAttributeType::Cost:
+        return Cost.GetCurrentValue();
     }
 
 	return 0.0f;

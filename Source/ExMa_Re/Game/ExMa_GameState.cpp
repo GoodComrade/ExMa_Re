@@ -44,7 +44,7 @@ void AExMa_GameState::SpawnCrateActorFromPawn(TSubclassOf<AItemActor> ItemActorT
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	
-		AItemActor* ItemActor = World->SpawnActor<AItemActor>(ItemActorToSpawn, SpawnLocation + FVector(0, 150, 0), FRotator(), SpawnParams);
+		AItemActor* ItemActor = World->SpawnActor<AItemActor>(ItemActorToSpawn, SpawnLocation + FVector(0, 250, 0), FRotator(), SpawnParams);
 	
 		if(ItemActor != nullptr)
 			ItemActor->RecieveItemsWithOverride(InventoryToCopy);

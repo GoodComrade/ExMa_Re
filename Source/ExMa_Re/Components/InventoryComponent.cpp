@@ -74,7 +74,6 @@ void UInventoryComponent::RemoveItem(UItemObject* ItemToRemove)
 	}
 	
 	OnInventoryChanged.Broadcast();
-	//bIsDirty = true;
 }
 
 void UInventoryComponent::RemoveAllItems()
@@ -85,7 +84,6 @@ void UInventoryComponent::RemoveAllItems()
 	}
 
 	OnInventoryChanged.Broadcast();
-	//bIsDirty = true;
 }
 
 bool UInventoryComponent::IsRoomAvaliable(UItemObject* ItemToCheck, int TopLeftIndex)
@@ -176,7 +174,6 @@ void UInventoryComponent::AddItemAt(UItemObject* ItemObject, int TopLeftIndex)
 	}
 
 	OnInventoryChanged.Broadcast();
-	//bIsDirty = true;
 }
 
 bool UInventoryComponent::IsContainsItem(UItemObject* ItemObjectToCheck)
@@ -200,11 +197,5 @@ void UInventoryComponent::BeginPlay()
 void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (bIsDirty)
-	{
-		bIsDirty = false;
-		OnInventoryChanged.Broadcast();
-	}
 }
 

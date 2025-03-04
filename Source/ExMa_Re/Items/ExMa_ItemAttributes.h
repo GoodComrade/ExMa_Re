@@ -21,25 +21,25 @@ class EXMA_RE_API UExMa_ItemAttributes : public UAttributeSet
 public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
-    UPROPERTY(BlueprintReadOnly, Category = Character)
-    FGameplayAttributeData Health;
-    ATTRIBUTE_ACCESSORS(UExMa_ItemAttributes, Health);
-
-    UPROPERTY(BlueprintReadOnly, Category = Character)
-    FGameplayAttributeData MaxHealth;
-    ATTRIBUTE_ACCESSORS(UExMa_ItemAttributes, MaxHealth);
-
-    UPROPERTY(BlueprintReadOnly, Category = Character)
-    FGameplayAttributeData Size;
-    ATTRIBUTE_ACCESSORS(UExMa_ItemAttributes, Size);
-
-    UPROPERTY(BlueprintReadOnly, Category = Character)
+    UPROPERTY(BlueprintReadOnly, Category = Item)
     FGameplayAttributeData Type;
     ATTRIBUTE_ACCESSORS(UExMa_ItemAttributes, Type);
 
-    UPROPERTY(BlueprintReadOnly, Category = Character)
+    UPROPERTY(BlueprintReadOnly, Category = Item)
+    FGameplayAttributeData Health;
+    ATTRIBUTE_ACCESSORS(UExMa_ItemAttributes, Health);
+
+    UPROPERTY(BlueprintReadOnly, Category = Item)
+    FGameplayAttributeData MaxHealth;
+    ATTRIBUTE_ACCESSORS(UExMa_ItemAttributes, MaxHealth);
+
+    UPROPERTY(BlueprintReadOnly, Category = Item)
     FGameplayAttributeData Weight;
     ATTRIBUTE_ACCESSORS(UExMa_ItemAttributes, Weight);
+
+    UPROPERTY(BlueprintReadOnly, Category = Item)
+    FGameplayAttributeData Cost;
+    ATTRIBUTE_ACCESSORS(UExMa_ItemAttributes, Cost);
 
     UFUNCTION(BlueprintCallable)
     float GetAttribute(EItemAttributeType ItemAttributeType) const;

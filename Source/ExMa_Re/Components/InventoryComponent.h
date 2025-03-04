@@ -76,9 +76,6 @@ private:
 	UFUNCTION()
 	UItemObject* GetItemAtIndex(int Index);
 
-	UPROPERTY()
-	bool bIsDirty = false;
-
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

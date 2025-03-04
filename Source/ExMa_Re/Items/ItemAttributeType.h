@@ -8,7 +8,7 @@ enum class EItemAttributeType : uint8
 {
     Health = 0                                      UMETA(DisplayName = "Health"),
     MaxHealth = 1                                   UMETA(DisplayName = "MaxHealth"),
-    Size = 2                                      UMETA(DisplayName = "Size"),
-    Type = 3                                   UMETA(DisplayName = "Type"),
-    Weight = 4                                       UMETA(DisplayName = "Weight"),
+    Type = 2                                        UMETA(DisplayName = "Type"),
+    Weight = 3                                      UMETA(DisplayName = "Weight"),
+    Cost = 4                                        UMETA(DisplayName = "Cost"),
 };
