@@ -159,7 +159,7 @@ UWeaponItemObject* AExMa_GameState::CreateWeaponItem(FItemConfigStruct TargetIte
 	WeaponDataAsset->Description = FText::FromString(TargetItemRow.Description);
 
 	//TODO: погуглить как сетать тэги в контейнер через код.
-	WeaponDataAsset->ItemType = WeaponConfigStruct.WeaponType;
+	WeaponDataAsset->ItemType = TargetItemRow.ItemType;
 	WeaponDataAsset->Weight = TargetItemRow.Weight;
 	WeaponDataAsset->Cost = TargetItemRow.Cost;
 	WeaponDataAsset->PreviewMesh = TargetItemRow.PreviewMesh;
@@ -167,7 +167,9 @@ UWeaponItemObject* AExMa_GameState::CreateWeaponItem(FItemConfigStruct TargetIte
 	//TODO: Тут седать свойсвта дата ассет оружия, которые потом будут сетаться в атрибуты оружия при установке в подходящий слот.
 	WeaponDataAsset->WeaponMesh = WeaponConfigStruct.WeaponMesh;
 	WeaponDataAsset->MeshABP = WeaponConfigStruct.MeshABP;
+	WeaponDataAsset->WeaponType = WeaponConfigStruct.WeaponType;
 	WeaponDataAsset->Damage = WeaponConfigStruct.Damage;
+	WeaponDataAsset->DamageType = WeaponConfigStruct.DamageType;
 	WeaponDataAsset->AttackCost = WeaponConfigStruct.AttackCost;
 	WeaponDataAsset->Cooldown = WeaponConfigStruct.Cooldown;
 	WeaponDataAsset->ShootDelay = WeaponConfigStruct.ShootDelay;
