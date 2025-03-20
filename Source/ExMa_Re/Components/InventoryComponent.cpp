@@ -33,7 +33,12 @@ TMap<UItemObject*, FTileStruct> UInventoryComponent::GetAllItems() const
 bool UInventoryComponent::TryAddItem(UItemObject* ItemToAdd)
 {
 	if (ItemToAdd == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: ItemToAdd is nullptr!"));
 		return false;
+	}
+
+	UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: Inventory size: %i!"), Items.Num());
 
 	for (int Index = 0; Index < Items.Num(); Index++)
 	{
@@ -56,6 +61,7 @@ bool UInventoryComponent::TryAddItem(UItemObject* ItemToAdd)
 		}
 	}
 
+	UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: No space to add item!"));
 	return false;
 }
 
@@ -105,20 +111,30 @@ bool UInventoryComponent::IsRoomAvaliable(UItemObject* ItemToCheck, int TopLeftI
 			TileToCheck.Y = YIndex;
 			
 			if (IsTileValid(TileToCheck) == false)
+			{
+				UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: Invalid Tile!"));
 				return false;
+			}
 
 			int TileIndex = TileToIndex(TileToCheck);
 
 			if (Items.IsValidIndex(TileIndex) == false)
+			{
+				UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: Invalid Index!"));
 				return false;
+			}
 
 			UItemObject* ItemAtIndex = GetItemAtIndex(TileIndex);
 
 			if (ItemAtIndex != nullptr)
+			{
+				UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: Has Item at index!"));
 				return false;
+			}
 		}
 	}
 
+	UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: has space to add item!"));
 	return true;
 }
 
@@ -144,6 +160,16 @@ bool UInventoryComponent::IsTileValid(FTileStruct TileToCheck)
 UItemObject* UInventoryComponent::GetItemAtIndex(int Index)
 {
 	return Items[Index];
+}
+
+void UInventoryComponent::SetSize()
+{
+	if (Items.Num() > 0)
+		Items.Empty();
+
+	Items.SetNum(Columns * Rows);
+
+	UE_LOG(LogTemp, Warning, TEXT("UInventoryComponent:: SIZE SET!"));
 }
 
 void UInventoryComponent::AddItemAt(UItemObject* ItemObject, int TopLeftIndex)
@@ -186,10 +212,7 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (Items.Num() > 0)
-		Items.Empty();
-
-	Items.SetNum(Columns * Rows);
+	SetSize();
 }
 
 

@@ -76,6 +76,9 @@ private:
 	UFUNCTION()
 	UItemObject* GetItemAtIndex(int Index);
 
+	UFUNCTION()
+	void SetSize();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

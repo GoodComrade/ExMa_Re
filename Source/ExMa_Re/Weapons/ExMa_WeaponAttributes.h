@@ -21,83 +21,91 @@ class EXMA_RE_API UExMa_WeaponAttributes : public UAttributeSet
 public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, Damage);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData AttackCost;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, AttackCost);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData Cooldown;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, Cooldown);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
+	FGameplayAttributeData ShootDelay;
+	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, ShootDelay);
+
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData ReloadTime;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, ReloadTime);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData Spread;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, Spread);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData MaxBulletsCount;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, MaxBulletsCount);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
+	FGameplayAttributeData CurrentMagazineAmount;
+	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, CurrentMagazineAmount);
+
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData MagazineSize;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, MagazineSize);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
-	FGameplayAttributeData BurstSize;
-	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, BurstSize);
+	//UPROPERTY(BlueprintReadOnly, Category = Weapon)
+	//FGameplayAttributeData BurstSize;
+	//ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, BurstSize);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData MinRange;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, MinRange);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData MaxRange;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, MaxRange);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
-	FGameplayAttributeData MinBulletsInShot;
-	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, MinBulletsInShot);
+	//UPROPERTY(BlueprintReadOnly, Category = Weapon)
+	//FGameplayAttributeData MinBulletsInShot;
+	//ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, MinBulletsInShot);
+	//
+	//UPROPERTY(BlueprintReadOnly, Category = Weapon)
+	//FGameplayAttributeData MaxBulletsInShot;
+	//ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, MaxBulletsInShot);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
-	FGameplayAttributeData MaxBulletsInShot;
-	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, MaxBulletsInShot);
-
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, Health);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, MaxHealth);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
-	FGameplayAttributeData BurstDelay;
-	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, BurstDelay);
+	//UPROPERTY(BlueprintReadOnly, Category = Weapon)
+	//FGameplayAttributeData BurstDelay;
+	//ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, BurstDelay);
+	//
+	//UPROPERTY(BlueprintReadOnly, Category = Weapon)
+	//FGameplayAttributeData ProjectileSpeed;
+	//ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, ProjectileSpeed);
+	//
+	//UPROPERTY(BlueprintReadOnly, Category = Weapon)
+	//FGameplayAttributeData ProjectileGravityMultiplier;
+	//ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, ProjectileGravityMultiplier);
+	//
+	//UPROPERTY(BlueprintReadOnly, Category = Weapon)
+	//FGameplayAttributeData AimType;
+	//ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, AimType);
+	//
+	//UPROPERTY(BlueprintReadOnly, Category = Weapon)
+	//FGameplayAttributeData BlustRadius;
+	//ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, BlustRadius);
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
-	FGameplayAttributeData ProjectileSpeed;
-	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, ProjectileSpeed);
-
-	UPROPERTY(BlueprintReadOnly, Category = Character)
-	FGameplayAttributeData ProjectileGravityMultiplier;
-	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, ProjectileGravityMultiplier);
-
-	UPROPERTY(BlueprintReadOnly, Category = Character)
-	FGameplayAttributeData AimType;
-	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, AimType);
-
-	UPROPERTY(BlueprintReadOnly, Category = Character)
-	FGameplayAttributeData BlustRadius;
-	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, BlustRadius);
-
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(BlueprintReadOnly, Category = Weapon)
 	FGameplayAttributeData AimTime;
 	ATTRIBUTE_ACCESSORS(UExMa_WeaponAttributes, AimTime);
 

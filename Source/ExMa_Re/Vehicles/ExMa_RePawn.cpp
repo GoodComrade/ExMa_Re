@@ -8,6 +8,7 @@
 #include "ExMa_Re/Items/ItemActor.h"
 #include "ExMa_Re/Items/ItemObject.h"
 #include "ExMa_Re/Game/ExMa_GameState.h"
+#include "ExMa_Re/Items/ChestActor.h"
 
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -276,31 +277,41 @@ void AExMa_RePawn::ProcessPickupItems()
 {
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount before transfer: %i"), InterractedCrates.Num());
 
-	TArray<AItemActor*> ItemActors = TArray<AItemActor*>(&InterractedCrates.GetData()[0], InterractedCrates.Num());
-	for (AItemActor* ItemActor : ItemActors)
+	TArray<AChestActor*> ChestActors = TArray<AChestActor*>(&InterractedCrates.GetData()[0], InterractedCrates.Num());
+	for (AChestActor* Chest : ChestActors)
 	{
-		if (ItemActor->TryTransferStoredItems(InventoryComponent) == false)
+		if (Chest->TryTransferStoredItems(InventoryComponent) == false)
 		{
-			bIsPickingItems = false;
-
-			//If have items to transfer but player inventory is already full.
-			//Transfer unplaced items into out inventory.
-			for (AItemActor* OutItemActor : ItemActors)
-			{
-				OutItemActor->TryTransferStoredItems(OutInventoryComponent);
-			}
-
-			UWorld* World = GetWorld();
-
-			if (World == nullptr)
-				return;
-
-			if (HUD)
-				HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(World));
+			ProcessItemsOverflow(ChestActors);
+			UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: NO FREE SPACE IN INVENTORY: %i"), InterractedCrates.Num());
 		}
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount after transfer: %i"), InterractedCrates.Num());
+}
+
+void AExMa_RePawn::ProcessItemsOverflow(TArray<AChestActor*> ChestActorsToProcess)
+{
+	bIsPickingItems = false;
+
+	//If have items to transfer but player inventory is already full.
+	//Transfer unplaced items into out inventory.
+	for (AChestActor* OutChest : ChestActorsToProcess)
+	{
+		if (OutChest->TryTransferStoredItems(OutInventoryComponent) == false)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn:: NO FREE SPACE IN OUT INVENTORY: %i"), InterractedCrates.Num());
+			return;
+		}
+	}
+
+	UWorld* World = GetWorld();
+
+	if (World == nullptr)
+		return;
+
+	if (HUD)
+		HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(World));
 }
 
 void AExMa_RePawn::ProcessSpawnCrate()
@@ -308,7 +319,15 @@ void AExMa_RePawn::ProcessSpawnCrate()
 	if (GetGameState() == nullptr)
 		return;
 
-	GetGameState()->SpawnCrateActorFromPawn(CrateClass, GetOutInventoryComponent(), this, true);
+	GetGameState()->SpawnCrateActorFromPawn(ChestClass, GetOutInventoryComponent(), this, true);
+}
+
+void AExMa_RePawn::ProcessTogglePickupState(bool NewState)
+{
+	bIsPickingItems = NewState;
+
+	if (HUD)
+		HUD->TogglePickupHintVisibility(NewState);
 }
 
 void AExMa_RePawn::ResetVehicle(const FInputActionValue& Value)
@@ -398,36 +417,27 @@ void AExMa_RePawn::ApplyVehicleAttributes()
 //TODO: show player pickup UI hint with binded hotkey instead of straigth pickup
 void AExMa_RePawn::OnCollectSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (AItemActor* Chest = Cast<AItemActor>(OtherActor))
+	if (AChestActor* Chest = Cast<AChestActor>(OtherActor))
 	{
 		InterractedCrates.AddUnique(Chest);
 		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: Add interacted crate to array"));
 	}
 	
-	if (InterractedCrates.Num() > 0)
-	{
-		bIsPickingItems = true;
+	ProcessTogglePickupState(InterractedCrates.Num() > 0 && !bIsPickingItems);
 
-		if (HUD)
-			HUD->TogglePickupHintVisibility(true);
-	}
-
-	//if (AItemActor* Chest = Cast<AItemActor>(OtherActor))
+	//if (InterractedCrates.Num() > 0)
 	//{
-	//	UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn: Overlap with AItemActor. His amount of stored items is: %i"), Chest->GetStoredItems().Num());
+	//	bIsPickingItems = true;
 	//
-	//	for(UItemObject* ItemObject : Chest->GetStoredItems())
-	//	{
-	//		OutInventoryComponent->TryAddItem(ItemObject);
-	//	}
-	//	//if (PlayerPawn->GetInventoryComponent()->TryAddItem(ItemObject))
-	//	//	Destroy();
+	//	if (HUD)
+	//		HUD->TogglePickupHintVisibility(true);
 	//}
+
 }
 
 void AExMa_RePawn::OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex)
 {
-	if (AItemActor* Chest = Cast<AItemActor>(OtherActor))
+	if (AChestActor* Chest = Cast<AChestActor>(OtherActor))
 	{
 		if (InterractedCrates.Contains(Chest))
 		{
@@ -437,13 +447,15 @@ void AExMa_RePawn::OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComp
 		}
 	}
 	
-	if (InterractedCrates.Num() <= 0)
-	{
-		bIsPickingItems = false;
+	ProcessTogglePickupState(InterractedCrates.Num() > 0 && bIsPickingItems);
 
-		if (HUD)
-			HUD->TogglePickupHintVisibility(false);
-	}
+	//if (InterractedCrates.Num() <= 0)
+	//{
+	//	bIsPickingItems = false;
+	//
+	//	if (HUD)
+	//		HUD->TogglePickupHintVisibility(false);
+	//}
 }
 
 #undef LOCTEXT_NAMESPACE

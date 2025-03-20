@@ -17,7 +17,7 @@ class UInputAction;
 class UChaosWheeledVehicleMovementComponent;
 class UExMa_VehicleAttributes;
 class UInventoryComponent;
-class AItemActor;
+class AChestActor;
 class AExMa_GameState;
 struct FInputActionValue;
 
@@ -65,14 +65,18 @@ protected:
 	bool bIsPickingItems;
 
 	UPROPERTY()
-	TArray<AItemActor*> InterractedCrates;
+	TArray<AChestActor*> InterractedCrates;
 
 	void ProcessPickupItems();
 
+	void ProcessItemsOverflow(TArray<AChestActor*> ChestActorsToProcess);
+
 	UPROPERTY(EditAnywhere, Category = Spawnable)
-	TSubclassOf<AItemActor> CrateClass;
+	TSubclassOf<AChestActor> ChestClass;
 
 	void ProcessSpawnCrate();
+
+	void ProcessTogglePickupState(bool NewState);
 
 #pragma region Vehicle
 protected:

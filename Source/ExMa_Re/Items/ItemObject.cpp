@@ -2,6 +2,8 @@
 
 
 #include "Items/ItemObject.h"
+#include "ExMa_Re/Items/ItemInfoStruct.h"
+#include "ExMa_Re/DataAssets/ItemDataAsset.h"
 #include "ExMa_Re/Items/ItemActor.h"
 
 void UItemObject::SetDimentions(int DimentionX, int DimentionY)
@@ -14,12 +16,28 @@ void UItemObject::SetIcons(UMaterialInterface* InIcon, UMaterialInterface* InIco
 {
 	Icon = InIcon;
 	IconRotated = InIconRotated;
-	UE_LOG(LogTemp, Warning, TEXT("UItemObject:: IconsSet"));
+	UE_LOG(LogTemp, Warning, TEXT("UItemObject:: Icons Set"));
 }
 
 void UItemObject::SetItemActorClass(TSubclassOf<AItemActor> InItemActorClass)
 {
 	ItemActorClass = InItemActorClass;
+}
+
+void UItemObject::SetItemData(UItemDataAsset* DataToSet)
+{
+	ItemData = DataToSet;
+}
+
+void UItemObject::SetItemInfo()
+{
+	ItemInfo.Name = ItemData->DisplayName;
+	ItemInfo.Description = ItemData->Description;
+
+	ItemInfo.ItemType = ItemData->ItemType;
+
+	ItemInfo.Weight = ItemData->Weight;
+	ItemInfo.Cost = ItemData->Cost;
 }
 
 void UItemObject::Rotate()

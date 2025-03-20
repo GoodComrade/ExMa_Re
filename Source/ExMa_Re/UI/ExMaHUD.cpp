@@ -15,6 +15,8 @@ AExMaHUD::AExMaHUD()
 void AExMaHUD::BeginPlay()
 {
     Super::BeginPlay();
+
+    TogglePickupHintVisibility(false);
 }
 
 void AExMaHUD::PostInitializeComponents()
@@ -92,6 +94,9 @@ void AExMaHUD::InitPickupHintWidget()
 
 void AExMaHUD::TogglePickupHintVisibility(bool bNewState)
 {
+    if (PickupHintRef == nullptr)
+        return;
+
     if (bNewState)
         PickupHintRef->AddToViewport();
     else
