@@ -2,7 +2,6 @@
 
 
 #include "Items/ItemObject.h"
-#include "ExMa_Re/Items/ItemInfoStruct.h"
 #include "ExMa_Re/DataAssets/ItemDataAsset.h"
 #include "ExMa_Re/Items/ItemActor.h"
 
@@ -27,17 +26,6 @@ void UItemObject::SetItemActorClass(TSubclassOf<AItemActor> InItemActorClass)
 void UItemObject::SetItemData(UItemDataAsset* DataToSet)
 {
 	ItemData = DataToSet;
-}
-
-void UItemObject::SetItemInfo()
-{
-	ItemInfo.Name = ItemData->DisplayName;
-	ItemInfo.Description = ItemData->Description;
-
-	ItemInfo.ItemType = ItemData->ItemType;
-
-	ItemInfo.Weight = ItemData->Weight;
-	ItemInfo.Cost = ItemData->Cost;
 }
 
 void UItemObject::Rotate()

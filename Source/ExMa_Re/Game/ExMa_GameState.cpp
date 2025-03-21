@@ -112,8 +112,6 @@ UItemObject* AExMa_GameState::CreateItem(FName TargetItemName, UDataTable* Items
 
 	NewItem->GetItemData()->PreviewMesh = ConfigStruct.PreviewMesh;
 
-	NewItem->SetItemInfo();
-
 	return NewItem;
 }
 
@@ -167,9 +165,12 @@ UWeaponItemObject* AExMa_GameState::CreateWeaponItem(FItemConfigStruct TargetIte
 	//TODO: Тут седать свойсвта дата ассет оружия, которые потом будут сетаться в атрибуты оружия при установке в подходящий слот.
 	WeaponDataAsset->WeaponMesh = WeaponConfigStruct.WeaponMesh;
 	WeaponDataAsset->MeshABP = WeaponConfigStruct.MeshABP;
+
 	WeaponDataAsset->WeaponType = WeaponConfigStruct.WeaponType;
+
 	WeaponDataAsset->Damage = WeaponConfigStruct.Damage;
 	WeaponDataAsset->DamageType = WeaponConfigStruct.DamageType;
+
 	WeaponDataAsset->AttackCost = WeaponConfigStruct.AttackCost;
 	WeaponDataAsset->Cooldown = WeaponConfigStruct.Cooldown;
 	WeaponDataAsset->ShootDelay = WeaponConfigStruct.ShootDelay;
@@ -190,7 +191,6 @@ UWeaponItemObject* AExMa_GameState::CreateWeaponItem(FItemConfigStruct TargetIte
 
 	//Возможно, избыточное действие. надо проверить, будет ли все корректно работать без него.
 	WeaponItem->SetItemData(WeaponDataAsset);
-	WeaponItem->SetItemInfo();
 	return WeaponItem;
 }
 

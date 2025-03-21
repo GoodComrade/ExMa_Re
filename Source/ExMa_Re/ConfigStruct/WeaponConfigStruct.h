@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ExMa_Re/Enums/WeaponType.h"
-#include "ExMa_Re/Enums/WeaponDamageType.h"
 #include "ExMa_Re/DataAssets/WeaponDataAsset.h"
 #include "Engine/SkeletalMesh.h"
 #include "Animation/AnimBlueprint.h"

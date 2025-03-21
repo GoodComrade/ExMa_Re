@@ -1,21 +1,12 @@
 #pragma once
 
 #include "Materials/MaterialInterface.h"
-#include "ExMa_Re/Enums/ItemType.h"
 #include "ExMa_Re/DataAssets/ItemDataAsset.h"
 #include "GameplayTagContainer.h"
 #include "Engine/StaticMesh.h"
 #include "GameplayTagContainer.h"
 #include "ItemConfigStruct.generated.h"
 
-//UENUM(BlueprintType)
-//enum class EItemType : uint8
-//{
-//    Weapon              UMETA(DisplayName = "Weapon"),
-//    Cargo               UMETA(DisplayName = "Cargo"),
-//    VehicleUpgrade      UMETA(DisplayName = "VehicleUpgrade"),
-//    None                UMETA(DisplayName = "NONE")
-//};
 
 USTRUCT(BlueprintType)
 struct FItemConfigStruct : public FTableRowBase

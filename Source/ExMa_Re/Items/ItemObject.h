@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "ExMa_Re/Enums/ItemType.h"
-#include "ExMa_Re/Items/ItemInfoStruct.h"
 #include "Materials/MaterialInterface.h"
 #include "ItemObject.generated.h"
 
@@ -32,8 +30,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UItemDataAsset* GetItemData() const { return ItemData; };
 
-	UFUNCTION(BlueprintCallable)
-	FItemInfoStruct GetItemInfo() const { return ItemInfo; };
 #pragma endregion Getters
 
 #pragma region ItemObject
@@ -52,9 +48,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetItemData(UItemDataAsset* DataToSet);
 
-	virtual void SetItemInfo();
 #pragma endregion Setters
-
 public:
 	UFUNCTION(BlueprintCallable)
 	void Rotate();
@@ -79,8 +73,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn))
 	UItemDataAsset* ItemData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn = "true", InstanceEditable = "true"))
-	FItemInfoStruct ItemInfo;
 
 	UPROPERTY()
 	bool bIsRotated;
