@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DataAssets/VehiclePartDataAsset.h"
-#include "TruckCabinDataAsset.generated.h"
+#include "DataAssets/Vehicles/VehicleParts/VehiclePartDataAsset.h"
+#include "CarBodyDataAsset.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class EXMA_RE_API UTruckCabinDataAsset : public UVehiclePartDataAsset
+class EXMA_RE_API UCarBodyDataAsset : public UVehiclePartDataAsset
 {
 	GENERATED_BODY()
 	
 public:
-
+    
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float GasTankSize = 0;
 
@@ -44,8 +44,11 @@ public:
     float EnginePower = 0;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    TArray<FTileStruct> VehicleUpgradeSlots;
+    FTileStruct TrunkSize;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    TArray<FTileStruct> VehicleReinforceSlots;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FTileStruct> VehicleUpgradeSlots;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FTileStruct> VehicleReinforceSlots;
 };

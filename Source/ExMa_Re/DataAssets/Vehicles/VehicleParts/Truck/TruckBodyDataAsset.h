@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DataAssets/VehiclePartDataAsset.h"
+#include "DataAssets/Vehicles/VehicleParts/VehiclePartDataAsset.h"
 #include "TruckBodyDataAsset.generated.h"
 
 /**
