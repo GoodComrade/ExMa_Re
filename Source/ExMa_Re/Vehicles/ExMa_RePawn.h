@@ -17,6 +17,7 @@ class UInputAction;
 class UChaosWheeledVehicleMovementComponent;
 class UExMa_VehicleAttributes;
 class UInventoryComponent;
+class UStructuralComponent;
 class AChestActor;
 class AExMa_GameState;
 struct FInputActionValue;
@@ -207,6 +208,9 @@ protected:
 	/** Inventory component to drop items from main inventory */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	UInventoryComponent* OutInventoryComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	UStructuralComponent* StructuralComponent;
 
 	/** Cast pointer to the Chaos Vehicle movement component */
 	TObjectPtr<UChaosWheeledVehicleMovementComponent> ChaosVehicleMovement;

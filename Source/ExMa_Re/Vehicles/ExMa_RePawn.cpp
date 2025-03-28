@@ -4,6 +4,7 @@
 #include "ExMa_Re/Wheels/ExMa_ReWheelFront.h"
 #include "ExMa_Re/Wheels/ExMa_ReWheelRear.h"
 #include "ExMa_Re/Components/InventoryComponent.h"
+#include "ExMa_Re/Components/StructuralComponent.h"
 #include "ExMa_Re/UI/ExMaHUD.h"
 #include "ExMa_Re/Items/ItemActor.h"
 #include "ExMa_Re/Items/ItemObject.h"
@@ -64,8 +65,11 @@ AExMa_RePawn::AExMa_RePawn()
 	ChaosVehicleMovement = CastChecked<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
 
 	Attributes = CreateDefaultSubobject<UExMa_VehicleAttributes>(TEXT("AttributeSet"));
+
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 	OutInventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("OutInventoryComponent"));
+
+	StructuralComponent = CreateDefaultSubobject<UStructuralComponent>(TEXT("StructuralComponent"));
 
 	CollectSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollectSphere"));
 	CollectSphere->SetupAttachment(GetMesh());

@@ -9,7 +9,6 @@
 #include "ItemDataAsset.generated.h"
 
 class UItemObject;
-class UstaticMeshComponent;
 
 UCLASS(BlueprintType, Blueprintable)
 class EXMA_RE_API UItemDataAsset : public UDataAsset

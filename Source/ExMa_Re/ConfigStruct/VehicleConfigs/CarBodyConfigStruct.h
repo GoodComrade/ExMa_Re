@@ -58,6 +58,7 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EnergyResistance"))
     float EnergyResistance = 0;
 
+    //PROPERTY ONLY FOR CONCEPTION TESTS
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "WeaponSlots"))
     TArray<FTileStruct> WeaponSlots;
 
