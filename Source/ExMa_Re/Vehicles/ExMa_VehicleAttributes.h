@@ -37,10 +37,6 @@ public:
 	FGameplayAttributeData GasTankSize;
 	ATTRIBUTE_ACCESSORS(UExMa_VehicleAttributes, GasTankSize);
 
-	UPROPERTY(BlueprintReadOnly, Category = Vehicle)
-	FGameplayAttributeData TrankSize;
-	ATTRIBUTE_ACCESSORS(UExMa_VehicleAttributes, TrankSize);
-
 	UPROPERTY(BlueprintReadOnly, Category = VehicleEngine)
 	FGameplayAttributeData MaxTorque;
 	ATTRIBUTE_ACCESSORS(UExMa_VehicleAttributes, MaxTorque);

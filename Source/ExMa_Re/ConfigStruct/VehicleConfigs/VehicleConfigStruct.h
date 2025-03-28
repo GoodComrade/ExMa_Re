@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ExMa_Re/Enums/VehicleType.h"
 #include "VehicleConfigStruct.generated.h"
 
 USTRUCT(BlueprintType)
@@ -8,6 +9,9 @@ struct FVehicleConfigStruct : public FTableRowBase
     GENERATED_USTRUCT_BODY()
 
 public:
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "MaxHealth"))
+    EVehicleType VehicleType = EVehicleType::NONE;
 
     /** Please add a variable description */
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "MaxHealth"))
@@ -18,9 +22,6 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "GasTankSize"))
     float GasTankSize = 0;
-
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "TrankSize"))
-    float TrankSize = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "MaxTorque"))
     float MaxTorque = 0;

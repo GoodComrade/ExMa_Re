@@ -20,8 +20,6 @@ float UExMa_VehicleAttributes::GetAttribute(EVehicleAttributeType IVehicleAttrib
         return Armor.GetCurrentValue();
     case EVehicleAttributeType::GasTankSize:
         return GasTankSize.GetCurrentValue();
-    case EVehicleAttributeType::TrankSize:
-        return TrankSize.GetCurrentValue();
     case EVehicleAttributeType::MaxTorque:
         return MaxTorque.GetCurrentValue();
     case EVehicleAttributeType::MaxRPM:

@@ -374,7 +374,6 @@ void AExMa_RePawn::SetupVehicleAttributes()
 	Attributes->InitMaxHealth(ConfigStruct.MaxHealth);
 	Attributes->InitArmor(ConfigStruct.Armor);
 	Attributes->InitGasTankSize(ConfigStruct.GasTankSize);
-	Attributes->InitTrankSize(ConfigStruct.TrankSize);
 	Attributes->InitMaxTorque(ConfigStruct.MaxTorque);
 	Attributes->InitMaxRPM(ConfigStruct.MaxRPM);
 	Attributes->InitEngineIdleRPM(ConfigStruct.EngineIdleRPM);
