@@ -15,6 +15,9 @@ class EXMA_RE_API UTruckCabinDataAsset : public UVehiclePartDataAsset
 	GENERATED_BODY()
 	
 public:
+    UTruckCabinDataAsset(const FObjectInitializer& ObjectInitializer);
+
+public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float GasTankSize = 0;

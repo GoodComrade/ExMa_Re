@@ -10,7 +10,8 @@ UStructuralComponent::UStructuralComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	VehicleCabin = nullptr;
+	VehicleBody = nullptr;
 }
 
 
@@ -18,17 +19,41 @@ UStructuralComponent::UStructuralComponent()
 void UStructuralComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
-
 
 // Called every frame
 void UStructuralComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
 
-	// ...
+void UStructuralComponent::SetVehicleCabin(AVehiclePart* CabinToSet)
+{
+	VehicleCabin = CabinToSet;
+}
+
+void UStructuralComponent::ChangeVehicleCabin(AVehiclePart* NewCabin)
+{
+	if (VehicleCabin == nullptr)
+		return;
+
+	VehicleCabin->Destroy();
+
+	VehicleCabin = NewCabin;
+}
+
+void UStructuralComponent::SetVehicleBody(AVehiclePart* BodyToSet)
+{
+	VehicleBody = BodyToSet;
+}
+
+void UStructuralComponent::ChangeVehicleBody(AVehiclePart* NewBody)
+{
+	if (VehicleBody == nullptr)
+		return;
+
+	VehicleBody->Destroy();
+
+	VehicleBody = NewBody;
 }
 

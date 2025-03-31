@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "ExMa_Re/Vehicles/VehicleParts/VehiclePart.h"
 #include "StructuralComponent.generated.h"
 
 
@@ -24,5 +25,22 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	UFUNCTION()
+	void SetVehicleCabin(AVehiclePart* CabinToSet);
+
+	UFUNCTION()
+	void ChangeVehicleCabin(AVehiclePart* NewCabin);
+
+	UFUNCTION()
+	void SetVehicleBody(AVehiclePart* BodyToSet);
+
+	UFUNCTION()
+	void ChangeVehicleBody(AVehiclePart* NewBody);
+private:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	AVehiclePart* VehicleCabin;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	AVehiclePart* VehicleBody;
 };

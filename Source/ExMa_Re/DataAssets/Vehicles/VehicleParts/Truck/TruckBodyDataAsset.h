@@ -15,6 +15,9 @@ class EXMA_RE_API UTruckBodyDataAsset : public UVehiclePartDataAsset
 	GENERATED_BODY()
 	
 public:
+	UTruckBodyDataAsset(const FObjectInitializer& ObjectInitializer);
+
+public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FTileStruct TrunkSize;
 };

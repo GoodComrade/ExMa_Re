@@ -6,6 +6,8 @@
 #include "Engine/DataAsset.h"
 
 #include "ExMa_Re/Structs/TileStruct.h"
+#include "ExMa_Re/Vehicles/VehicleParts/VehiclePart.h"
+
 #include "Engine/SkeletalMesh.h"
 
 #include "VehiclePartDataAsset.generated.h"
@@ -18,6 +20,9 @@ class EXMA_RE_API UVehiclePartDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 	
+public:
+	UVehiclePartDataAsset(const FObjectInitializer& ObjectInitializer);
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 Health = 0;
@@ -54,6 +59,6 @@ public:
 
 protected:
 	//TODO: implement AVehiclePart class & set their static version here 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	//TSubclassOf<UItemObject> ItemObjectClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<AVehiclePart> VehiclePartClass;
 };

@@ -2,6 +2,7 @@
 
 
 #include "Vehicles/VehicleParts/VehiclePart.h"
+#include "ExMa_Re/DataAssets/Vehicles/VehicleParts/VehiclePartDataAsset.h"
 
 // Sets default values
 AVehiclePart::AVehiclePart()
@@ -9,6 +10,11 @@ AVehiclePart::AVehiclePart()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
+}
+
+void AVehiclePart::SetVehiclePartData(UVehiclePartDataAsset* DataToSet)
+{
+	VehiclePartData = DataToSet;
 }
 
 // Called when the game starts or when spawned
