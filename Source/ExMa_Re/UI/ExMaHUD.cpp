@@ -16,6 +16,9 @@ void AExMaHUD::BeginPlay()
 {
     Super::BeginPlay();
 
+    DevConsoleRef = CreateWidget<UUserWidget>(GetOwningPlayerController(), DevConsoleClass);
+    DevConsoleRef->AddToViewport();
+
     TogglePickupHintVisibility(false);
 }
 

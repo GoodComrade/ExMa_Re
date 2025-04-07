@@ -52,9 +52,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hints")
 	TSubclassOf<UUserWidget> PickupHintClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dev")
+	TSubclassOf<UUserWidget> DevConsoleClass;
 	
 	UMainInteractionWidget* MainWidgetRef;
 	UUserWidget* PickupHintRef;
+	UUserWidget* DevConsoleRef;
 
 private:
 	AExMa_GameState* GetGameState();

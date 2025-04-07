@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ExMa_Re/Enums/VehicleType.h"
+#include "ExMa_Re/DataAssets/Vehicles/VehicleDataAsset.h"
 #include "VehicleConfigStruct.generated.h"
 
 USTRUCT(BlueprintType)
@@ -38,7 +39,7 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EngineRPMSpeedup"))
     float EngineRPMSpeedup = 0;
 
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EngineRPMSpeedup"))
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EngineRPMSlowdown"))
     float EngineRPMSlowdown = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "ChassisHeight"))
@@ -68,4 +69,6 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EnergyResistance"))
     float EnergyResistance = 0;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EnergyResistance"))
+    UVehicleDataAsset* VehicleData;
 };

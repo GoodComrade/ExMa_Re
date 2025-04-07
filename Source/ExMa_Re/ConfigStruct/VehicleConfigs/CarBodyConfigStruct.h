@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ExMa_Re/Structs/TileStruct.h"
+#include "ExMa_Re/DataAssets/Vehicles/VehicleParts/Car/CarBodyDataAsset.h"
 #include "CarBodyConfigStruct.generated.h"
 
 USTRUCT(BlueprintType)
@@ -61,5 +62,8 @@ public:
     //PROPERTY ONLY FOR CONCEPTION TESTS
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "WeaponSlots"))
     TArray<FTileStruct> WeaponSlots;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "WeaponSlots"))
+    UCarBodyDataAsset* DataAsset;
 
 };

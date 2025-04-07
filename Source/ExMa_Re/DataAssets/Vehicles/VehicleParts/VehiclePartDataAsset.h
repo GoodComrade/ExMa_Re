@@ -8,7 +8,7 @@
 #include "ExMa_Re/Structs/TileStruct.h"
 #include "ExMa_Re/Vehicles/VehicleParts/VehiclePart.h"
 
-#include "Engine/SkeletalMesh.h"
+#include "Engine/StaticMesh.h"
 
 #include "VehiclePartDataAsset.generated.h"
 
@@ -55,7 +55,7 @@ public:
 	TArray<FTileStruct> WeaponSlots;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	USkeletalMesh* VehiclePartMesh;
+	UStaticMesh* VehiclePartMesh;
 
 protected:
 	//TODO: implement AVehiclePart class & set their static version here 
