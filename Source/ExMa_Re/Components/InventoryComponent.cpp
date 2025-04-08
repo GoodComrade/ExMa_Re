@@ -207,6 +207,12 @@ bool UInventoryComponent::IsContainsItem(UItemObject* ItemObjectToCheck)
 	return GetAllItems().Contains(ItemObjectToCheck);
 }
 
+void UInventoryComponent::SetInventorySize(int32 NewColumns, int32 NewRows)
+{
+	Columns = NewColumns;
+	Rows = NewRows;
+}
+
 // Called when the game starts
 void UInventoryComponent::BeginPlay()
 {

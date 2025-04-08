@@ -7,6 +7,8 @@
 #include "VehiclePart.generated.h"
 
 class UVehiclePartDataAsset;
+class UStaticMeshComponent;
+class UStaticMesh;
 
 UCLASS()
 class EXMA_RE_API AVehiclePart : public AActor
@@ -23,12 +25,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetVehiclePartData(UVehiclePartDataAsset* DataToSet);
 
+	UFUNCTION(BlueprintCallable)
+	void SetVehiclePartMesh(UStaticMesh* MeshToSet);
+
+	UFUNCTION(BlueprintCallable)
+	void ProcessDestroyVehiclePart();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn))
 	UVehiclePartDataAsset* VehiclePartData;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn))
+	UStaticMeshComponent* VehiclePartMesh;
 
 public:	
 	// Called every frame

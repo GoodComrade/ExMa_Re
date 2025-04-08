@@ -68,6 +68,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsContainsItem(UItemObject* ItemObjectToCheck);
 
+	UFUNCTION()
+	void SetInventorySize(int32 NewColumns, int32 NewRows);
+
 private:
 
 	UPROPERTY()

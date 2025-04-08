@@ -4,6 +4,7 @@
 #include "ExMa_ReOffroadCar.h"
 #include "ExMa_Re/Wheels/Offroad/ExMa_ReOffroadWheelFront.h"
 #include "ExMa_Re/Wheels/Offroad/ExMa_ReOffroadWheelRear.h"
+#include "ExMa_Re/Components/StructuralComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -82,6 +83,8 @@ AExMa_ReOffroadCar::AExMa_ReOffroadCar()
 	// NOTE: Check the Blueprint asset for the Steering Curve
 	GetChaosVehicleMovement()->SteeringSetup.SteeringType = ESteeringType::AngleRatio;
 	GetChaosVehicleMovement()->SteeringSetup.AngleRatio = 0.7f;
+
+	StructuralComponent->ChassisMesh = Chassis;
 }
 
 void AExMa_ReOffroadCar::BeginPlay()

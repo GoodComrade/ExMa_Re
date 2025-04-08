@@ -11,11 +11,11 @@ struct FCarBodyConfigStruct : public FTableRowBase
 
 public:
 
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "MaxHealth"))
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Health"))
     float MaxHealth = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Armor"))
-    float Armor = 0;
+    float MaxArmor = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "GasTankSize"))
     float GasTankSize = 0;
@@ -41,6 +41,15 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EngineRPMSpeedup"))
     float EngineRPMSlowdown = 0;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "ChassisHeight"))
+    float ChassisHeight = 0;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "DragCoefficient"))
+    float DragCoefficient = 0;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "DownforceCoefficient"))
+    float DownforceCoefficient = 0;
+
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "TopSpeed"))
     float TopSpeed = 0;
 
@@ -49,6 +58,9 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Weight"))
     float Weight = 0;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Cost"))
+    float Cost = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "BulletResistance"))
     float BulletResistance = 0;
@@ -59,11 +71,17 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EnergyResistance"))
     float EnergyResistance = 0;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "VehicleUpgradeSlots"))
+    TArray<FTileStruct> VehicleUpgradeSlots;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "VehicleReinforceSlots"))
+    TArray<FTileStruct> VehicleReinforceSlots;
+
     //PROPERTY ONLY FOR CONCEPTION TESTS
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "WeaponSlots"))
     TArray<FTileStruct> WeaponSlots;
 
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "WeaponSlots"))
-    UCarBodyDataAsset* DataAsset;
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "CarBodyData"))
+    UCarBodyDataAsset* CarBodyData;
 
 };

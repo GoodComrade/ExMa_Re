@@ -19,6 +19,8 @@ UStructuralComponent::UStructuralComponent()
 void UStructuralComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	
 }
 
 // Called every frame
@@ -29,31 +31,19 @@ void UStructuralComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void UStructuralComponent::SetVehicleCabin(AVehiclePart* CabinToSet)
 {
+	if (VehicleCabin != nullptr)
+		VehicleCabin->ProcessDestroyVehiclePart();
+
 	VehicleCabin = CabinToSet;
-}
-
-void UStructuralComponent::ChangeVehicleCabin(AVehiclePart* NewCabin)
-{
-	if (VehicleCabin == nullptr)
-		return;
-
-	VehicleCabin->Destroy();
-
-	VehicleCabin = NewCabin;
+	VehicleCabin->AttachToComponent(ChassisMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("CabinSocket"));
 }
 
 void UStructuralComponent::SetVehicleBody(AVehiclePart* BodyToSet)
 {
+	if (VehicleBody != nullptr)
+		VehicleBody->ProcessDestroyVehiclePart();
+
 	VehicleBody = BodyToSet;
-}
-
-void UStructuralComponent::ChangeVehicleBody(AVehiclePart* NewBody)
-{
-	if (VehicleBody == nullptr)
-		return;
-
-	VehicleBody->Destroy();
-
-	VehicleBody = NewBody;
+	VehicleBody->AttachToComponent(ChassisMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("BodySocket"));
 }
 

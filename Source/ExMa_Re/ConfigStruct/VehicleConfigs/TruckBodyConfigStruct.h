@@ -16,14 +16,14 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Armor"))
     float Armor = 0;
 
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "GasTankSize"))
-    float GasTankSize = 0;
-
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "TrunkSize"))
     FTileStruct TrunkSize;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Weight"))
     float Weight = 0;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Cost"))
+    int32 Cost = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "BulletResistance"))
     float BulletResistance = 0;

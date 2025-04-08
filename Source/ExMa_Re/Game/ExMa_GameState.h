@@ -7,6 +7,12 @@
 #include "ExMa_Re/Items/ItemObject.h"
 #include "ExMa_Re/ConfigStruct/ItemConfigStruct.h"
 #include "ExMa_Re/ConfigStruct/WeaponConfigStruct.h"
+
+#include "ExMa_Re/ConfigStruct/VehicleConfigs/VehicleConfigStruct.h"
+#include "ExMa_Re/ConfigStruct/VehicleConfigs/CarBodyConfigStruct.h"
+#include "ExMa_Re/ConfigStruct/VehicleConfigs/TruckCabinConfigStruct.h"
+#include "ExMa_Re/ConfigStruct/VehicleConfigs/TruckBodyConfigStruct.h"
+
 #include "ExMa_GameState.generated.h"
 
 class UItemObject;
@@ -14,6 +20,7 @@ class UWeaponItemObject;
 class AActor;
 class AChestActor;
 class UInventoryComponent;
+class AExMa_RePawn;
 
 UCLASS()
 class EXMA_RE_API AExMa_GameState : public AGameStateBase
@@ -29,6 +36,18 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UItemObject* CreateItem(FName TargetItemName, UDataTable* ItemsDT, UDataTable* WeaponsDT);
+
+public:
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnCarPawn(FVehicleConfigStruct TargetVehicleConfigRow, FCarBodyConfigStruct TargetCarBodyConfigRow);
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnBaseTruckPawn(FVehicleConfigStruct TargetVehicleConfigRow, FTruckCabinConfigStruct TargetTruckCabinConfigRow);
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnTruckPawn(FVehicleConfigStruct TargetVehicleConfigRow, FTruckCabinConfigStruct TargetTruckCabinConfigRow, FTruckBodyConfigStruct TargetTruckBodyConfigRow);
+
 
 private:
 	UWeaponItemObject* CreateWeaponItem(FItemConfigStruct TargetItemRow, FName TargetWeaponName, UDataTable* WeaponsDT);

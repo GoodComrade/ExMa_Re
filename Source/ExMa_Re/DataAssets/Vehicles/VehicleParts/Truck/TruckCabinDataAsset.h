@@ -41,6 +41,15 @@ public:
     float EngineRPMSlowdown = 0;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    float ChassisHeight = 0;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    float DragCoefficient = 0;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    float DownforceCoefficient = 0;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float TopSpeed = 0;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

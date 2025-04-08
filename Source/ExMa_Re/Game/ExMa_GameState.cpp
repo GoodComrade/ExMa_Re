@@ -8,12 +8,19 @@
 #include "Kismet/KismetSystemLibrary.h" 
 #include "Engine/CollisionProfile.h"
 #include "ExMa_Re/Components/InventoryComponent.h"
+#include "ExMa_Re/Components/StructuralComponent.h"
+
 #include "ExMa_Re/ConfigStruct/ItemConfigStruct.h"
 #include "ExMa_Re/ConfigStruct/WeaponConfigStruct.h"
+#include "ExMa_Re/ConfigStruct/VehicleConfigs/VehicleConfigStruct.h"
+
 #include "ExMa_Re/Items/WeaponItemObject.h"
 
 #include "ExMa_Re/DataAssets/ItemDataAsset.h"
 #include "ExMa_Re/DataAssets/WeaponDataAsset.h"
+
+#include "ExMa_Re/Vehicles/ExMa_RePawn.h"
+#include "ExMa_Re/Vehicles/VehicleParts/VehiclePart.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -113,6 +120,139 @@ UItemObject* AExMa_GameState::CreateItem(FName TargetItemName, UDataTable* Items
 	NewItem->GetItemData()->PreviewMesh = ConfigStruct.PreviewMesh;
 
 	return NewItem;
+}
+
+void AExMa_GameState::SpawnCarPawn(FVehicleConfigStruct TargetVehicleConfigRow, FCarBodyConfigStruct TargetCarBodyConfigRow)
+{
+	auto VehicleData = TargetVehicleConfigRow.VehicleData;
+
+	if (VehicleData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: VehicleData is NULLPTR!"));
+		return;
+	}
+
+	VehicleData->VehicleType = TargetVehicleConfigRow.VehicleType;
+	VehicleData->Health = TargetVehicleConfigRow.MaxHealth;
+	VehicleData->MaxHealth = TargetVehicleConfigRow.MaxHealth;
+	VehicleData->Armor = TargetVehicleConfigRow.MaxArmor;
+	VehicleData->MaxArmor = TargetVehicleConfigRow.MaxArmor;
+	VehicleData->Weight = TargetVehicleConfigRow.Weight;
+	VehicleData->MaxWeight = TargetVehicleConfigRow.MaxWeight;
+	VehicleData->BulletResistance = TargetVehicleConfigRow.BulletResistance;
+	VehicleData->ExplosionResistance = TargetVehicleConfigRow.ExplosionResistance;
+	VehicleData->EnergyResistance = TargetVehicleConfigRow.EnergyResistance;
+
+	auto CarBodyData = TargetCarBodyConfigRow.CarBodyData;
+
+	if (CarBodyData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: CarBodyData is NULLPTR!"));
+		return;
+	}
+
+	CarBodyData->Health = TargetCarBodyConfigRow.MaxHealth;
+	CarBodyData->MaxHealth = TargetCarBodyConfigRow.MaxHealth;
+	CarBodyData->Armor = TargetCarBodyConfigRow.MaxArmor;
+	CarBodyData->MaxArmor = TargetCarBodyConfigRow.MaxArmor;
+
+	CarBodyData->GasTankSize = TargetCarBodyConfigRow.GasTankSize;
+	CarBodyData->TrunkSize = TargetCarBodyConfigRow.TrunkSize;
+
+	CarBodyData->MaxTorque = TargetCarBodyConfigRow.MaxTorque;
+	CarBodyData->MaxRPM = TargetCarBodyConfigRow.MaxRPM;
+	CarBodyData->EngineIdleRPM = TargetCarBodyConfigRow.EngineIdleRPM;
+	CarBodyData->EngineBrakeEffect = TargetCarBodyConfigRow.EngineBrakeEffect;
+	CarBodyData->EngineRPMSpeedup = TargetCarBodyConfigRow.EngineRPMSpeedup;
+	CarBodyData->EngineRPMSlowdown = TargetCarBodyConfigRow.EngineRPMSlowdown;
+	
+	CarBodyData->ChassisHeight = TargetCarBodyConfigRow.ChassisHeight;
+	CarBodyData->DragCoefficient = TargetCarBodyConfigRow.DragCoefficient;
+	CarBodyData->DownforceCoefficient = TargetCarBodyConfigRow.DownforceCoefficient;
+
+	CarBodyData->TopSpeed = TargetCarBodyConfigRow.TopSpeed;
+	CarBodyData->EnginePower = TargetCarBodyConfigRow.EnginePower;
+	CarBodyData->VehicleUpgradeSlots = TargetCarBodyConfigRow.VehicleUpgradeSlots;
+	CarBodyData->VehicleReinforceSlots = TargetCarBodyConfigRow.VehicleReinforceSlots;
+	CarBodyData->WeaponSlots = TargetCarBodyConfigRow.WeaponSlots;
+
+	auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	if (PlayerController == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: PlayerController is NULLPTR!"));
+		return;
+	}
+
+	//Start spawn config vehicle
+	if (UWorld* World = GetWorld())
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		TSubclassOf<AExMa_RePawn> PawnClassToSpawn = VehicleData->GetPawnClass();
+		if (PawnClassToSpawn == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: PawnClassToSpawn is NULLPTR!"));
+			return;
+		}
+
+		AExMa_RePawn* PossessedPawn = Cast<AExMa_RePawn>(PlayerController->GetPawn());
+		if (PossessedPawn == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: PossessedPawn is NULLPTR!"));
+			return;
+		}
+
+		FVector PlayerPawnLocation = PossessedPawn->GetActorLocation();
+
+		AExMa_RePawn* NewPlayerPawn = World->SpawnActor<AExMa_RePawn>(PawnClassToSpawn, PlayerPawnLocation, FRotator(), SpawnParams);
+		if (NewPlayerPawn == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: NewPlayerPawn ISN'T CREATED!"));
+			return;
+		}
+
+		NewPlayerPawn->SetVehicleData(VehicleData);
+		NewPlayerPawn->SetupBaseVehicleAttributes();
+
+		PlayerController->UnPossess();
+		PossessedPawn->Destroy();
+
+		PlayerController->Possess(NewPlayerPawn);
+
+		//start spawn & apply car body
+		TSubclassOf<AVehiclePart> VehiclePartToSpawn = CarBodyData->GetVehiclePartClass();
+		if (PawnClassToSpawn == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: PawnClassToSpawn is NULLPTR!"));
+			return;
+		}
+
+		FActorSpawnParameters CarBodySpawnParams;
+		CarBodySpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		CarBodySpawnParams.Owner = NewPlayerPawn;
+		AVehiclePart* NewCarBody = World->SpawnActor<AVehiclePart>(VehiclePartToSpawn, PlayerPawnLocation, FRotator(), CarBodySpawnParams);
+
+		if (NewCarBody == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: NewCarBody ISN'T CREATED!"));
+			return;
+		}
+
+		NewCarBody->SetVehiclePartData(CarBodyData);
+		NewCarBody->SetVehiclePartMesh(CarBodyData->VehiclePartMesh);
+
+		NewPlayerPawn->SetVehicleBody(NewCarBody);
+	}
+}
+
+void AExMa_GameState::SpawnBaseTruckPawn(FVehicleConfigStruct TargetVehicleConfigRow, FTruckCabinConfigStruct TargetTruckCabinConfigRow)
+{
+}
+
+void AExMa_GameState::SpawnTruckPawn(FVehicleConfigStruct TargetVehicleConfigRow, FTruckCabinConfigStruct TargetTruckCabinConfigRow, FTruckBodyConfigStruct TargetTruckBodyConfigRow)
+{
 }
 
 UWeaponItemObject* AExMa_GameState::CreateWeaponItem(FItemConfigStruct TargetItemRow, FName TargetWeaponName, UDataTable* WeaponsDT)

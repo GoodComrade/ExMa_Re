@@ -23,6 +23,9 @@ public:
     float GasTankSize = 0;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    FTileStruct TrunkSize;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float MaxTorque = 0;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -41,17 +44,24 @@ public:
     float EngineRPMSlowdown = 0;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    float ChassisHeight = 0;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    float DragCoefficient = 0;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    float DownforceCoefficient = 0;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float TopSpeed = 0;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float EnginePower = 0;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    FTileStruct TrunkSize;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FTileStruct> VehicleUpgradeSlots;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FTileStruct> VehicleReinforceSlots;
+
 };

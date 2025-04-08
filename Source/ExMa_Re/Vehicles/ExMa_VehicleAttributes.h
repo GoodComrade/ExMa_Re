@@ -34,6 +34,10 @@ public:
 	ATTRIBUTE_ACCESSORS(UExMa_VehicleAttributes, Armor);
 
 	UPROPERTY(BlueprintReadOnly, Category = Vehicle)
+	FGameplayAttributeData MaxArmor;
+	ATTRIBUTE_ACCESSORS(UExMa_VehicleAttributes, MaxArmor);
+
+	UPROPERTY(BlueprintReadOnly, Category = Vehicle)
 	FGameplayAttributeData GasTankSize;
 	ATTRIBUTE_ACCESSORS(UExMa_VehicleAttributes, GasTankSize);
 
@@ -84,6 +88,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = Vehicle)
 	FGameplayAttributeData Weight;
 	ATTRIBUTE_ACCESSORS(UExMa_VehicleAttributes, Weight);
+
+	UPROPERTY(BlueprintReadOnly, Category = Vehicle)
+	FGameplayAttributeData MaxWeight;
+	ATTRIBUTE_ACCESSORS(UExMa_VehicleAttributes, MaxWeight);
 
 	UPROPERTY(BlueprintReadOnly, Category = Vehicle)
 	FGameplayAttributeData BulletResistance;

@@ -10,6 +10,12 @@
 #include "ExMa_Re/Items/ItemObject.h"
 #include "ExMa_Re/Game/ExMa_GameState.h"
 #include "ExMa_Re/Items/ChestActor.h"
+#include "ExMa_Re/Enums/VehicleType.h"
+
+#include "ExMa_Re/DataAssets/Vehicles/VehicleParts/VehiclePartDataAsset.h"
+#include "ExMa_Re/DataAssets/Vehicles/VehicleParts/Car/CarBodyDataAsset.h"
+#include "ExMa_Re/DataAssets/Vehicles/VehicleParts/Truck/TruckCabinDataAsset.h"
+#include "ExMa_Re/DataAssets/Vehicles/VehicleParts/Truck/TruckBodyDataAsset.h"
 
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -148,7 +154,7 @@ void AExMa_RePawn::BeginPlay()
 		HUD->InitPickupHintWidget();
 	}
 
-	SetupVehicleAttributes();
+	//SetupVehicleAttributes();
 }
 
 void AExMa_RePawn::Tick(float Delta)
@@ -334,6 +340,11 @@ void AExMa_RePawn::ProcessTogglePickupState(bool NewState)
 		HUD->TogglePickupHintVisibility(NewState);
 }
 
+void AExMa_RePawn::SetVehicleData(UVehicleDataAsset* DataToSet)
+{
+	VehicleData = DataToSet;
+}
+
 void AExMa_RePawn::ResetVehicle(const FInputActionValue& Value)
 {
 	// reset to a location slightly above our current one
@@ -368,33 +379,135 @@ UExMa_VehicleAttributes* AExMa_RePawn::GetAttributes()
 	return Attributes;
 }
 
-void AExMa_RePawn::SetupVehicleAttributes()
+void AExMa_RePawn::SetupBaseVehicleAttributes()
 {
-	FVehicleConfigStruct ConfigStruct;
-	if (const FVehicleConfigStruct* ConfigStructRow = DataTable->FindRow<FVehicleConfigStruct>(VehicleConfigRowName, ""))
-		ConfigStruct = *ConfigStructRow;
+	if (VehicleData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn:: VehicleData is NULLPTR!"));
+		return;
+	}
 
-	Attributes->InitHealth(ConfigStruct.MaxHealth);
-	Attributes->InitMaxHealth(ConfigStruct.MaxHealth);
-	Attributes->InitArmor(ConfigStruct.Armor);
-	Attributes->InitGasTankSize(ConfigStruct.GasTankSize);
-	Attributes->InitMaxTorque(ConfigStruct.MaxTorque);
-	Attributes->InitMaxRPM(ConfigStruct.MaxRPM);
-	Attributes->InitEngineIdleRPM(ConfigStruct.EngineIdleRPM);
-	Attributes->InitEngineBrakeEffect(ConfigStruct.EngineBrakeEffect);
-	Attributes->InitEngineRPMSpeedup(ConfigStruct.EngineRPMSpeedup);
-	Attributes->InitEngineRPMSlowdown(ConfigStruct.EngineRPMSlowdown);
-	Attributes->InitTopSpeed(ConfigStruct.TopSpeed);
-	Attributes->InitEnginePower(ConfigStruct.EnginePower);
-	Attributes->InitChassisHeight(ConfigStruct.ChassisHeight);
-	Attributes->InitDragCoefficient(ConfigStruct.DragCoefficient);
-	Attributes->InitDownforceCoefficient(ConfigStruct.DownforceCoefficient);
-	Attributes->InitWeight(ConfigStruct.Weight);
-	Attributes->InitBulletResistance(ConfigStruct.BulletResistance);
-	Attributes->InitExplosionResistance(ConfigStruct.ExplosionResistance);
-	Attributes->InitEnergyResistance(ConfigStruct.EnergyResistance);
+	//TODO: Переделать так, что бы атрибуты сетались в StructuralComponent
+	Attributes->InitHealth(VehicleData->Health);
+	Attributes->InitMaxHealth(VehicleData->MaxHealth);
+	Attributes->InitArmor(VehicleData->Armor);
+	Attributes->InitMaxArmor(VehicleData->MaxArmor);
+
+	Attributes->InitGasTankSize(0);
+	Attributes->InitMaxTorque(0);
+	Attributes->InitMaxRPM(0);
+	Attributes->InitEngineIdleRPM(0);
+	Attributes->InitEngineBrakeEffect(0);
+	Attributes->InitEngineRPMSpeedup(0);
+	Attributes->InitEngineRPMSlowdown(0);
+	Attributes->InitTopSpeed(0);
+	Attributes->InitEnginePower(0);
+	Attributes->InitChassisHeight(0);
+	Attributes->InitDragCoefficient(0);
+	Attributes->InitDownforceCoefficient(0);
+
+	Attributes->InitWeight(VehicleData->Weight);
+	Attributes->InitMaxWeight(VehicleData->MaxWeight);
+	Attributes->InitBulletResistance(VehicleData->BulletResistance);
+	Attributes->InitExplosionResistance(VehicleData->ExplosionResistance);
+	Attributes->InitEnergyResistance(VehicleData->EnergyResistance);
+
+	
+}
+
+void AExMa_RePawn::SetVehicleCabin(AVehiclePart* CabinToSet)
+{
+	//TODO: implement here weapon slots init
+	UTruckCabinDataAsset* TruckCabinData = Cast<UTruckCabinDataAsset>(CabinToSet->GetVehiclePartData());
+
+	if (TruckCabinData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn:: TruckCabinData IS NULLPTR!"));
+		return;
+	}
+
+	int32 NewHealth = Attributes->GetHealth() + TruckCabinData->Health;
+	int32 NewMaxHealth = Attributes->GetMaxHealth() + TruckCabinData->MaxHealth;
+	int32 NewArmor = Attributes->GetArmor() + TruckCabinData->Armor;
+	int32 NewMaxArmor = Attributes->GetMaxArmor() + TruckCabinData->MaxArmor;
+
+	Attributes->SetHealth(NewHealth);
+	Attributes->SetMaxHealth(NewMaxHealth);
+	Attributes->SetArmor(NewArmor);
+	Attributes->SetMaxArmor(NewMaxArmor);
+
+	Attributes->SetGasTankSize(TruckCabinData->GasTankSize);
+	Attributes->SetMaxTorque(TruckCabinData->MaxTorque);
+	Attributes->SetMaxRPM(TruckCabinData->MaxRPM);
+	Attributes->SetEngineIdleRPM(TruckCabinData->EngineIdleRPM);
+	Attributes->SetEngineBrakeEffect(TruckCabinData->EngineBrakeEffect);
+	Attributes->SetEngineRPMSpeedup(TruckCabinData->EngineRPMSpeedup);
+	Attributes->SetEngineRPMSlowdown(TruckCabinData->EngineRPMSlowdown);
+	Attributes->SetTopSpeed(TruckCabinData->TopSpeed);
+	Attributes->SetEnginePower(TruckCabinData->EnginePower);
+	Attributes->SetChassisHeight(TruckCabinData->ChassisHeight);
+	Attributes->SetDragCoefficient(TruckCabinData->DragCoefficient);
+	Attributes->SetDownforceCoefficient(TruckCabinData->DownforceCoefficient);
 
 	ApplyVehicleAttributes();
+}
+
+void AExMa_RePawn::SetVehicleBody(AVehiclePart* BodyToSet)
+{
+	//TODO: implement here weapon slots init
+	UVehiclePartDataAsset* VehiclePartData = BodyToSet->GetVehiclePartData();
+
+	StructuralComponent->SetVehicleBody(BodyToSet);
+
+	int32 NewHealth = Attributes->GetHealth() + VehiclePartData->Health;
+	int32 NewMaxHealth = Attributes->GetMaxHealth() + VehiclePartData->MaxHealth;
+	int32 NewArmor = Attributes->GetArmor() + VehiclePartData->Armor;
+	int32 NewMaxArmor = Attributes->GetMaxArmor() + VehiclePartData->MaxArmor;
+
+	Attributes->SetHealth(NewHealth);
+	Attributes->SetMaxHealth(NewMaxHealth);
+	Attributes->SetArmor(NewArmor);
+	Attributes->SetMaxArmor(NewMaxArmor);
+
+	if (VehicleData->VehicleType == EVehicleType::CAR)
+	{
+		UCarBodyDataAsset* CarBodyData = Cast<UCarBodyDataAsset>(VehiclePartData);
+
+		if (CarBodyData == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn:: CarBodyData IS NULLPTR!"));
+			return;
+		}
+
+		InventoryComponent->SetInventorySize(CarBodyData->TrunkSize.X, CarBodyData->TrunkSize.Y);
+
+		Attributes->SetGasTankSize(CarBodyData->GasTankSize);
+		Attributes->SetMaxTorque(CarBodyData->MaxTorque);
+		Attributes->SetMaxRPM(CarBodyData->MaxRPM);
+		Attributes->SetEngineIdleRPM(CarBodyData->EngineIdleRPM);
+		Attributes->SetEngineBrakeEffect(CarBodyData->EngineBrakeEffect);
+		Attributes->SetEngineRPMSpeedup(CarBodyData->EngineRPMSpeedup);
+		Attributes->SetEngineRPMSlowdown(CarBodyData->EngineRPMSlowdown);
+		Attributes->SetTopSpeed(CarBodyData->TopSpeed);
+		Attributes->SetEnginePower(CarBodyData->EnginePower);
+		Attributes->SetChassisHeight(CarBodyData->ChassisHeight);
+		Attributes->SetDragCoefficient(CarBodyData->DragCoefficient);
+		Attributes->SetDownforceCoefficient(CarBodyData->DownforceCoefficient);
+
+		ApplyVehicleAttributes();
+
+		return;
+	}
+
+	UTruckBodyDataAsset* TruckBodyData = Cast<UTruckBodyDataAsset>(VehiclePartData);
+
+	if (TruckBodyData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn:: TruckBodyData IS NULLPTR!"));
+		return;
+	}
+
+	InventoryComponent->SetInventorySize(TruckBodyData->TrunkSize.X, TruckBodyData->TrunkSize.Y);
 }
 
 void AExMa_RePawn::ApplyVehicleAttributes()

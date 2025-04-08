@@ -7,7 +7,6 @@
 #include "ExMa_Re/Vehicles/VehicleParts/VehiclePart.h"
 #include "StructuralComponent.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class EXMA_RE_API UStructuralComponent : public UActorComponent
 {
@@ -29,13 +28,11 @@ public:
 	void SetVehicleCabin(AVehiclePart* CabinToSet);
 
 	UFUNCTION()
-	void ChangeVehicleCabin(AVehiclePart* NewCabin);
-
-	UFUNCTION()
 	void SetVehicleBody(AVehiclePart* BodyToSet);
 
-	UFUNCTION()
-	void ChangeVehicleBody(AVehiclePart* NewBody);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* ChassisMesh;
 private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -43,4 +40,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	AVehiclePart* VehicleBody;
+
+
+	FName CabinSocket;
+	FName BodySocket;
 };

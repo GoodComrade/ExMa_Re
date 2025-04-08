@@ -18,7 +18,9 @@ class UChaosWheeledVehicleMovementComponent;
 class UExMa_VehicleAttributes;
 class UInventoryComponent;
 class UStructuralComponent;
+class UVehicleDataAsset;
 class AChestActor;
+class AVehiclePart;
 class AExMa_GameState;
 struct FInputActionValue;
 
@@ -51,8 +53,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
 	float CameraSensivity = 1;
 
-	//UFUNCTION(BlueprintImplementableEvent)
-	//FInteractionDispatcher OnChangeInteractedActor;
 
 private:
 	UPROPERTY()
@@ -78,6 +78,17 @@ protected:
 	void ProcessSpawnCrate();
 
 	void ProcessTogglePickupState(bool NewState);
+
+#pragma region Vehicle
+
+public:
+	void SetVehicleData(UVehicleDataAsset* DataToSet);
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn))
+	UVehicleDataAsset* VehicleData;
+
+#pragma endregion Data
 
 #pragma region Vehicle
 protected:
@@ -166,18 +177,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UExMa_VehicleAttributes* GetAttributes();
 
-	UPROPERTY(EditAnywhere, Category = Attributes)
-	FName VehicleConfigRowName;
+	UFUNCTION()
+	virtual void SetupBaseVehicleAttributes();
 
-	UPROPERTY(EditAnywhere, Category = Attributes)
-	UDataTable* DataTable;
-
+	virtual void SetVehicleCabin(AVehiclePart* CabinToSet);
+	virtual void SetVehicleBody(AVehiclePart* BodyToSet);
 protected:
 	UPROPERTY(EditAnywhere, Category = Attributes)
 	class UExMa_VehicleAttributes* Attributes;
-
-	UFUNCTION()
-	virtual void SetupVehicleAttributes();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ApplyVehicleAttributes();
@@ -229,6 +236,9 @@ public:
 
 	UFUNCTION()
 	UInventoryComponent* GetOutInventoryComponent() const { return OutInventoryComponent; };
+
+	UFUNCTION()
+	UStructuralComponent* GetStructuralComponent() const { return StructuralComponent; };
 #pragma endregion Getters
 
 #pragma region VehicleComponents

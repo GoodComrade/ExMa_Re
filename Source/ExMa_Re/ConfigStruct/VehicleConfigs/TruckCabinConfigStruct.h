@@ -14,6 +14,9 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Armor"))
     float Armor = 0;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "GasTankSize"))
+    float GasTankSize = 0;
+
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "MaxTorque"))
     float MaxTorque = 0;
 
@@ -32,6 +35,15 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EngineRPMSpeedup"))
     float EngineRPMSlowdown = 0;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "ChassisHeight"))
+    float ChassisHeight = 0;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "DragCoefficient"))
+    float DragCoefficient = 0;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "DownforceCoefficient"))
+    float DownforceCoefficient = 0;
+
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "TopSpeed"))
     float TopSpeed = 0;
 
@@ -40,6 +52,9 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Weight"))
     float Weight = 0;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Cost"))
+    int32 Cost = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "BulletResistance"))
     float BulletResistance = 0;

@@ -23,6 +23,8 @@ class EXMA_RE_API UVehiclePartDataAsset : public UDataAsset
 public:
 	UVehiclePartDataAsset(const FObjectInitializer& ObjectInitializer);
 
+	TSubclassOf<AVehiclePart> GetVehiclePartClass() { return VehiclePartClass; }
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 Health = 0;

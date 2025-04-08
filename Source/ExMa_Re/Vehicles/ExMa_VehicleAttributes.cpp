@@ -18,6 +18,8 @@ float UExMa_VehicleAttributes::GetAttribute(EVehicleAttributeType IVehicleAttrib
         return MaxHealth.GetCurrentValue();
     case EVehicleAttributeType::Armor:
         return Armor.GetCurrentValue();
+    case EVehicleAttributeType::MaxArmor:
+        return MaxArmor.GetCurrentValue();
     case EVehicleAttributeType::GasTankSize:
         return GasTankSize.GetCurrentValue();
     case EVehicleAttributeType::MaxTorque:
@@ -44,6 +46,8 @@ float UExMa_VehicleAttributes::GetAttribute(EVehicleAttributeType IVehicleAttrib
         return EnginePower.GetCurrentValue();
     case EVehicleAttributeType::Weight:
         return Weight.GetCurrentValue();
+    case EVehicleAttributeType::MaxWeight:
+        return MaxWeight.GetCurrentValue();
     case EVehicleAttributeType::BulletResistance:
         return BulletResistance.GetCurrentValue();
     case EVehicleAttributeType::ExplosionResistance:
