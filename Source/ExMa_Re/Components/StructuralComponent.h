@@ -30,6 +30,17 @@ public:
 	UFUNCTION()
 	void SetVehicleBody(AVehiclePart* BodyToSet);
 
+	UFUNCTION()
+	AVehiclePart* GetCabin() { return VehicleCabin; };
+
+	UFUNCTION()
+	AVehiclePart* GetBody() { return VehicleBody; };
+
+	UFUNCTION()
+	void DestroyCabin();
+
+	UFUNCTION()
+	void DestroyBody();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* ChassisMesh;

@@ -22,6 +22,14 @@ class AChestActor;
 class UInventoryComponent;
 class AExMa_RePawn;
 
+class UVehicleDataAsset;
+class UVehiclePartDataAsset;
+
+class UCarBodyDataAsset;
+
+class UTruckCabinDataAsset;
+class UTruckBodyDataAsset;
+
 UCLASS()
 class EXMA_RE_API AExMa_GameState : public AGameStateBase
 {
@@ -43,13 +51,21 @@ public:
 	void SpawnCarPawn(FVehicleConfigStruct TargetVehicleConfigRow, FCarBodyConfigStruct TargetCarBodyConfigRow);
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnBaseTruckPawn(FVehicleConfigStruct TargetVehicleConfigRow, FTruckCabinConfigStruct TargetTruckCabinConfigRow);
-
-	UFUNCTION(BlueprintCallable)
 	void SpawnTruckPawn(FVehicleConfigStruct TargetVehicleConfigRow, FTruckCabinConfigStruct TargetTruckCabinConfigRow, FTruckBodyConfigStruct TargetTruckBodyConfigRow);
 
 
 private:
 	UWeaponItemObject* CreateWeaponItem(FItemConfigStruct TargetItemRow, FName TargetWeaponName, UDataTable* WeaponsDT);
+
+	UVehicleDataAsset* MakeVehicleDataAsset(FVehicleConfigStruct TargetVehicleConfigRow);
+
+	UCarBodyDataAsset* MakeCarBodyDataAsset(FCarBodyConfigStruct TargetCarBodyConfigRow);
+
+	UTruckCabinDataAsset* MakeTruckCabinDataAsset(FTruckCabinConfigStruct TargetTruckCabinConfigRow);
+	UTruckBodyDataAsset* MakeTruckBodyDataAsset(FTruckBodyConfigStruct TargetTruckBodyConfigRow);
+
+	AExMa_RePawn* CreateAndPossessVehicle(UVehicleDataAsset* VehicleData, APlayerController* PlayerController, AExMa_RePawn* PossessedPawn, FVector PlayerPawnLocation, UWorld* World);
+
+	AVehiclePart* CreateVehiclePart(UVehiclePartDataAsset* TargetData, AExMa_RePawn* OwnerPawn, FVector PlayerPawnLocation, UWorld* World);
 
 };

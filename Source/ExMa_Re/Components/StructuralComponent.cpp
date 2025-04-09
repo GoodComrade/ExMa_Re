@@ -31,19 +31,31 @@ void UStructuralComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void UStructuralComponent::SetVehicleCabin(AVehiclePart* CabinToSet)
 {
-	if (VehicleCabin != nullptr)
-		VehicleCabin->ProcessDestroyVehiclePart();
+	DestroyCabin();
 
 	VehicleCabin = CabinToSet;
 	VehicleCabin->AttachToComponent(ChassisMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("CabinSocket"));
+	VehicleCabin->SetRootComponent(ChassisMesh);
 }
 
 void UStructuralComponent::SetVehicleBody(AVehiclePart* BodyToSet)
 {
-	if (VehicleBody != nullptr)
-		VehicleBody->ProcessDestroyVehiclePart();
+	DestroyBody();
 
 	VehicleBody = BodyToSet;
 	VehicleBody->AttachToComponent(ChassisMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("BodySocket"));
+	VehicleBody->SetRootComponent(ChassisMesh);
+}
+
+void UStructuralComponent::DestroyCabin()
+{
+	if (VehicleCabin != nullptr)
+		VehicleCabin->Destroy();
+}
+
+void UStructuralComponent::DestroyBody()
+{
+	if (VehicleBody != nullptr)
+		VehicleBody->Destroy();
 }
 

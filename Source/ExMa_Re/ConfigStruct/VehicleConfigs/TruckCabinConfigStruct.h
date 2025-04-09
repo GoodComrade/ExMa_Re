@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ExMa_Re/DataAssets/Vehicles/VehicleParts/Truck/TruckCabinDataAsset.h"
 #include "TruckCabinConfigStruct.generated.h"
 
 USTRUCT(BlueprintType)
@@ -12,7 +13,7 @@ public:
     float MaxHealth = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Armor"))
-    float Armor = 0;
+    float MaxArmor = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "GasTankSize"))
     float GasTankSize = 0;
@@ -64,4 +65,17 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EnergyResistance"))
     float EnergyResistance = 0;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "VehicleUpgradeSlots"))
+    TArray<FTileStruct> VehicleUpgradeSlots;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "VehicleReinforceSlots"))
+    TArray<FTileStruct> VehicleReinforceSlots;
+
+    //PROPERTY ONLY FOR CONCEPTION TESTS
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "WeaponSlots"))
+    TArray<FTileStruct> WeaponSlots;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "TruckCabinData"))
+    UTruckCabinDataAsset* TruckCabinData;
 };

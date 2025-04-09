@@ -426,6 +426,8 @@ void AExMa_RePawn::SetVehicleCabin(AVehiclePart* CabinToSet)
 		return;
 	}
 
+	StructuralComponent->SetVehicleCabin(CabinToSet);
+
 	int32 NewHealth = Attributes->GetHealth() + TruckCabinData->Health;
 	int32 NewMaxHealth = Attributes->GetMaxHealth() + TruckCabinData->MaxHealth;
 	int32 NewArmor = Attributes->GetArmor() + TruckCabinData->Armor;

@@ -56,8 +56,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FTileStruct> WeaponSlots;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UStaticMesh* VehiclePartMesh;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	//UStaticMesh* VehiclePartMesh;
 
 protected:
 	//TODO: implement AVehiclePart class & set their static version here 

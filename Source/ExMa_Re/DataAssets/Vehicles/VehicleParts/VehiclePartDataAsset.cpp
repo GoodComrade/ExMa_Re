@@ -6,6 +6,6 @@
 
 UVehiclePartDataAsset::UVehiclePartDataAsset(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	VehiclePartClass = AVehiclePart::StaticClass();
-	VehiclePartMesh = nullptr;
+	//VehiclePartClass = AVehiclePart::StaticClass();
+	//VehiclePartMesh = nullptr;
 }

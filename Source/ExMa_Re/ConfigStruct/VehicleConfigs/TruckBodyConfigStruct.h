@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ExMa_Re/Structs/TileStruct.h"
+#include "ExMa_Re/DataAssets/Vehicles/VehicleParts/Truck/TruckBodyDataAsset.h"
 #include "TruckBodyConfigStruct.generated.h"
 
 USTRUCT(BlueprintType)
@@ -14,7 +15,7 @@ public:
     float MaxHealth = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Armor"))
-    float Armor = 0;
+    float MaxArmor = 0;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "TrunkSize"))
     FTileStruct TrunkSize;
@@ -36,4 +37,7 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "WeaponSlots"))
     TArray<FTileStruct> WeaponSlots;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "TruckBodyData"))
+    UTruckBodyDataAsset* TruckBodyData;
 };

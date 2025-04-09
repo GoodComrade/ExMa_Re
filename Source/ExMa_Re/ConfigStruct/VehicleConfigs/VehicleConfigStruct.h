@@ -39,6 +39,6 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Cost"))
     int32 Cost = 0;
 
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EnergyResistance"))
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "VehicleData"))
     UVehicleDataAsset* VehicleData;
 };

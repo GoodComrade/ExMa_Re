@@ -22,17 +22,10 @@ void AVehiclePart::SetVehiclePartMesh(UStaticMesh* MeshToSet)
 	VehiclePartMesh->SetStaticMesh(MeshToSet);
 }
 
-void AVehiclePart::ProcessDestroyVehiclePart()
-{
-	VehiclePartMesh->DestroyComponent();
-	Destroy();
-}
-
 // Called when the game starts or when spawned
 void AVehiclePart::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
