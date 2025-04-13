@@ -70,7 +70,10 @@ AExMa_RePawn::AExMa_RePawn()
 	// get the Chaos Wheeled movement component
 	ChaosVehicleMovement = CastChecked<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
 
+	AbilitySystem = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AblitySystem"));
+
 	Attributes = CreateDefaultSubobject<UExMa_VehicleAttributes>(TEXT("AttributeSet"));
+	AbilitySystem->AddSpawnedAttribute(Attributes);
 
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 	OutInventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("OutInventoryComponent"));
@@ -530,6 +533,11 @@ void AExMa_RePawn::ApplyVehicleAttributes()
 	GetChaosVehicleMovement()->CenterOfMassOverride = FVector(0.0f, 0.0f, 75.0f);
 	GetChaosVehicleMovement()->bEnableCenterOfMassOverride = true;
 
+}
+
+UAbilitySystemComponent* AExMa_RePawn::GetAbilitySystemComponent() const
+{
+	return AbilitySystem;
 }
 
 //TODO: show player pickup UI hint with binded hotkey instead of straigth pickup

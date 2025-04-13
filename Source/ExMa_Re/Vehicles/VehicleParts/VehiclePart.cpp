@@ -7,9 +7,13 @@
 // Sets default values
 AVehiclePart::AVehiclePart()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
 	VehiclePartMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VehiclePartMesh"));
+	VehiclePartMesh->SetupAttachment(RootComponent);
+	VehiclePartData = nullptr;
 }
 
 void AVehiclePart::SetVehiclePartData(UVehiclePartDataAsset* DataToSet)

@@ -36,7 +36,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn))
 	UVehiclePartDataAsset* VehiclePartData;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* VehiclePartMesh;
 
 public:	

@@ -33,7 +33,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
  *  Specific vehicle configurations are handled in subclasses.
  */
 UCLASS()
-class AExMa_RePawn : public AWheeledVehiclePawn
+class AExMa_RePawn : public AWheeledVehiclePawn, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -208,6 +208,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* BackCamera;
 
+	/** Cast pointer to the Chaos Vehicle movement component */
+	TObjectPtr<UChaosWheeledVehicleMovementComponent> ChaosVehicleMovement;
+
 	/** Character inventory component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	UInventoryComponent* InventoryComponent;
@@ -219,8 +222,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	UStructuralComponent* StructuralComponent;
 
-	/** Cast pointer to the Chaos Vehicle movement component */
-	TObjectPtr<UChaosWheeledVehicleMovementComponent> ChaosVehicleMovement;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities")
+	UAbilitySystemComponent* AbilitySystem;
+
+	
 #pragma endregion Pointers
 
 #pragma region VehicleComponents
@@ -239,6 +244,9 @@ public:
 
 	UFUNCTION()
 	UStructuralComponent* GetStructuralComponent() const { return StructuralComponent; };
+
+	UFUNCTION()
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 #pragma endregion Getters
 
 #pragma region VehicleComponents
