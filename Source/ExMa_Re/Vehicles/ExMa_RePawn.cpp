@@ -3,8 +3,11 @@
 #include "ExMa_RePawn.h"
 #include "ExMa_Re/Wheels/ExMa_ReWheelFront.h"
 #include "ExMa_Re/Wheels/ExMa_ReWheelRear.h"
+
 #include "ExMa_Re/Components/InventoryComponent.h"
 #include "ExMa_Re/Components/StructuralComponent.h"
+#include "ExMa_Re/Components/WeaponComponent.h"
+
 #include "ExMa_Re/UI/ExMaHUD.h"
 #include "ExMa_Re/Items/ItemActor.h"
 #include "ExMa_Re/Items/ItemObject.h"
@@ -79,6 +82,8 @@ AExMa_RePawn::AExMa_RePawn()
 	OutInventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("OutInventoryComponent"));
 
 	StructuralComponent = CreateDefaultSubobject<UStructuralComponent>(TEXT("StructuralComponent"));
+
+	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("WeaponComponent"));
 
 	CollectSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollectSphere"));
 	CollectSphere->SetupAttachment(GetMesh());
@@ -430,6 +435,7 @@ void AExMa_RePawn::SetVehicleCabin(AVehiclePart* CabinToSet)
 	}
 
 	StructuralComponent->SetVehicleCabin(CabinToSet);
+	WeaponComponent->AddWeaponSlots(TruckCabinData->WeaponSlots);
 
 	int32 NewHealth = Attributes->GetHealth() + TruckCabinData->Health;
 	int32 NewMaxHealth = Attributes->GetMaxHealth() + TruckCabinData->MaxHealth;
@@ -463,6 +469,7 @@ void AExMa_RePawn::SetVehicleBody(AVehiclePart* BodyToSet)
 	UVehiclePartDataAsset* VehiclePartData = BodyToSet->GetVehiclePartData();
 
 	StructuralComponent->SetVehicleBody(BodyToSet);
+	WeaponComponent->AddWeaponSlots(VehiclePartData->WeaponSlots);
 
 	int32 NewHealth = Attributes->GetHealth() + VehiclePartData->Health;
 	int32 NewMaxHealth = Attributes->GetMaxHealth() + VehiclePartData->MaxHealth;

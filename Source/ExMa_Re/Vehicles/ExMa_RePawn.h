@@ -17,6 +17,7 @@ class UInputAction;
 class UChaosWheeledVehicleMovementComponent;
 class UExMa_VehicleAttributes;
 class UInventoryComponent;
+class UWeaponComponent;
 class UStructuralComponent;
 class UVehicleDataAsset;
 class AChestActor;
@@ -222,6 +223,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	UStructuralComponent* StructuralComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
+	UWeaponComponent* WeaponComponent;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities")
 	UAbilitySystemComponent* AbilitySystem;
 
@@ -244,6 +248,9 @@ public:
 
 	UFUNCTION()
 	UStructuralComponent* GetStructuralComponent() const { return StructuralComponent; };
+
+	UFUNCTION()
+	UWeaponComponent* GetWeaponComponent() const { return WeaponComponent; };
 
 	UFUNCTION()
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
