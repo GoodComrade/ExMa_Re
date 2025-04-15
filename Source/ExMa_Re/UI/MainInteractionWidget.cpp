@@ -35,5 +35,22 @@ void UMainInteractionWidget::SetOutInventoryComponentRef(UInventoryComponent* In
 		UE_LOG(LogTemp, Error, TEXT("UMainInteractionWidget: OutInventoryComponentRef IS NULL"));
 		return;
 	}
-	OutInventoryComponent = InOutInventoryComponentRef;
+	OutInventoryComponentRef = InOutInventoryComponentRef;
+}
+
+void UMainInteractionWidget::SetWeaponComponentRef(UWeaponComponent* InWeaponComponenttRef)
+{
+	if (InWeaponComponenttRef == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UMainInteractionWidget: WeaponComponenttRef IS NULL"));
+		return;
+	}
+	WeaponComponentRef = InWeaponComponenttRef;
+
+	WeaponComponentRef->OnWeaponSlotCreated.AddDynamic(this, &UMainInteractionWidget::OnSlotSelected);
+}
+
+void UMainInteractionWidget::OnSlotSelected(UWeaponSlot* CreatedSlot)
+{
+	OnWeaponSlotCreated(CreatedSlot);
 }

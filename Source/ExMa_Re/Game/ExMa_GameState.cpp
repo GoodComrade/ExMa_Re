@@ -401,7 +401,6 @@ UCarBodyDataAsset* AExMa_GameState::MakeCarBodyDataAsset(FCarBodyConfigStruct Ta
 
 	CarBodyData->VehicleUpgradeSlots = TargetCarBodyConfigRow.VehicleUpgradeSlots;
 	CarBodyData->VehicleReinforceSlots = TargetCarBodyConfigRow.VehicleReinforceSlots;
-	CarBodyData->WeaponSlots = TargetCarBodyConfigRow.WeaponSlots;
 
 	CarBodyData->BulletResistance = TargetCarBodyConfigRow.BulletResistance;
 	CarBodyData->ExplosionResistance = TargetCarBodyConfigRow.ExplosionResistance;
@@ -444,7 +443,6 @@ UTruckCabinDataAsset* AExMa_GameState::MakeTruckCabinDataAsset(FTruckCabinConfig
 
 	TruckCabinData->VehicleUpgradeSlots = TargetTruckCabinConfigRow.VehicleUpgradeSlots;
 	TruckCabinData->VehicleReinforceSlots = TargetTruckCabinConfigRow.VehicleReinforceSlots;
-	TruckCabinData->WeaponSlots = TargetTruckCabinConfigRow.WeaponSlots;
 
 	TruckCabinData->Weight = TargetTruckCabinConfigRow.Weight;
 	TruckCabinData->Cost = TargetTruckCabinConfigRow.Cost;
@@ -477,8 +475,6 @@ UTruckBodyDataAsset* AExMa_GameState::MakeTruckBodyDataAsset(FTruckBodyConfigStr
 	TruckBodyData->BulletResistance = TargetTruckBodyConfigRow.BulletResistance;
 	TruckBodyData->ExplosionResistance = TargetTruckBodyConfigRow.ExplosionResistance;
 	TruckBodyData->EnergyResistance = TargetTruckBodyConfigRow.EnergyResistance;
-
-	TruckBodyData->WeaponSlots = TargetTruckBodyConfigRow.WeaponSlots;
 
 	return TruckBodyData;
 }

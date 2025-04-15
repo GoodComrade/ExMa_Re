@@ -2,9 +2,14 @@
 
 
 #include "UI/ExMaHUD.h"
+
 #include "ExMa_Re/Components/InventoryComponent.h"
+#include "ExMa_Re/Components/WeaponComponent.h"
+
 #include "ExMa_Re/UI/ExMa_InventoryWidget.h"
+#include "ExMa_Re/UI/ExMa_WeaponSlotWidget.h"
 #include "ExMa_Re/UI/MainInteractionWidget.h"
+
 #include "ExMa_Re/Game/ExMa_GameState.h"
 
 AExMaHUD::AExMaHUD()
@@ -48,7 +53,7 @@ void AExMaHUD::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AExMaHUD::InitInteractionWidget(UInventoryComponent* InInventoryComponentRef, UInventoryComponent* InOutInventoryComponentRef)
+void AExMaHUD::InitInteractionWidget(UInventoryComponent* InInventoryComponentRef, UInventoryComponent* InOutInventoryComponentRef, UWeaponComponent* InWeaponComponent)
 {
     MainWidgetRef = CreateWidget<UMainInteractionWidget>(GetOwningPlayerController(), MainWidgetClass);
 
@@ -57,6 +62,7 @@ void AExMaHUD::InitInteractionWidget(UInventoryComponent* InInventoryComponentRe
         MainWidgetRef->SetPlayerController(GetOwningPlayerController());
         MainWidgetRef->SetInventoryComponentRef(InInventoryComponentRef);
         MainWidgetRef->SetOutInventoryComponentRef(InOutInventoryComponentRef);
+        MainWidgetRef->SetWeaponComponentRef(InWeaponComponent);
     }
 }
 
@@ -107,5 +113,9 @@ void AExMaHUD::TogglePickupHintVisibility(bool bNewState)
 }
 
 void AExMaHUD::ChangeMainWidgetState()
+{
+}
+
+void AExMaHUD::ProcessDestroyMainWidget()
 {
 }

@@ -2,6 +2,21 @@
 
 
 #include "Weapons/WeaponSlot.h"
+#include "Templates/Tuple.h"
+#include "ExMa_Re/Structs/TileStruct.h"
+
+FWeaponSlotStruct UWeaponSlot::GetWeaponObjectAtSlot() const
+{
+	if (InstalledWeapon == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot:: InstalledWeapon IS NULLPTR!"));
+		return FWeaponSlotStruct();
+	}
+
+	FTileStruct InstallenWeaponTileStruct = FTileStruct(InstalledWeapon->GetDimentions().X, InstalledWeapon->GetDimentions().Y);
+
+	return FWeaponSlotStruct(InstalledWeapon, InstallenWeaponTileStruct);
+}
 
 void UWeaponSlot::SetSlotDimensions(FTileStruct DimentionsToSet)
 {
@@ -10,7 +25,7 @@ void UWeaponSlot::SetSlotDimensions(FTileStruct DimentionsToSet)
 
 bool UWeaponSlot::TryAddWeapon(UWeaponItemObject* WeaponToSet)
 {
-	if (IsDimentionsMatching(WeaponToSet, SlotDimentions) && HasWeaponInSlot() == false)
+	if (IsSlotAvaliable(WeaponToSet, SlotDimentions))
 	{
 		AddWeaponInSlot(WeaponToSet);
 		return true;
@@ -50,5 +65,15 @@ bool UWeaponSlot::IsDimentionsMatching(UWeaponItemObject* WeaponToCheck, FTileSt
 bool UWeaponSlot::HasWeaponInSlot()
 {
 	return InstalledWeapon != nullptr ? true : false;
+}
+
+void UWeaponSlot::SetSlotSocketName(FName SocketName)
+{
+	SlotSocket = SocketName;
+}
+
+bool UWeaponSlot::IsSlotAvaliable(UWeaponItemObject* InWeapon, FTileStruct SlotSize)
+{
+	return IsDimentionsMatching(InWeapon, SlotSize) && HasWeaponInSlot() == false;
 }
 

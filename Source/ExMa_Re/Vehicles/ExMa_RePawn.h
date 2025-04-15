@@ -268,4 +268,5 @@ protected:
 	void OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex);
 #pragma endregion Bindings
+
 };

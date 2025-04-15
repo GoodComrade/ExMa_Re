@@ -12,9 +12,27 @@
 
 #include "VehiclePartDataAsset.generated.h"
 
-/**
- * 
- */
+USTRUCT(BlueprintType)
+struct FWeaponSlotInfo
+{
+	GENERATED_BODY();
+
+	// Ключ будет генерироваться автоматически, поэтому делаем его только для чтения в редакторе
+	UPROPERTY(VisibleInstanceOnly, Category = "MyEntry")
+	FString Key;
+
+	// Вектор, редактируемый пользователем
+	UPROPERTY(EditAnywhere, Category = "MyEntry")
+	FTileStruct Value;
+	
+	// Метод для обновления ключа исходя из Value
+	void UpdateKey()
+	{
+		// Пример: ключ формируется как "X_Y" с двумя значениями Value, можно настроить форматирование под ваши нужды
+		Key = FString::Printf(TEXT("%dx%d_"), Value.X, Value.Y);
+	}
+};
+
 UCLASS()
 class EXMA_RE_API UVehiclePartDataAsset : public UDataAsset
 {
@@ -53,14 +71,31 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float EnergyResistance = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<FTileStruct> WeaponSlots;
-
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	//UStaticMesh* VehiclePartMesh;
+	//TArray<FTileStruct> WeaponSlots;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FWeaponSlotInfo> WeaponSlots;
+
+	TMap<FString, FTileStruct> WeaponSlotsMap;
+
+#if WITH_EDITOR
+	// Функция, вызываемая при изменении свойства в редакторе
+	virtual void PostEditChangeChainProperty(struct FPropertyChangedChainEvent& PropertyChangedEvent) override;
+	
+#endif
+
+	virtual void PostLoad() override;
+	
 protected:
 	//TODO: implement AVehiclePart class & set their static version here 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<AVehiclePart> VehiclePartClass;
+
+
+	//TODO: Переделать тут массив слотов под оружие в виде TMap
+	// где 'ключ - Искомый префикс в названии меша', а 'значение - FTileStruct'
+	// Эта карта затем будет передана в WeaponComponent вместе со всеми собранными с игрока сокетами
+	// Префикс должен задаваться в формате "X x Y_" где X Y это значения из FTileStruct
+
 };

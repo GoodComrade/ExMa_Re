@@ -4,6 +4,8 @@
 #include "Components/WeaponComponent.h"
 #include "ExMa_Re/Weapons/WeaponSlot.h"
 #include "ExMa_Re/Structs/TileStruct.h"
+#include "Engine/StaticMeshSocket.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -34,20 +36,29 @@ void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-void UWeaponComponent::AddWeaponSlots(TArray<FTileStruct> SlotsDimentions)
+void UWeaponComponent::AddWeaponSlots(TMap<FString, FTileStruct> SlotsMap, UStaticMeshComponent* TargetMesh)
 {
-	if (SlotsDimentions.Num() <= 0)
+	if (SlotsMap.Num() <= 0)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UWeaponComponent:: SlotsDimentionsArray IS EMPTY!"));
 		return;
 	}
 
-	for (FTileStruct Dimentions : SlotsDimentions)
+	//TArray<FName> TempSlotsNames = TArray<FName>(&SlotsNames.GetData()[0], SlotsNames.Num());
+
+	for (TPair<FString, FTileStruct> Dimentions : SlotsMap)
 	{
 		UWeaponSlot* WeaponSlot = NewObject<UWeaponSlot>(UWeaponSlot::StaticClass());
-		WeaponSlot->SetSlotDimensions(Dimentions);
+
+		FName SlotName = GetSocketNameWithPrefix(TargetMesh, Dimentions.Key);
+
+		WeaponSlot->SetSlotSocketName(SlotName);
+		WeaponSlot->SetSlotDimensions(Dimentions.Value);
 
 		WeaponSlots.AddUnique(WeaponSlot);
+
+		UE_LOG(LogTemp, Warning, TEXT("UWeaponComponent:: WeaponSlot IS CREATED!"));
+		OnWeaponSlotCreated.Broadcast(WeaponSlot);
 	}
 }
 
@@ -56,3 +67,37 @@ UWeaponSlot* UWeaponComponent::GetSlotByIndex(int SlotIndex)
 	return WeaponSlots[SlotIndex];
 }
 
+FName UWeaponComponent::GetSocketNameWithPrefix(UStaticMeshComponent* StaticMeshComponent, const FString& Prefix)
+{
+	FName SocketName;
+
+	if (!StaticMeshComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::GetSocketNamesWithPrefix: StaticMeshComponent == nullptr"));
+		return SocketName;
+	}
+
+	UStaticMesh* Mesh = StaticMeshComponent->GetStaticMesh();
+	if (!Mesh)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::GetSocketNamesWithPrefix: Mesh == nullptr"));
+		return SocketName;
+	}
+
+	// Итерируемся по массиву сокетов в статической сетке
+	for (const UStaticMeshSocket* Socket : Mesh->Sockets)
+	{
+		if (Socket)
+		{
+			// Преобразуем FName сокета в строку для проверки префикса
+			FString SocketNameString = Socket->SocketName.ToString();
+			if (SocketNameString.StartsWith(Prefix))
+			{
+				SocketName = Socket->SocketName;
+			}
+		}
+	}
+
+	return SocketName;
+
+};

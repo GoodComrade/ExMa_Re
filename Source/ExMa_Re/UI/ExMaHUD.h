@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "ExMa_Re/Components/InventoryComponent.h"
+#include "ExMa_Re/Components/WeaponComponent.h"
+#include "ExMa_Re/Weapons/WeaponSlot.h"
 #include "ExMaHUD.generated.h"
 
 class UMainInteractionWidget;
-class UExMa_InventoryWidget;
 class AExMa_GameState;
 
 UCLASS()
@@ -24,7 +25,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void InitInteractionWidget(UInventoryComponent* InInventoryComponentRef, UInventoryComponent* InOutInventoryComponentRef);
+	void InitInteractionWidget(UInventoryComponent* InInventoryComponentRef, UInventoryComponent* InOutInventoryComponentRef, UWeaponComponent* InWeaponComponent);
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleWidgetVisibility(bool bIsEnbale);
@@ -39,6 +40,9 @@ public:
 	//TODO: Implement states of main interaction widget
 	UFUNCTION(BlueprintCallable)
 	void ChangeMainWidgetState();
+
+	UFUNCTION(BlueprintCallable)
+	void ProcessDestroyMainWidget();
 
 protected:
 	// Called when the game starts or when spawned

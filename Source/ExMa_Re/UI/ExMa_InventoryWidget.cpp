@@ -4,6 +4,8 @@
 #include "UI/ExMa_InventoryWidget.h"
 #include "ExMa_Re/Components/InventoryComponent.h"
 
+#include "ExMa_Re/Game/ExMa_GameInstance.h"
+
 void UExMa_InventoryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -25,8 +27,16 @@ void UExMa_InventoryWidget::SetComponents(APlayerController* InPlayerController,
 		return;
 	}
 
+	UExMa_GameInstance* GameInstance = Cast<UExMa_GameInstance>(GetGameInstance());
+
+	if (GameInstance == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UExMa_InventoryWidget:: GameInstance is NULLPTR!"));
+		return;
+	}
+
 	InventoryComponentRef = InInventoryComponentRef;
-	TileSize = InventoryComponentRef->TileSize;
+	TileSize = GameInstance->TileSize;
 }
 
 

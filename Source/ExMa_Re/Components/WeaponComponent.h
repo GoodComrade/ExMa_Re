@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "ExMa_Re/Structs/TileStruct.h"
+#include "Components/StaticMeshComponent.h"
 #include "WeaponComponent.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponSlotCreated, UWeaponSlot*, CreatedSlot);
 
 class UWeaponSlot;
 
@@ -27,13 +30,19 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void AddWeaponSlots(TArray<FTileStruct> SlotsDimentions);
+	UPROPERTY(BlueprintAssignable, Category = "Event Dispatchers")
+	FOnWeaponSlotCreated OnWeaponSlotCreated;
 
+	UFUNCTION(BlueprintCallable)
+	void AddWeaponSlots(TMap<FString, FTileStruct> SlotsMap, UStaticMeshComponent* TargetMesh);
 
 	UFUNCTION(BlueprintCallable)
 	UWeaponSlot* GetSlotByIndex(int SlotIndex);
 
 private:
 	TArray<UWeaponSlot*> WeaponSlots;
+
+private:
+	UFUNCTION()
+	FName GetSocketNameWithPrefix(UStaticMeshComponent* StaticMeshComponent, const FString& Prefix);
 };

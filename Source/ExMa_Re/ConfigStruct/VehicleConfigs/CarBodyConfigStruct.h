@@ -77,10 +77,6 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "VehicleReinforceSlots"))
     TArray<FTileStruct> VehicleReinforceSlots;
 
-    //PROPERTY ONLY FOR CONCEPTION TESTS
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "WeaponSlots"))
-    TArray<FTileStruct> WeaponSlots;
-
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "CarBodyData"))
     UCarBodyDataAsset* CarBodyData;
 

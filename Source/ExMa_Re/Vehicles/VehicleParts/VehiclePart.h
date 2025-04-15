@@ -23,6 +23,9 @@ public:
 	UVehiclePartDataAsset* GetVehiclePartData() const { return VehiclePartData; };
 
 	UFUNCTION(BlueprintCallable)
+	UStaticMeshComponent* GetVehicleStaticMeshComponent() const { return VehiclePartMesh; };
+
+	UFUNCTION(BlueprintCallable)
 	void SetVehiclePartData(UVehiclePartDataAsset* DataToSet);
 
 	UFUNCTION(BlueprintCallable)

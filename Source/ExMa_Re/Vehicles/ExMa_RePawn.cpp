@@ -20,6 +20,8 @@
 #include "ExMa_Re/DataAssets/Vehicles/VehicleParts/Truck/TruckCabinDataAsset.h"
 #include "ExMa_Re/DataAssets/Vehicles/VehicleParts/Truck/TruckBodyDataAsset.h"
 
+#include "ExMa_Re/Game/ExMa_GameInstance.h"
+
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -30,6 +32,7 @@
 #include "ChaosWheeledVehicleMovementComponent.h"
 
 #include "Kismet/GameplayStatics.h"
+
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
@@ -154,15 +157,25 @@ void AExMa_RePawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UExMa_GameInstance* GameInstance = Cast<UExMa_GameInstance>(GetGameInstance());
+
+	if (GameInstance == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn:: GameInstance is NULLPTR!"));
+		return;
+	}
+
+	InventoryComponent->TileSize = GameInstance->TileSize;
+
 	HUD = Cast<AExMaHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
 	if (HUD)
 	{
-		HUD->InitInteractionWidget(GetInventoryComponent(), GetOutInventoryComponent());
+		HUD->InitInteractionWidget(GetInventoryComponent(), GetOutInventoryComponent(), GetWeaponComponent());
 		HUD->InitPickupHintWidget();
 	}
 
-	//SetupVehicleAttributes();
+	SetupBaseVehicleAttributes();
 }
 
 void AExMa_RePawn::Tick(float Delta)
@@ -420,22 +433,31 @@ void AExMa_RePawn::SetupBaseVehicleAttributes()
 	Attributes->InitExplosionResistance(VehicleData->ExplosionResistance);
 	Attributes->InitEnergyResistance(VehicleData->EnergyResistance);
 
-	
+	ApplyVehicleAttributes();
 }
+
 
 void AExMa_RePawn::SetVehicleCabin(AVehiclePart* CabinToSet)
 {
 	//TODO: implement here weapon slots init
 	UTruckCabinDataAsset* TruckCabinData = Cast<UTruckCabinDataAsset>(CabinToSet->GetVehiclePartData());
 
-	if (TruckCabinData == nullptr)
+	if (!TruckCabinData)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn:: TruckCabinData IS NULLPTR!"));
+		UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn::SetVehicleCabin: TruckCabinData IS NULLPTR!"));
+		return;
+	}
+
+	UStaticMeshComponent* StaticMeshComponent = CabinToSet->GetVehicleStaticMeshComponent();
+	if (!StaticMeshComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn::SetVehicleCabin: VehiclePart StaticMeshComponent IS NULLPTR!"));
 		return;
 	}
 
 	StructuralComponent->SetVehicleCabin(CabinToSet);
-	WeaponComponent->AddWeaponSlots(TruckCabinData->WeaponSlots);
+
+	WeaponComponent->AddWeaponSlots(TruckCabinData->WeaponSlotsMap, StaticMeshComponent);
 
 	int32 NewHealth = Attributes->GetHealth() + TruckCabinData->Health;
 	int32 NewMaxHealth = Attributes->GetMaxHealth() + TruckCabinData->MaxHealth;
@@ -468,8 +490,21 @@ void AExMa_RePawn::SetVehicleBody(AVehiclePart* BodyToSet)
 	//TODO: implement here weapon slots init
 	UVehiclePartDataAsset* VehiclePartData = BodyToSet->GetVehiclePartData();
 
+	if (!VehiclePartData)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn::SetVehicleCabin: VehiclePartData IS NULLPTR!"));
+		return;
+	}
+
+	UStaticMeshComponent* StaticMeshComponent = BodyToSet->GetVehicleStaticMeshComponent();
+	if (!StaticMeshComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn::SetVehicleCabin: VehiclePart StaticMeshComponent IS NULLPTR!"));
+		return;
+	}
+
 	StructuralComponent->SetVehicleBody(BodyToSet);
-	WeaponComponent->AddWeaponSlots(VehiclePartData->WeaponSlots);
+	WeaponComponent->AddWeaponSlots(VehiclePartData->WeaponSlotsMap, StaticMeshComponent);
 
 	int32 NewHealth = Attributes->GetHealth() + VehiclePartData->Health;
 	int32 NewMaxHealth = Attributes->GetMaxHealth() + VehiclePartData->MaxHealth;
@@ -520,6 +555,8 @@ void AExMa_RePawn::SetVehicleBody(AVehiclePart* BodyToSet)
 	}
 
 	InventoryComponent->SetInventorySize(TruckBodyData->TrunkSize.X, TruckBodyData->TrunkSize.Y);
+
+	ApplyVehicleAttributes();
 }
 
 void AExMa_RePawn::ApplyVehicleAttributes()

@@ -35,9 +35,6 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "EnergyResistance"))
     float EnergyResistance = 0;
 
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "WeaponSlots"))
-    TArray<FTileStruct> WeaponSlots;
-
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "TruckBodyData"))
     UTruckBodyDataAsset* TruckBodyData;
 };

@@ -8,12 +8,34 @@
 #include "ExMa_Re/Structs/TileStruct.h"
 
 #include "ExMa_Re/Items/WeaponItemObject.h"
-
+#include "Templates/Tuple.h"
 #include "WeaponSlot.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponSlotChanged);
 
-UCLASS()
+USTRUCT(BlueprintType)
+struct FWeaponSlotStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MyTuple")
+	UItemObject* WeaponObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MyTuple")
+	FTileStruct WeaponObjectDimentions;
+
+	FWeaponSlotStruct()
+		: WeaponObject(nullptr), WeaponObjectDimentions(FTileStruct())
+	{
+	}
+
+	FWeaponSlotStruct(UItemObject* InWeaponObject, FTileStruct InWeaponObjectDimentions)
+		: WeaponObject(InWeaponObject), WeaponObjectDimentions(InWeaponObjectDimentions)
+	{
+	}
+};
+
+UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class EXMA_RE_API UWeaponSlot : public UObject
 {
 	GENERATED_BODY()
@@ -21,6 +43,9 @@ class EXMA_RE_API UWeaponSlot : public UObject
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Event Dispatchers")
 	FOnWeaponSlotChanged OnWeaponSlotChanged;
+
+	UFUNCTION(BlueprintCallable)
+	FWeaponSlotStruct GetWeaponObjectAtSlot() const;
 
 	UFUNCTION(BlueprintCallable)
 	void SetSlotDimensions(FTileStruct DimentionsToSet);
@@ -35,13 +60,19 @@ public:
 	void RemoveWeaponFromSlot(UWeaponItemObject* WeaponToRemove);
 
 	UFUNCTION(BlueprintCallable)
+	bool IsSlotAvaliable(UWeaponItemObject* InWeapon, FTileStruct SlotSize);
+
+	UFUNCTION(BlueprintCallable)
 	bool IsDimentionsMatching(UWeaponItemObject* WeaponToCheck, FTileStruct SlotSize);
 
 	UFUNCTION(BlueprintCallable)
 	bool HasWeaponInSlot();
 
-public:
 	UFUNCTION(BlueprintCallable)
+	void SetSlotSocketName(FName SocketName);
+
+public:
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FTileStruct GetSlotDimensions() { return SlotDimentions; };
 
 private:
@@ -50,4 +81,7 @@ private:
 
 	UPROPERTY()
 	UWeaponItemObject* InstalledWeapon;
+
+	UPROPERTY()
+	FName SlotSocket;
 };

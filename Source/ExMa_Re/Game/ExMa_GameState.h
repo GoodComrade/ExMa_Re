@@ -53,7 +53,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnTruckPawn(FVehicleConfigStruct TargetVehicleConfigRow, FTruckCabinConfigStruct TargetTruckCabinConfigRow, FTruckBodyConfigStruct TargetTruckBodyConfigRow);
 
-
 private:
 	UWeaponItemObject* CreateWeaponItem(FItemConfigStruct TargetItemRow, FName TargetWeaponName, UDataTable* WeaponsDT);
 
