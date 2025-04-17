@@ -3,7 +3,7 @@
 
 #include "DataAssets/ItemDataAsset.h"
 
-#include "ExMa_re/Items/ItemObject.h"
+#include "ExMa_Re/Items/ItemObject.h"
 
 UItemObject* UItemDataAsset::ConstructItemInstance(UItemDataAsset* ItemData)
 {

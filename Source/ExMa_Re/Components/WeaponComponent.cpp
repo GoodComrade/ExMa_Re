@@ -6,6 +6,7 @@
 #include "ExMa_Re/Structs/TileStruct.h"
 #include "Engine/StaticMeshSocket.h"
 #include "Components/StaticMeshComponent.h"
+#include "ExMa_Re/Structs/WeaponSlotInfo.h"
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -36,24 +37,24 @@ void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-void UWeaponComponent::AddWeaponSlots(TMap<FString, FTileStruct> SlotsMap, UStaticMeshComponent* TargetMesh)
+void UWeaponComponent::AddWeaponSlots(TArray<FWeaponSlotInfo> SlotsArray, UStaticMeshComponent* TargetMesh)
 {
-	if (SlotsMap.Num() <= 0)
+	if (SlotsArray.Num() <= 0)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UWeaponComponent:: SlotsDimentionsArray IS EMPTY!"));
+		UE_LOG(LogTemp, Error, TEXT("UWeaponComponent:: SlotsArray IS EMPTY!"));
 		return;
 	}
 
 	//TArray<FName> TempSlotsNames = TArray<FName>(&SlotsNames.GetData()[0], SlotsNames.Num());
 
-	for (TPair<FString, FTileStruct> Dimentions : SlotsMap)
+	for (FWeaponSlotInfo& SlotInfo : SlotsArray)
 	{
 		UWeaponSlot* WeaponSlot = NewObject<UWeaponSlot>(UWeaponSlot::StaticClass());
 
-		FName SlotName = GetSocketNameWithPrefix(TargetMesh, Dimentions.Key);
+		FName SlotName = GetSocketNameWithPrefix(TargetMesh, SlotInfo.Key);
 
 		WeaponSlot->SetSlotSocketName(SlotName);
-		WeaponSlot->SetSlotDimensions(Dimentions.Value);
+		WeaponSlot->SetSlotDimensions(SlotInfo.Value);
 
 		WeaponSlots.AddUnique(WeaponSlot);
 

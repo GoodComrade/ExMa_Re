@@ -3,6 +3,7 @@
 
 #include "DataAssets/Vehicles/VehicleParts/VehiclePartDataAsset.h"
 #include "ExMa_Re/Vehicles/VehicleParts/VehiclePart.h"
+#include "ExMa_Re/Structs/WeaponSlotInfo.h"
 
 
 UVehiclePartDataAsset::UVehiclePartDataAsset(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -39,20 +40,4 @@ void UVehiclePartDataAsset::PostEditChangeChainProperty(FPropertyChangedChainEve
 	}
 }
 #endif
-
-
-
-void UVehiclePartDataAsset::PostLoad()
-{
-	Super::PostLoad();
-
-	WeaponSlotsMap.Empty();
-
-	for (FWeaponSlotInfo& WeaponSlot : WeaponSlots)
-	{
-		// Обновление ключей для надежности, на случай если они не синхронизированы
-		WeaponSlot.UpdateKey();
-		WeaponSlotsMap.Add(WeaponSlot.Key, WeaponSlot.Value);
-	}
-}
 

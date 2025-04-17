@@ -102,6 +102,12 @@ UItemObject* AExMa_GameState::CreateItem(FName TargetItemName, UDataTable* Items
 
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_GameState:: CreatingItemObject %s"), *TargetItemName.ToString());
 
+	if (ConfigStruct.ItemData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: ConfigStruct.ItemData is nullptr"));
+		return nullptr;
+	}
+
 	UItemObject* NewItem = ConfigStruct.ItemData->ConstructItemInstance();
 	//UItemObject* NewItem = NewObject<UItemObject>(UItemObject::StaticClass());
 

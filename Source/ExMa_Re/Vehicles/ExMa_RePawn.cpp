@@ -457,7 +457,7 @@ void AExMa_RePawn::SetVehicleCabin(AVehiclePart* CabinToSet)
 
 	StructuralComponent->SetVehicleCabin(CabinToSet);
 
-	WeaponComponent->AddWeaponSlots(TruckCabinData->WeaponSlotsMap, StaticMeshComponent);
+	WeaponComponent->AddWeaponSlots(TruckCabinData->WeaponSlots, StaticMeshComponent);
 
 	int32 NewHealth = Attributes->GetHealth() + TruckCabinData->Health;
 	int32 NewMaxHealth = Attributes->GetMaxHealth() + TruckCabinData->MaxHealth;
@@ -504,7 +504,7 @@ void AExMa_RePawn::SetVehicleBody(AVehiclePart* BodyToSet)
 	}
 
 	StructuralComponent->SetVehicleBody(BodyToSet);
-	WeaponComponent->AddWeaponSlots(VehiclePartData->WeaponSlotsMap, StaticMeshComponent);
+	WeaponComponent->AddWeaponSlots(VehiclePartData->WeaponSlots, StaticMeshComponent);
 
 	int32 NewHealth = Attributes->GetHealth() + VehiclePartData->Health;
 	int32 NewMaxHealth = Attributes->GetMaxHealth() + VehiclePartData->MaxHealth;

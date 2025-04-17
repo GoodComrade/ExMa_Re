@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "ExMa_Re/Structs/TileStruct.h"
 #include "Components/StaticMeshComponent.h"
+#include "ExMa_Re/Structs/WeaponSlotInfo.h"
 #include "WeaponComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponSlotCreated, UWeaponSlot*, CreatedSlot);
@@ -34,7 +35,7 @@ public:
 	FOnWeaponSlotCreated OnWeaponSlotCreated;
 
 	UFUNCTION(BlueprintCallable)
-	void AddWeaponSlots(TMap<FString, FTileStruct> SlotsMap, UStaticMeshComponent* TargetMesh);
+	void AddWeaponSlots(TArray<FWeaponSlotInfo> SlotsArray, UStaticMeshComponent* TargetMesh);
 
 	UFUNCTION(BlueprintCallable)
 	UWeaponSlot* GetSlotByIndex(int SlotIndex);
