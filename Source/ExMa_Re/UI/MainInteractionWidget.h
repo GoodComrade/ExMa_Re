@@ -20,7 +20,10 @@ public:
     virtual void NativeConstruct() override;
 
     UFUNCTION(BlueprintImplementableEvent)
-    void OnWeaponSlotCreated(UWeaponSlot* CreatedSlot);
+    void OnWeaponSlotsCreated(const TArray<UWeaponSlot*>& CreatedSlots);
+
+    //UFUNCTION(BlueprintImplementableEvent)
+    //void OnWeaponSlotCreated(TArray<UWeaponSlot*> CreatedSlots);
 
 #pragma region PlayerComponents
     UFUNCTION(BlueprintCallable)
@@ -66,5 +69,5 @@ protected:
 private:
 
     UFUNCTION()
-    void OnSlotSelected(UWeaponSlot* CreatedSlot);
+    void OnSlotsCreated(TArray<UWeaponSlot*> CreatedSlot);
 };

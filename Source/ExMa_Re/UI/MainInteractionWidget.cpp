@@ -47,10 +47,10 @@ void UMainInteractionWidget::SetWeaponComponentRef(UWeaponComponent* InWeaponCom
 	}
 	WeaponComponentRef = InWeaponComponenttRef;
 
-	WeaponComponentRef->OnWeaponSlotCreated.AddDynamic(this, &UMainInteractionWidget::OnSlotSelected);
+	WeaponComponentRef->OnWeaponSlotsCreated.AddDynamic(this, &UMainInteractionWidget::OnSlotsCreated);
 }
 
-void UMainInteractionWidget::OnSlotSelected(UWeaponSlot* CreatedSlot)
+void UMainInteractionWidget::OnSlotsCreated(TArray<UWeaponSlot*> CreatedSlot)
 {
-	OnWeaponSlotCreated(CreatedSlot);
+	OnWeaponSlotsCreated(CreatedSlot);
 }

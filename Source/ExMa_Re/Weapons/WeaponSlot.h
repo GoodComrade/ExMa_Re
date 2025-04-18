@@ -75,6 +75,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FTileStruct GetSlotDimensions() { return SlotDimentions; };
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FName GetSlotSocketName() { return SlotSocket; };
+
 private:
 	UPROPERTY()
 	FTileStruct SlotDimentions;

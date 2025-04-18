@@ -9,7 +9,7 @@
 #include "ExMa_Re/Structs/WeaponSlotInfo.h"
 #include "WeaponComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponSlotCreated, UWeaponSlot*, CreatedSlot);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponSlotsCreated, TArray<UWeaponSlot*>, CreatedSlot);
 
 class UWeaponSlot;
 
@@ -32,7 +32,7 @@ public:
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Event Dispatchers")
-	FOnWeaponSlotCreated OnWeaponSlotCreated;
+	FOnWeaponSlotsCreated OnWeaponSlotsCreated;
 
 	UFUNCTION(BlueprintCallable)
 	void AddWeaponSlots(TArray<FWeaponSlotInfo> SlotsArray, UStaticMeshComponent* TargetMesh);
@@ -46,4 +46,7 @@ private:
 private:
 	UFUNCTION()
 	FName GetSocketNameWithPrefix(UStaticMeshComponent* StaticMeshComponent, const FString& Prefix);
+
+	UFUNCTION()
+	bool IsAnySlotHasThisSocket(const FString& SocketName);
 };

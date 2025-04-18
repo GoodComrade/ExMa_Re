@@ -59,8 +59,9 @@ void UWeaponComponent::AddWeaponSlots(TArray<FWeaponSlotInfo> SlotsArray, UStati
 		WeaponSlots.AddUnique(WeaponSlot);
 
 		UE_LOG(LogTemp, Warning, TEXT("UWeaponComponent:: WeaponSlot IS CREATED!"));
-		OnWeaponSlotCreated.Broadcast(WeaponSlot);
 	}
+
+	OnWeaponSlotsCreated.Broadcast(WeaponSlots);
 }
 
 UWeaponSlot* UWeaponComponent::GetSlotByIndex(int SlotIndex)
@@ -92,13 +93,28 @@ FName UWeaponComponent::GetSocketNameWithPrefix(UStaticMeshComponent* StaticMesh
 		{
 			// Преобразуем FName сокета в строку для проверки префикса
 			FString SocketNameString = Socket->SocketName.ToString();
-			if (SocketNameString.StartsWith(Prefix))
-			{
-				SocketName = Socket->SocketName;
-			}
+			if (SocketNameString.StartsWith(Prefix) == false)
+				continue;
+
+			if (IsAnySlotHasThisSocket(SocketNameString))
+				continue;
+
+			SocketName = Socket->SocketName;
+			break;
 		}
 	}
 
 	return SocketName;
-
 };
+
+
+bool UWeaponComponent::IsAnySlotHasThisSocket(const FString& SocketName)
+{
+	for (UWeaponSlot* WeaponSlot : WeaponSlots)
+	{
+		if (WeaponSlot->GetSlotSocketName().ToString() == SocketName)
+			return true;
+	}
+
+	return false;
+}
