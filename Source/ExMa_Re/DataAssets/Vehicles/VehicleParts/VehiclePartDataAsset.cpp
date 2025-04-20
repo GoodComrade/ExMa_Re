@@ -13,31 +13,26 @@ UVehiclePartDataAsset::UVehiclePartDataAsset(const FObjectInitializer& ObjectIni
 }
 
 #if WITH_EDITOR
-void UVehiclePartDataAsset::PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent)
+void UVehiclePartDataAsset::PostInitProperties()
 {
-	Super::PostEditChangeChainProperty(PropertyChangedEvent);
-
-	// Если изменилось значение в каком-либо элементе массива:
-	FName ChangedPropertyName = NAME_None;
-	// Получаем последний узел цепочки
-	if (PropertyChangedEvent.PropertyChain.GetTail() != nullptr)
-	{
-		// Получаем указатель на FProperty, связанный с этим узлом
-		FProperty* LastProperty = PropertyChangedEvent.PropertyChain.GetTail()->GetValue();
-		if (LastProperty)
-		{
-			ChangedPropertyName = LastProperty->GetFName();
-		}
-	}
-
-	if (ChangedPropertyName == GET_MEMBER_NAME_CHECKED(FWeaponSlotInfo, Value))
-	{
-		// Обновляем ключ для всех элементов (или для изменённого, если сможете получить индекс)
-		for (FWeaponSlotInfo& WeaponSlot : WeaponSlots)
-		{
-			WeaponSlot.UpdateKey();
-		}
-	}
+    Super::PostInitProperties();
+    if (!HasAnyFlags(RF_ClassDefaultObject))
+    {
+        for (FWeaponSlotInfo& Slot : WeaponSlots)
+        {
+            Slot.UpdateKey();
+        }
+    }
 }
+
 #endif
+
+void UVehiclePartDataAsset::PostLoad()
+{
+    Super::PostLoad();
+    for (FWeaponSlotInfo& Slot :  WeaponSlots)
+    {
+        Slot.UpdateKey();
+    }
+}
 

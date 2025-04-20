@@ -2,6 +2,7 @@
 
 
 #include "Components/StructuralComponent.h"
+#include "Engine/StaticMeshSocket.h"
 
 // Sets default values for this component's properties
 UStructuralComponent::UStructuralComponent()
@@ -27,6 +28,54 @@ void UStructuralComponent::BeginPlay()
 void UStructuralComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
+
+AVehiclePart* UStructuralComponent::GetTargetVehiclePartBySocket(FName SocketName)
+{
+	if (VehicleCabin)
+	{
+		UStaticMesh* Mesh = VehicleCabin->GetVehicleStaticMeshComponent()->GetStaticMesh();
+		if (!Mesh)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("UStructuralComponent::GetTargetVehiclePartBySocket: Mesh == nullptr"));
+			return nullptr;
+		}
+
+		for (const UStaticMeshSocket* Socket : Mesh->Sockets)
+		{
+			if (Socket)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("UStructuralComponent::GetTargetVehiclePartBySocket: TargetSocket: %s, LookAtSocket: %s"), *SocketName.ToString(), *Socket->SocketName.ToString());
+				if (SocketName == Socket->SocketName)
+					return VehicleCabin;
+			}
+				
+		}
+	}
+
+	if (VehicleBody)
+	{
+		UStaticMesh* Mesh = VehicleBody->GetVehicleStaticMeshComponent()->GetStaticMesh();
+		if (!Mesh)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("UStructuralComponent::GetTargetVehiclePartBySocket: Mesh == nullptr"));
+			return nullptr;
+		}
+
+		// Итерируемся по массиву сокетов в статической сетке
+		for (const UStaticMeshSocket* Socket : Mesh->Sockets)
+		{
+			if (Socket)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("UStructuralComponent::GetTargetVehiclePartBySocket: TargetSocket: %s, LookAtSocket: %s"), *SocketName.ToString(), *Socket->SocketName.ToString());
+				if (SocketName == Socket->SocketName)
+					return VehicleBody;
+			}
+				
+		}
+	}
+
+	return nullptr;
 }
 
 void UStructuralComponent::SetVehicleCabin(AVehiclePart* CabinToSet)

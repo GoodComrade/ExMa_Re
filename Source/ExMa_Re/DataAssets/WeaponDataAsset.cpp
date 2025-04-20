@@ -14,7 +14,7 @@ UWeaponDataAsset::UWeaponDataAsset(const FObjectInitializer& ObjectInitializer) 
 
 UItemObject* UWeaponDataAsset::ConstructItemInstance()
 {
-	UWeaponItemObject* WeaponObject = NewObject<UWeaponItemObject>(ItemObjectClass);
+	UWeaponItemObject* WeaponObject = NewObject<UWeaponItemObject>(this, ItemObjectClass);
 	WeaponObject->SetItemData(this);
 
 	return WeaponObject;

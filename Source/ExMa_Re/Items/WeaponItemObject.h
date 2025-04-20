@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Items/ItemObject.h"
 #include "ExMa_Re/ConfigStruct/WeaponConfigStruct.h"
+#include "GameFramework/Actor.h"
 #include "WeaponItemObject.generated.h"
 
 class UExMa_WeaponAttributes;

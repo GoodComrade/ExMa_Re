@@ -17,7 +17,7 @@ UItemDataAsset::UItemDataAsset(const FObjectInitializer& ObjectInitializer) : Su
 
 UItemObject* UItemDataAsset::ConstructItemInstance()
 {
-	UItemObject* ItemObject = NewObject<UItemObject>(ItemObjectClass);
+	UItemObject* ItemObject = NewObject<UItemObject>(this, ItemObjectClass);
 	ItemObject->SetItemData(this);
 
 	return ItemObject;

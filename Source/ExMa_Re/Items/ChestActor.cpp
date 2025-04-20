@@ -78,7 +78,8 @@ void AChestActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PopulateInventory();
+	if(StoredItemsNames.Num() > 0)
+		PopulateInventory();
 }
 
 void AChestActor::PopulateInventory()

@@ -4,6 +4,10 @@
 #include "Weapons/WeaponSlot.h"
 #include "Templates/Tuple.h"
 #include "ExMa_Re/Structs/TileStruct.h"
+#include "ExMa_Re/Vehicles/ExMa_RePawn.h"
+#include "ExMa_Re/Game/ExMa_GameState.h"
+#include "ExMa_Re/Items/WeaponActor.h"
+#include "Kismet/GameplayStatics.h"
 
 FWeaponSlotStruct UWeaponSlot::GetWeaponObjectAtSlot() const
 {
@@ -16,6 +20,17 @@ FWeaponSlotStruct UWeaponSlot::GetWeaponObjectAtSlot() const
 	FTileStruct InstallenWeaponTileStruct = FTileStruct(InstalledWeapon->GetDimentions().X, InstalledWeapon->GetDimentions().Y);
 
 	return FWeaponSlotStruct(InstalledWeapon, InstallenWeaponTileStruct);
+}
+
+void UWeaponSlot::SetSlotOwner(AActor* OwnerToSet)
+{
+	if (OwnerToSet == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::SetSlotOwner: OwnerToSet IS nullptr!"));
+		return;
+	}
+
+	SlotOwner = OwnerToSet;
 }
 
 void UWeaponSlot::SetSlotDimensions(FTileStruct DimentionsToSet)
@@ -36,10 +51,29 @@ bool UWeaponSlot::TryAddWeapon(UWeaponItemObject* WeaponToSet)
 
 void UWeaponSlot::AddWeaponInSlot(UWeaponItemObject* WeaponToSet)
 {
+	AExMa_RePawn* PlayerPawn = Cast<AExMa_RePawn>(SlotOwner);
+	if (!PlayerPawn)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::AddWeaponInSlot: PlayerPawn IS NULLPTR!"));
+		return;
+	}
+	
+	
+
 	if (WeaponToSet->IsRotated())
 		WeaponToSet->Rotate();
 
 	InstalledWeapon = WeaponToSet;
+	InstalledWeapon->SetItemOwner(SlotOwner);
+
+	AWeaponActor* WeaponActor = PlayerPawn->GetGameState()->SpawnWeaponActor(InstalledWeapon, SlotOwner, SlotSocket);
+	if (!WeaponActor)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::AddWeaponInSlot: WeaponActor IS NULLPTR!"));
+		return;
+	}
+
+	InstalledWeaponActor = WeaponActor;
 
 	OnWeaponSlotChanged.Broadcast();
 }
@@ -50,6 +84,9 @@ void UWeaponSlot::RemoveWeaponFromSlot(UWeaponItemObject* WeaponToRemove)
 		return;
 
 	InstalledWeapon = nullptr;
+
+	InstalledWeaponActor->Destroy();
+	InstalledWeaponActor = nullptr;
 
 	OnWeaponSlotChanged.Broadcast();
 }
@@ -70,6 +107,11 @@ bool UWeaponSlot::HasWeaponInSlot()
 void UWeaponSlot::SetSlotSocketName(FName SocketName)
 {
 	SlotSocket = SocketName;
+}
+
+void UWeaponSlot::SetWeaponActor()
+{
+	//call spawn weapon actor from game state & set returned value to InstalledWeaponActor;
 }
 
 bool UWeaponSlot::IsSlotAvaliable(UWeaponItemObject* InWeapon, FTileStruct SlotSize)

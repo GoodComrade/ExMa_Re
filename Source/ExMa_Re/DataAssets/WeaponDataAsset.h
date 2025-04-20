@@ -21,55 +21,55 @@ public:
 	virtual UItemObject* ConstructItemInstance() override;
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AWeaponActor> WeaponActorClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	USkeletalMesh* WeaponMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UAnimBlueprint* MeshABP;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTagContainer WeaponType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTagContainer DamageType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	float Damage = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	int32 AttackCost = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	double Cooldown = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	double ShootDelay = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	double ReloadTime = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	int32 Spread = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	int32 MaxBulletsCount = -1;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	int32 CurrenMagazineCapacity = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	int32 MaxMagazineCapacity = 0;
 
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
 	//int32 BurstSize = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	int32 MinRange = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	int32 MaxRange = 0;
 
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
@@ -77,10 +77,10 @@ public:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
 	//int32 MaxBulletsInShot = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	int32 Health = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	int32 MaxHealth = 0;
 
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
@@ -98,6 +98,6 @@ public:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
 	//int32 BlustRadius = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
 	int32 AimTime = 0;
 };

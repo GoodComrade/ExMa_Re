@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "GameFramework/Actor.h"
 
 #include "ExMa_Re/Structs/TileStruct.h"
 
 #include "ExMa_Re/Items/WeaponItemObject.h"
+#include "ExMa_Re/Items/WeaponActor.h"
 #include "Templates/Tuple.h"
 #include "WeaponSlot.generated.h"
 
@@ -48,6 +50,9 @@ public:
 	FWeaponSlotStruct GetWeaponObjectAtSlot() const;
 
 	UFUNCTION(BlueprintCallable)
+	void SetSlotOwner(AActor* OwnerToSet);
+
+	UFUNCTION(BlueprintCallable)
 	void SetSlotDimensions(FTileStruct DimentionsToSet);
 
 	UFUNCTION(BlueprintCallable)
@@ -73,10 +78,24 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	FTileStruct GetSlotDimensions() { return SlotDimentions; };
+	FTileStruct GetSlotDimensions() const { return SlotDimentions; };
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	FName GetSlotSocketName() { return SlotSocket; };
+	UWeaponItemObject* GetInstalledWeaponObject() const { return InstalledWeapon; };
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	AWeaponActor* GetInstalledWeaponActor() const { return InstalledWeaponActor; };
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FName GetSlotSocketName() const { return SlotSocket; };
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	AActor* GetSlotOwner() const { return SlotOwner; };
+
+
+private:
+	UFUNCTION()
+	void SetWeaponActor();
 
 private:
 	UPROPERTY()
@@ -86,5 +105,11 @@ private:
 	UWeaponItemObject* InstalledWeapon;
 
 	UPROPERTY()
+	AWeaponActor* InstalledWeaponActor;
+
+	UPROPERTY()
 	FName SlotSocket;
+
+	UPROPERTY()
+	AActor* SlotOwner = nullptr;
 };

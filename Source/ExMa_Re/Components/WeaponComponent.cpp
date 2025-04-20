@@ -51,8 +51,9 @@ void UWeaponComponent::AddWeaponSlots(TArray<FWeaponSlotInfo> SlotsArray, UStati
 	{
 		UWeaponSlot* WeaponSlot = NewObject<UWeaponSlot>(UWeaponSlot::StaticClass());
 
-		FName SlotName = GetSocketNameWithPrefix(TargetMesh, SlotInfo.Key);
+		FName SlotName = GetSocketNameWithPrefix(TargetMesh, *SlotInfo.Key);
 
+		WeaponSlot->SetSlotOwner(GetOwner());
 		WeaponSlot->SetSlotSocketName(SlotName);
 		WeaponSlot->SetSlotDimensions(SlotInfo.Value);
 
@@ -93,14 +94,9 @@ FName UWeaponComponent::GetSocketNameWithPrefix(UStaticMeshComponent* StaticMesh
 		{
 			// Преобразуем FName сокета в строку для проверки префикса
 			FString SocketNameString = Socket->SocketName.ToString();
-			if (SocketNameString.StartsWith(Prefix) == false)
-				continue;
-
-			if (IsAnySlotHasThisSocket(SocketNameString))
-				continue;
-
-			SocketName = Socket->SocketName;
-			break;
+			UE_LOG(LogTemp, Warning, TEXT("UStructuralComponent::GetTargetVehiclePartBySocket: TargetSocketPrefix: %s, LookAtSocket: %s"), *Prefix, *SocketNameString);
+			if (SocketNameString.StartsWith(Prefix) && IsAnySlotHasThisSocket(SocketNameString) == false)
+				SocketName = Socket->SocketName;
 		}
 	}
 

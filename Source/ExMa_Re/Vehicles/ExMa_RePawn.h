@@ -54,12 +54,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
 	float CameraSensivity = 1;
 
+	AExMa_GameState* GetGameState();
 
 private:
 	UPROPERTY()
 	AExMaHUD* HUD;
-
-	AExMa_GameState* GetGameState();
 
 protected:
 	virtual void BeginPlay() override;

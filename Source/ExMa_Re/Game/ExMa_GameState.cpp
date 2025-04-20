@@ -15,6 +15,7 @@
 #include "ExMa_Re/ConfigStruct/VehicleConfigs/VehicleConfigStruct.h"
 
 #include "ExMa_Re/Items/WeaponItemObject.h"
+#include "ExMa_Re/Items/WeaponActor.h"
 
 #include "ExMa_Re/DataAssets/ItemDataAsset.h"
 #include "ExMa_Re/DataAssets/WeaponDataAsset.h"
@@ -132,6 +133,85 @@ UItemObject* AExMa_GameState::CreateItem(FName TargetItemName, UDataTable* Items
 	NewItem->GetItemData()->PreviewMesh = ConfigStruct.PreviewMesh;
 
 	return NewItem;
+}
+
+UWeaponItemObject* AExMa_GameState::CreateWeaponItem(FItemConfigStruct TargetItemRow, FName TargetWeaponName, UDataTable* WeaponsDT)
+{
+	if (WeaponsDT == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: WeaponsDataTable is nullptr"));
+		return nullptr;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("AExMa_GameState:: CreatingWeaponObject %s"), *TargetWeaponName.ToString());
+
+	FWeaponConfigStruct WeaponConfigStruct;
+	if (const FWeaponConfigStruct* ConfigStructRow = WeaponsDT->FindRow<FWeaponConfigStruct>(TargetWeaponName, ""))
+		WeaponConfigStruct = *ConfigStructRow;
+
+	if (WeaponConfigStruct.WeaponData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: WeaponData is nullptr"));
+		return nullptr;
+	}
+	UItemObject* ItemPtr = WeaponConfigStruct.WeaponData->ConstructItemInstance();
+	UWeaponItemObject* WeaponItem = Cast<UWeaponItemObject>(ItemPtr);
+
+	if (WeaponItem == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: Fail to create WeaponObject %s"), *TargetWeaponName.ToString());
+		return nullptr;
+	}
+
+	WeaponItem->SetDimentions(TargetItemRow.SizeX, TargetItemRow.SizeY);
+	WeaponItem->SetIcons(TargetItemRow.Icon, TargetItemRow.IconRotated);
+
+	UWeaponDataAsset* WeaponDataAsset = Cast<UWeaponDataAsset>(WeaponItem->GetItemData());
+	if (WeaponDataAsset == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: Missing weapon data asset %s"), *TargetWeaponName.ToString());
+		return nullptr;
+	}
+
+	WeaponDataAsset->DisplayName = FText::FromString(TargetWeaponName.ToString());
+	WeaponDataAsset->Description = FText::FromString(TargetItemRow.Description);
+
+	//TODO: погуглить как сетать тэги в контейнер через код.
+	WeaponDataAsset->ItemType = TargetItemRow.ItemType;
+	WeaponDataAsset->Weight = TargetItemRow.Weight;
+	WeaponDataAsset->Cost = TargetItemRow.Cost;
+	WeaponDataAsset->PreviewMesh = TargetItemRow.PreviewMesh;
+
+	//TODO: “ут седать свойсвта дата ассет оружи€, которые потом будут сетатьс€ в атрибуты оружи€ при установке в подход€щий слот.
+	WeaponDataAsset->WeaponMesh = WeaponConfigStruct.WeaponMesh;
+	WeaponDataAsset->MeshABP = WeaponConfigStruct.MeshABP;
+
+	WeaponDataAsset->WeaponType = WeaponConfigStruct.WeaponType;
+
+	WeaponDataAsset->Damage = WeaponConfigStruct.Damage;
+	WeaponDataAsset->DamageType = WeaponConfigStruct.DamageType;
+
+	WeaponDataAsset->AttackCost = WeaponConfigStruct.AttackCost;
+	WeaponDataAsset->Cooldown = WeaponConfigStruct.Cooldown;
+	WeaponDataAsset->ShootDelay = WeaponConfigStruct.ShootDelay;
+	WeaponDataAsset->ReloadTime = WeaponConfigStruct.ReloadTime;
+	WeaponDataAsset->Spread = WeaponConfigStruct.Spread;
+
+	WeaponDataAsset->MaxBulletsCount = WeaponConfigStruct.MaxBulletsCount;
+	WeaponDataAsset->CurrenMagazineCapacity = WeaponConfigStruct.MagazineSize;
+	WeaponDataAsset->MaxMagazineCapacity = WeaponConfigStruct.MagazineSize;
+
+	WeaponDataAsset->MinRange = WeaponConfigStruct.MinRange;
+	WeaponDataAsset->MaxRange = WeaponConfigStruct.MaxRange;
+
+	WeaponDataAsset->Health = WeaponConfigStruct.MaxHealth;
+	WeaponDataAsset->MaxHealth = WeaponConfigStruct.MaxHealth;
+
+	WeaponDataAsset->AimTime = WeaponConfigStruct.AimTime;
+
+	//¬озможно, избыточное действие. надо проверить, будет ли все корректно работать без него.
+	//WeaponItem->SetItemData(WeaponDataAsset);
+	return WeaponItem;
 }
 
 void AExMa_GameState::SpawnCarPawn(FVehicleConfigStruct TargetVehicleConfigRow, FCarBodyConfigStruct TargetCarBodyConfigRow)
@@ -270,83 +350,65 @@ void AExMa_GameState::SpawnTruckPawn(FVehicleConfigStruct TargetVehicleConfigRow
 	}
 }
 
-UWeaponItemObject* AExMa_GameState::CreateWeaponItem(FItemConfigStruct TargetItemRow, FName TargetWeaponName, UDataTable* WeaponsDT)
+AWeaponActor* AExMa_GameState::SpawnWeaponActor(UWeaponItemObject* ObjectFormSpawn, AActor* TargetOwner, FName TargetSlotSocket)
 {
-	if (WeaponsDT == nullptr)
+	if (!ObjectFormSpawn)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: WeaponsDataTable is nullptr"));
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState::SpawnWeaponActor: ObjectFormSpawn is NULLPTR!"));
 		return nullptr;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("AExMa_GameState:: CreatingWeaponObject %s"), *TargetWeaponName.ToString());
-
-	FWeaponConfigStruct WeaponConfigStruct;
-	if (const FWeaponConfigStruct* ConfigStructRow = WeaponsDT->FindRow<FWeaponConfigStruct>(TargetWeaponName, ""))
-		WeaponConfigStruct = *ConfigStructRow;
-
-	if (WeaponConfigStruct.WeaponData == nullptr)
+	AExMa_RePawn* TargetOwnerPawn = Cast<AExMa_RePawn>(TargetOwner);
+	if (!TargetOwner)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: WeaponData is nullptr"));
-		return nullptr;
-	}
-	UItemObject* ItemPtr = WeaponConfigStruct.WeaponData->ConstructItemInstance();
-	UWeaponItemObject* WeaponItem = Cast<UWeaponItemObject>(ItemPtr);
-
-	if (WeaponItem == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: Fail to create WeaponObject %s"), *TargetWeaponName.ToString());
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState::SpawnWeaponActor: TargetOwnerActor is NULLPTR!"));
 		return nullptr;
 	}
 
-	WeaponItem->SetDimentions(TargetItemRow.SizeX, TargetItemRow.SizeY);
-	WeaponItem->SetIcons(TargetItemRow.Icon, TargetItemRow.IconRotated);
-
-	UWeaponDataAsset* WeaponDataAsset = Cast<UWeaponDataAsset>(WeaponItem->GetItemData());
-	if (WeaponDataAsset == nullptr)
+	UWeaponDataAsset* WeaponData = Cast<UWeaponDataAsset>(ObjectFormSpawn->GetItemData());
+	if (!WeaponData)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: Missing weapon data asset %s"), *TargetWeaponName.ToString());
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState::SpawnWeaponActor: WeaponData is NULLPTR!"));
 		return nullptr;
 	}
 
-	WeaponDataAsset->DisplayName = FText::FromString(TargetWeaponName.ToString());
-	WeaponDataAsset->Description = FText::FromString(TargetItemRow.Description);
+	if (UWorld* World = GetWorld())
+	{
+		//ESpawnActorCollisionHandlingMethod WeaponSpawnParams = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		//ESpawnActorScaleMethod SpawnedActorScale = ESpawnActorScaleMethod::MultiplyWithRoot;
+		//FActorSpawnParameters WeaponSpawnParams;
+		//WeaponSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		//AWeaponActor* NewWeapon = World->SpawnActorDeferred<AWeaponActor>(WeaponData->WeaponActorClass, TargetOwnerPawn->GetActorTransform(), TargetOwnerPawn, TargetOwnerPawn, WeaponSpawnParams, SpawnedActorScale);
 
-	//TODO: погуглить как сетать тэги в контейнер через код.
-	WeaponDataAsset->ItemType = TargetItemRow.ItemType;
-	WeaponDataAsset->Weight = TargetItemRow.Weight;
-	WeaponDataAsset->Cost = TargetItemRow.Cost;
-	WeaponDataAsset->PreviewMesh = TargetItemRow.PreviewMesh;
+		FActorSpawnParameters WeaponSpawnParams;
+		WeaponSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	//TODO: “ут седать свойсвта дата ассет оружи€, которые потом будут сетатьс€ в атрибуты оружи€ при установке в подход€щий слот.
-	WeaponDataAsset->WeaponMesh = WeaponConfigStruct.WeaponMesh;
-	WeaponDataAsset->MeshABP = WeaponConfigStruct.MeshABP;
+		AWeaponActor* NewWeapon = World->SpawnActor<AWeaponActor>(WeaponData->WeaponActorClass, TargetOwnerPawn->GetActorLocation(), FRotator(), WeaponSpawnParams);
+		if (!NewWeapon)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState::SpawnWeaponActor: NewWeapon is NULLPTR!"));
+			return nullptr;
+		}
 
-	WeaponDataAsset->WeaponType = WeaponConfigStruct.WeaponType;
+		NewWeapon->SetWeaponData(WeaponData);
+		NewWeapon->SetMesh(WeaponData->WeaponMesh);
+		NewWeapon->SetMeshAnimInstance(WeaponData->MeshABP);
+		NewWeapon->SetWeaponOwner(TargetOwnerPawn);
 
-	WeaponDataAsset->Damage = WeaponConfigStruct.Damage;
-	WeaponDataAsset->DamageType = WeaponConfigStruct.DamageType;
+		AVehiclePart* TargetVehiclePart = TargetOwnerPawn->GetStructuralComponent()->GetTargetVehiclePartBySocket(TargetSlotSocket);
+		if (!TargetVehiclePart)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState::SpawnWeaponActor: TargetVehiclePart is NULLPTR!"));
+			return nullptr;
+		}
 
-	WeaponDataAsset->AttackCost = WeaponConfigStruct.AttackCost;
-	WeaponDataAsset->Cooldown = WeaponConfigStruct.Cooldown;
-	WeaponDataAsset->ShootDelay = WeaponConfigStruct.ShootDelay;
-	WeaponDataAsset->ReloadTime = WeaponConfigStruct.ReloadTime;
-	WeaponDataAsset->Spread = WeaponConfigStruct.Spread;
+		NewWeapon->AttachToComponent(TargetVehiclePart->GetVehicleStaticMeshComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TargetSlotSocket);
 
-	WeaponDataAsset->MaxBulletsCount = WeaponConfigStruct.MaxBulletsCount;
-	WeaponDataAsset->CurrenMagazineCapacity = WeaponConfigStruct.MagazineSize;
-	WeaponDataAsset->MaxMagazineCapacity = WeaponConfigStruct.MagazineSize;
+		//NewWeapon->FinishSpawning(NewWeapon->GetActorTransform());
+		return NewWeapon;
+	}
 
-	WeaponDataAsset->MinRange = WeaponConfigStruct.MinRange;
-	WeaponDataAsset->MaxRange = WeaponConfigStruct.MaxRange;
-
-	WeaponDataAsset->Health = WeaponConfigStruct.MaxHealth;
-	WeaponDataAsset->MaxHealth = WeaponConfigStruct.MaxHealth;
-
-	WeaponDataAsset->AimTime = WeaponConfigStruct.AimTime;
-
-	//¬озможно, избыточное действие. надо проверить, будет ли все корректно работать без него.
-	WeaponItem->SetItemData(WeaponDataAsset);
-	return WeaponItem;
+	return nullptr;
 }
 
 UVehicleDataAsset* AExMa_GameState::MakeVehicleDataAsset(FVehicleConfigStruct TargetVehicleConfigRow)

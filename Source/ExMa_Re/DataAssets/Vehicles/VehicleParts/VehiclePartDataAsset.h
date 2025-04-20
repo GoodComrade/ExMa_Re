@@ -58,11 +58,12 @@ public:
 	TArray<FWeaponSlotInfo> WeaponSlots;
 
 #if WITH_EDITOR
-	// Функция, вызываемая при изменении свойства в редакторе
-	virtual void PostEditChangeChainProperty(struct FPropertyChangedChainEvent& PropertyChangedEvent) override;
-	
+	virtual void PostInitProperties() override;
 #endif
 	
+	virtual void PostLoad() override;
+
+
 protected:
 	//TODO: implement AVehiclePart class & set their static version here 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

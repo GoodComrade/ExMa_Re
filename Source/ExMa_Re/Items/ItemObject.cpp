@@ -28,6 +28,11 @@ void UItemObject::SetItemData(UItemDataAsset* DataToSet)
 	ItemData = DataToSet;
 }
 
+void UItemObject::SetItemOwner(AActor* OwnerToSet)
+{
+	ItemOwner = OwnerToSet;
+}
+
 void UItemObject::Rotate()
 {
 	bIsRotated = !bIsRotated;

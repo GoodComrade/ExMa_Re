@@ -21,6 +21,7 @@ class AActor;
 class AChestActor;
 class UInventoryComponent;
 class AExMa_RePawn;
+class AWeaponActor;
 
 class UVehicleDataAsset;
 class UVehiclePartDataAsset;
@@ -52,6 +53,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnTruckPawn(FVehicleConfigStruct TargetVehicleConfigRow, FTruckCabinConfigStruct TargetTruckCabinConfigRow, FTruckBodyConfigStruct TargetTruckBodyConfigRow);
+
+public:
+	UFUNCTION(BlueprintCallable)
+	AWeaponActor* SpawnWeaponActor(UWeaponItemObject* ObjectFormSpawn, AActor* TargetOwner, FName TargetSlotSocket);
 
 private:
 	UWeaponItemObject* CreateWeaponItem(FItemConfigStruct TargetItemRow, FName TargetWeaponName, UDataTable* WeaponsDT);

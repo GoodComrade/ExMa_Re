@@ -48,6 +48,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetItemData(UItemDataAsset* DataToSet);
 
+	UFUNCTION()
+	void SetItemOwner(AActor* OwnerToSet);
+
+	UFUNCTION()
+	AActor* GetItemOwner() const { return ItemOwner; };
+
 #pragma endregion Setters
 public:
 	UFUNCTION(BlueprintCallable)
@@ -78,4 +84,8 @@ protected:
 	bool bIsRotated;
 
 #pragma endregion Properties
+
+private:
+	UPROPERTY()
+	AActor* ItemOwner = nullptr;
 };
