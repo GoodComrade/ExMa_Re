@@ -49,16 +49,16 @@ public:
 	void SetWeaponData(UWeaponDataAsset* DataToSet);
 
 public:
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	AActor* GetWeaponOwner() const { return WeaponOwner; };
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	class USkeletalMeshComponent* GetMesh() const { return Mesh; }
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	UExMa_WeaponAttributes* GetWeaponAttributes() const { return Attributes; };
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	UWeaponDataAsset* GetWeaponData() const { return WeaponData; };
 
 

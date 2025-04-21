@@ -153,6 +153,20 @@ AExMa_GameState* AExMa_RePawn::GetGameState()
 	return GameState;
 }
 
+FVector AExMa_RePawn::GetCameraLookAtDirection() const
+{
+	if(!BackCamera)
+		return FVector::ZeroVector;
+
+	// Точка начала взгляда (камера)
+	FVector Start = BackCamera->GetComponentLocation();
+
+	// Направление взгляда
+	FVector Forward = BackCamera->GetForwardVector();
+
+	return Start + (Forward * 10000.0f); // Точка "в бесконечности"
+}
+
 void AExMa_RePawn::BeginPlay()
 {
 	Super::BeginPlay();
@@ -263,7 +277,7 @@ void AExMa_RePawn::LookAround(const FInputActionValue& Value)
 	//TODO:
 	//* XSensitivity (Add here but set & implement in settings config)
 	float NewYaw = CurrentRotation.Yaw + LookValue.X * CameraSensivity;
-
+	
 	//TODO:
 	//* YSensitivity (Add here but set & implement in settings config)
 	//min & max of clamp set by DT config

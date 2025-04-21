@@ -56,6 +56,12 @@ public:
 
 	AExMa_GameState* GetGameState();
 
+	UPROPERTY(BlueprintReadOnly, Category = Camera)
+	FVector2D LookAtVector;
+
+	UFUNCTION(BlueprintCallable)
+	FVector GetCameraLookAtDirection() const;
+
 private:
 	UPROPERTY()
 	AExMaHUD* HUD;

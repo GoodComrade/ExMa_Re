@@ -381,6 +381,7 @@ AWeaponActor* AExMa_GameState::SpawnWeaponActor(UWeaponItemObject* ObjectFormSpa
 		//AWeaponActor* NewWeapon = World->SpawnActorDeferred<AWeaponActor>(WeaponData->WeaponActorClass, TargetOwnerPawn->GetActorTransform(), TargetOwnerPawn, TargetOwnerPawn, WeaponSpawnParams, SpawnedActorScale);
 
 		FActorSpawnParameters WeaponSpawnParams;
+		WeaponSpawnParams.Owner = TargetOwnerPawn;
 		WeaponSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		AWeaponActor* NewWeapon = World->SpawnActor<AWeaponActor>(WeaponData->WeaponActorClass, TargetOwnerPawn->GetActorLocation(), FRotator(), WeaponSpawnParams);

@@ -70,7 +70,7 @@ void AWeaponActor::SetMeshAnimInstance(UAnimBlueprint* AnimToSet)
 		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetMeshAnimInstance: AnimToSet IS NULLPTR!"));
 		return;
 	}
-	Mesh->SetAnimInstanceClass(AnimToSet->GetBlueprintClass());
+	Mesh->SetAnimInstanceClass(AnimToSet->GeneratedClass);
 }
 
 void AWeaponActor::SetWeaponData(UWeaponDataAsset* DataToSet)
