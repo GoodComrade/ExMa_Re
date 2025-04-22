@@ -53,9 +53,7 @@ void UWeaponComponent::AddWeaponSlots(TArray<FWeaponSlotInfo> SlotsArray, UStati
 
 		FName SlotName = GetSocketNameWithPrefix(TargetMesh, *SlotInfo.Key);
 
-		WeaponSlot->SetSlotOwner(GetOwner());
-		WeaponSlot->SetSlotSocketName(SlotName);
-		WeaponSlot->SetSlotDimensions(SlotInfo.Value);
+		WeaponSlot->InitWeaponSlot(GetOwner(), SlotInfo.Value, SlotName);
 
 		WeaponSlots.AddUnique(WeaponSlot);
 
@@ -68,6 +66,27 @@ void UWeaponComponent::AddWeaponSlots(TArray<FWeaponSlotInfo> SlotsArray, UStati
 UWeaponSlot* UWeaponComponent::GetSlotByIndex(int SlotIndex)
 {
 	return WeaponSlots[SlotIndex];
+}
+
+void UWeaponComponent::DestroyWeaponSlots()
+{
+	for (UWeaponSlot* WeaponSlot : WeaponSlots)
+	{
+		if (WeaponSlot)
+		{
+			if (WeaponSlot->GetInstalledWeaponActor())
+			{
+				WeaponSlot->GetInstalledWeaponActor()->SetWeaponData(nullptr);
+				WeaponSlot->GetInstalledWeaponActor()->SetMesh(nullptr);
+				WeaponSlot->GetInstalledWeaponActor()->SetMeshAnimInstance(nullptr);
+				WeaponSlot->GetInstalledWeaponActor()->SetWeaponOwner(nullptr);
+
+				WeaponSlot->GetInstalledWeaponActor()->Destroy();
+			}
+		}
+	}
+
+	WeaponSlots.Empty();
 }
 
 FName UWeaponComponent::GetSocketNameWithPrefix(UStaticMeshComponent* StaticMeshComponent, const FString& Prefix)

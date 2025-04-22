@@ -22,6 +22,27 @@ FWeaponSlotStruct UWeaponSlot::GetWeaponObjectAtSlot() const
 	return FWeaponSlotStruct(InstalledWeapon, InstallenWeaponTileStruct);
 }
 
+void UWeaponSlot::InitWeaponSlot(AActor* OwnerToSet, FTileStruct DimentionsToSet, FName SocketNameToSet)
+{
+	if (OwnerToSet == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::InitWeaponSlot: OwnerToSet IS nullptr!"));
+		return;
+	}
+
+	if (SocketNameToSet.IsNone())
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::InitWeaponSlot: SocketNameToSet IS NONE!"));
+		return;
+	}
+
+	SetSlotOwner(OwnerToSet);
+	SetSlotSocketName(SocketNameToSet);
+	SetSlotDimensions(DimentionsToSet);
+
+	InitWeaponActor();
+}
+
 void UWeaponSlot::SetSlotOwner(AActor* OwnerToSet)
 {
 	if (OwnerToSet == nullptr)
@@ -38,6 +59,25 @@ void UWeaponSlot::SetSlotDimensions(FTileStruct DimentionsToSet)
 	SlotDimentions = DimentionsToSet;
 }
 
+void UWeaponSlot::InitWeaponActor()
+{
+	AExMa_RePawn* PlayerPawn = Cast<AExMa_RePawn>(SlotOwner);
+	if (!PlayerPawn)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::AddWeaponInSlot: PlayerPawn IS NULLPTR!"));
+		return;
+	}
+
+	AWeaponActor* WeaponActor = PlayerPawn->GetGameState()->SpawnWeaponActor(SlotOwner, SlotSocket);
+	if (!WeaponActor)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::AddWeaponInSlot: WeaponActor IS NULLPTR!"));
+		return;
+	}
+
+	InstalledWeaponActor = WeaponActor;
+}
+
 bool UWeaponSlot::TryAddWeapon(UWeaponItemObject* WeaponToSet)
 {
 	if (IsSlotAvaliable(WeaponToSet, SlotDimentions))
@@ -51,14 +91,19 @@ bool UWeaponSlot::TryAddWeapon(UWeaponItemObject* WeaponToSet)
 
 void UWeaponSlot::AddWeaponInSlot(UWeaponItemObject* WeaponToSet)
 {
-	AExMa_RePawn* PlayerPawn = Cast<AExMa_RePawn>(SlotOwner);
-	if (!PlayerPawn)
+	if (WeaponToSet == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::AddWeaponInSlot: PlayerPawn IS NULLPTR!"));
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::AddWeaponInSlot: WeaponToSet IS NULLPTR!"));
 		return;
 	}
-	
-	
+
+	UWeaponDataAsset* WeaponData = Cast<UWeaponDataAsset>(WeaponToSet->GetItemData());
+
+	if (!WeaponData)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::AddWeaponInSlot: WeaponData IS NULLPTR!"));
+		return;
+	}
 
 	if (WeaponToSet->IsRotated())
 		WeaponToSet->Rotate();
@@ -66,14 +111,10 @@ void UWeaponSlot::AddWeaponInSlot(UWeaponItemObject* WeaponToSet)
 	InstalledWeapon = WeaponToSet;
 	InstalledWeapon->SetItemOwner(SlotOwner);
 
-	AWeaponActor* WeaponActor = PlayerPawn->GetGameState()->SpawnWeaponActor(InstalledWeapon, SlotOwner, SlotSocket);
-	if (!WeaponActor)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::AddWeaponInSlot: WeaponActor IS NULLPTR!"));
-		return;
-	}
-
-	InstalledWeaponActor = WeaponActor;
+	InstalledWeaponActor->SetWeaponData(WeaponData);
+	InstalledWeaponActor->SetMesh(WeaponData->WeaponMesh);
+	InstalledWeaponActor->SetMeshAnimInstance(WeaponData->MeshABP);
+	InstalledWeaponActor->SetWeaponOwner(SlotOwner);
 
 	OnWeaponSlotChanged.Broadcast();
 }
@@ -85,8 +126,11 @@ void UWeaponSlot::RemoveWeaponFromSlot(UWeaponItemObject* WeaponToRemove)
 
 	InstalledWeapon = nullptr;
 
-	InstalledWeaponActor->Destroy();
-	InstalledWeaponActor = nullptr;
+	//InstalledWeaponActor->Destroy();
+	InstalledWeaponActor->RemoveWeaponOwner();
+	InstalledWeaponActor->RemoveMesh();
+	InstalledWeaponActor->RemovetMeshAnimInstance();
+	InstalledWeaponActor->RemoveWeaponData();
 
 	OnWeaponSlotChanged.Broadcast();
 }

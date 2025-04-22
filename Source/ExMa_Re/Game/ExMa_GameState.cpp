@@ -350,14 +350,8 @@ void AExMa_GameState::SpawnTruckPawn(FVehicleConfigStruct TargetVehicleConfigRow
 	}
 }
 
-AWeaponActor* AExMa_GameState::SpawnWeaponActor(UWeaponItemObject* ObjectFormSpawn, AActor* TargetOwner, FName TargetSlotSocket)
+AWeaponActor* AExMa_GameState::SpawnWeaponActor(AActor* TargetOwner, FName TargetSlotSocket)
 {
-	if (!ObjectFormSpawn)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState::SpawnWeaponActor: ObjectFormSpawn is NULLPTR!"));
-		return nullptr;
-	}
-
 	AExMa_RePawn* TargetOwnerPawn = Cast<AExMa_RePawn>(TargetOwner);
 	if (!TargetOwner)
 	{
@@ -365,36 +359,18 @@ AWeaponActor* AExMa_GameState::SpawnWeaponActor(UWeaponItemObject* ObjectFormSpa
 		return nullptr;
 	}
 
-	UWeaponDataAsset* WeaponData = Cast<UWeaponDataAsset>(ObjectFormSpawn->GetItemData());
-	if (!WeaponData)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState::SpawnWeaponActor: WeaponData is NULLPTR!"));
-		return nullptr;
-	}
-
 	if (UWorld* World = GetWorld())
 	{
-		//ESpawnActorCollisionHandlingMethod WeaponSpawnParams = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		//ESpawnActorScaleMethod SpawnedActorScale = ESpawnActorScaleMethod::MultiplyWithRoot;
-		//FActorSpawnParameters WeaponSpawnParams;
-		//WeaponSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		//AWeaponActor* NewWeapon = World->SpawnActorDeferred<AWeaponActor>(WeaponData->WeaponActorClass, TargetOwnerPawn->GetActorTransform(), TargetOwnerPawn, TargetOwnerPawn, WeaponSpawnParams, SpawnedActorScale);
-
 		FActorSpawnParameters WeaponSpawnParams;
 		WeaponSpawnParams.Owner = TargetOwnerPawn;
 		WeaponSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-		AWeaponActor* NewWeapon = World->SpawnActor<AWeaponActor>(WeaponData->WeaponActorClass, TargetOwnerPawn->GetActorLocation(), FRotator(), WeaponSpawnParams);
+		AWeaponActor* NewWeapon = World->SpawnActor<AWeaponActor>(AWeaponActor::StaticClass(), TargetOwnerPawn->GetActorLocation(), FRotator(), WeaponSpawnParams);
 		if (!NewWeapon)
 		{
 			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState::SpawnWeaponActor: NewWeapon is NULLPTR!"));
 			return nullptr;
 		}
-
-		NewWeapon->SetWeaponData(WeaponData);
-		NewWeapon->SetMesh(WeaponData->WeaponMesh);
-		NewWeapon->SetMeshAnimInstance(WeaponData->MeshABP);
-		NewWeapon->SetWeaponOwner(TargetOwnerPawn);
 
 		AVehiclePart* TargetVehiclePart = TargetOwnerPawn->GetStructuralComponent()->GetTargetVehiclePartBySocket(TargetSlotSocket);
 		if (!TargetVehiclePart)
@@ -405,7 +381,6 @@ AWeaponActor* AExMa_GameState::SpawnWeaponActor(UWeaponItemObject* ObjectFormSpa
 
 		NewWeapon->AttachToComponent(TargetVehiclePart->GetVehicleStaticMeshComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TargetSlotSocket);
 
-		//NewWeapon->FinishSpawning(NewWeapon->GetActorTransform());
 		return NewWeapon;
 	}
 
@@ -571,6 +546,7 @@ AExMa_RePawn* AExMa_GameState::CreateAndPossessVehicle(UVehicleDataAsset* Vehicl
 	PlayerController->UnPossess();
 	PossessedPawn->GetStructuralComponent()->DestroyCabin();
 	PossessedPawn->GetStructuralComponent()->DestroyBody();
+	PossessedPawn->GetWeaponComponent()->DestroyWeaponSlots();
 	PossessedPawn->Destroy();
 
 	PlayerController->Possess(NewPlayerPawn);

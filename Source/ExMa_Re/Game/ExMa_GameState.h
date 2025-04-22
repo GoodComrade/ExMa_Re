@@ -56,7 +56,7 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	AWeaponActor* SpawnWeaponActor(UWeaponItemObject* ObjectFormSpawn, AActor* TargetOwner, FName TargetSlotSocket);
+	AWeaponActor* SpawnWeaponActor(AActor* TargetOwner, FName TargetSlotSocket);
 
 private:
 	UWeaponItemObject* CreateWeaponItem(FItemConfigStruct TargetItemRow, FName TargetWeaponName, UDataTable* WeaponsDT);

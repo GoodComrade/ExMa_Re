@@ -63,6 +63,54 @@ void AWeaponActor::SetMesh(USkeletalMesh* MeshToSet)
 	Mesh->SetSkeletalMesh(MeshToSet);
 }
 
+void AWeaponActor::RemoveWeaponOwner()
+{
+	if (WeaponOwner)
+	{
+		WeaponOwner = nullptr;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::RemoveWeaponOwner: WeaponOwner IS NULLPTR!"));
+	}
+}
+
+void AWeaponActor::RemoveMesh()
+{
+	if (Mesh)
+	{
+		Mesh->SetSkeletalMesh(nullptr);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::RemoveMesh: Mesh IS NULLPTR!"));
+	}
+}
+
+void AWeaponActor::RemovetMeshAnimInstance()
+{
+	if (Mesh)
+	{
+		Mesh->SetAnimInstanceClass(nullptr);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::RemovetMeshAnimInstance: Mesh IS NULLPTR!"));
+	}
+}
+
+void AWeaponActor::RemoveWeaponData()
+{
+	if (WeaponData)
+	{
+		WeaponData = nullptr;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::RemoveWeaponData: WeaponData IS NULLPTR!"));
+	}
+}
+
 void AWeaponActor::SetMeshAnimInstance(UAnimBlueprint* AnimToSet)
 {
 	if (!AnimToSet)

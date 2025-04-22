@@ -50,10 +50,7 @@ public:
 	FWeaponSlotStruct GetWeaponObjectAtSlot() const;
 
 	UFUNCTION(BlueprintCallable)
-	void SetSlotOwner(AActor* OwnerToSet);
-
-	UFUNCTION(BlueprintCallable)
-	void SetSlotDimensions(FTileStruct DimentionsToSet);
+	void InitWeaponSlot(AActor* OwnerToSet, FTileStruct DimentionsToSet, FName SocketNameToSet);
 
 	UFUNCTION(BlueprintCallable)
 	bool TryAddWeapon(UWeaponItemObject* WeaponToSet);
@@ -73,8 +70,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool HasWeaponInSlot();
 
-	UFUNCTION(BlueprintCallable)
+private:
+	void SetSlotOwner(AActor* OwnerToSet);
+
 	void SetSlotSocketName(FName SocketName);
+
+	void SetSlotDimensions(FTileStruct DimentionsToSet);
+
+	void InitWeaponActor();
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)

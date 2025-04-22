@@ -40,6 +40,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UWeaponSlot* GetSlotByIndex(int SlotIndex);
 
+	UFUNCTION(BlueprintCallable)
+	void DestroyWeaponSlots();
+
 private:
 	TArray<UWeaponSlot*> WeaponSlots;
 
