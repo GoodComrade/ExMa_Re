@@ -63,6 +63,9 @@ void AExMaHUD::InitInteractionWidget(UInventoryComponent* InInventoryComponentRe
         MainWidgetRef->SetInventoryComponentRef(InInventoryComponentRef);
         MainWidgetRef->SetOutInventoryComponentRef(InOutInventoryComponentRef);
         MainWidgetRef->SetWeaponComponentRef(InWeaponComponent);
+
+        MainWidgetRef->AddToViewport();
+        MainWidgetRef->SetVisibility(ESlateVisibility::Collapsed);
     }
 }
 
@@ -70,7 +73,7 @@ void AExMaHUD::ToggleWidgetVisibility(bool bIsEnbale)
 {
     if (bIsEnbale == false)
     {
-        MainWidgetRef->RemoveFromParent();
+        MainWidgetRef->SetVisibility(ESlateVisibility::Collapsed);
 
         FInputModeGameOnly InputMode;
         GetOwningPlayerController()->SetInputMode(InputMode);
@@ -78,7 +81,7 @@ void AExMaHUD::ToggleWidgetVisibility(bool bIsEnbale)
     }
     else
     {
-        MainWidgetRef->AddToViewport();
+        MainWidgetRef->SetVisibility(ESlateVisibility::Visible);
 
         FInputModeGameAndUI InputMode;
         InputMode.SetWidgetToFocus(MainWidgetRef->TakeWidget());
@@ -107,9 +110,9 @@ void AExMaHUD::TogglePickupHintVisibility(bool bNewState)
         return;
 
     if (bNewState)
-        PickupHintRef->AddToViewport();
+        PickupHintRef->SetVisibility(ESlateVisibility::Visible);
     else
-        PickupHintRef->RemoveFromParent();
+        PickupHintRef->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void AExMaHUD::ChangeMainWidgetState()
