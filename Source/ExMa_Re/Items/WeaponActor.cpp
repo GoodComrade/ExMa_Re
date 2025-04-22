@@ -63,6 +63,48 @@ void AWeaponActor::SetMesh(USkeletalMesh* MeshToSet)
 	Mesh->SetSkeletalMesh(MeshToSet);
 }
 
+void AWeaponActor::SetWeaponData(UWeaponDataAsset* DataToSet)
+{
+	if (!DataToSet)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetWeaponData: DataToSet IS NULLPTR!"));
+		return;
+	}
+
+	WeaponData = DataToSet;
+}
+
+void AWeaponActor::SetAttributes()
+{
+	if (!WeaponData)
+		return;
+
+	Attributes->SetDamage(WeaponData->Damage);
+	Attributes->SetAttackCost(WeaponData->AttackCost);
+	Attributes->SetCooldown(WeaponData->Cooldown);
+	Attributes->SetShootDelay(WeaponData->ShootDelay);
+	Attributes->SetReloadTime(WeaponData->ReloadTime);
+	Attributes->SetSpread(WeaponData->Spread);
+	Attributes->SetMaxBulletsCount(WeaponData->MaxBulletsCount);
+	Attributes->SetCurrentMagazineAmount(WeaponData->CurrenMagazineCapacity);
+	Attributes->SetMagazineSize(WeaponData->MaxMagazineCapacity);
+
+	Attributes->SetMinRange(WeaponData->MinRange);
+	Attributes->SetMaxRange(WeaponData->MaxRange);
+
+
+	Attributes->SetHealth(WeaponData->Health);
+	Attributes->SetMaxHealth(WeaponData->MaxHealth);
+
+
+
+
+
+	Attributes->SetAimTime(WeaponData->AimTime);
+
+	UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetAttributes: AimTime: %.f"), Attributes->GetAimTime());
+}
+
 void AWeaponActor::RemoveWeaponOwner()
 {
 	if (WeaponOwner)
@@ -111,6 +153,32 @@ void AWeaponActor::RemoveWeaponData()
 	}
 }
 
+void AWeaponActor::RemoveAttributes()
+{
+	Attributes->SetDamage(0);
+	Attributes->SetAttackCost(0);
+	Attributes->SetCooldown(0);
+	Attributes->SetShootDelay(0);
+	Attributes->SetReloadTime(0);
+	Attributes->SetSpread(0);
+	Attributes->SetMaxBulletsCount(0);
+	Attributes->SetCurrentMagazineAmount(0);
+	Attributes->SetMagazineSize(0);
+
+	Attributes->SetMinRange(0);
+	Attributes->SetMaxRange(0);
+
+
+	Attributes->SetHealth(0);
+	Attributes->SetMaxHealth(0);
+
+
+
+
+
+	Attributes->SetAimTime(0);
+}
+
 void AWeaponActor::SetMeshAnimInstance(UAnimBlueprint* AnimToSet)
 {
 	if (!AnimToSet)
@@ -119,15 +187,4 @@ void AWeaponActor::SetMeshAnimInstance(UAnimBlueprint* AnimToSet)
 		return;
 	}
 	Mesh->SetAnimInstanceClass(AnimToSet->GeneratedClass);
-}
-
-void AWeaponActor::SetWeaponData(UWeaponDataAsset* DataToSet)
-{
-	if (!DataToSet)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetWeaponData: DataToSet IS NULLPTR!"));
-		return;
-	}
-
-	WeaponData = DataToSet;
 }

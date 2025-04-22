@@ -39,18 +39,17 @@ public:
 	UFUNCTION()
 	void SetWeaponOwner(AActor* OwnerToSet);
 
-	
-
 	UFUNCTION()
 	void SetMesh(USkeletalMesh* MeshToSet);
-
-	
 
 	UFUNCTION()
 	void SetMeshAnimInstance(UAnimBlueprint* AnimToSet);
 
 	UFUNCTION()
 	void SetWeaponData(UWeaponDataAsset* DataToSet);
+
+	UFUNCTION()
+	void SetAttributes();
 
 public:
 	UFUNCTION()
@@ -64,6 +63,9 @@ public:
 
 	UFUNCTION()
 	void RemoveWeaponData();
+
+	UFUNCTION()
+	void RemoveAttributes();
 
 public:
 	UFUNCTION(BlueprintCallable)
