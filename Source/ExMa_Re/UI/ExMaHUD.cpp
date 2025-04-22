@@ -102,6 +102,15 @@ void AExMaHUD::ToggleWidgetVisibility(bool bIsEnbale)
 void AExMaHUD::InitPickupHintWidget()
 {
     PickupHintRef = CreateWidget<UUserWidget>(GetOwningPlayerController(), PickupHintClass);
+
+    if (!PickupHintRef)
+    {
+		UE_LOG(LogTemp, Warning, TEXT("AExMaHUD::InitPickupHintWidget: PickupHintRef is nullptr"));
+		return;
+    }
+
+    PickupHintRef->AddToViewport();
+    PickupHintRef->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void AExMaHUD::TogglePickupHintVisibility(bool bNewState)

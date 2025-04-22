@@ -369,6 +369,12 @@ void AExMa_RePawn::ProcessSpawnCrate()
 
 void AExMa_RePawn::ProcessTogglePickupState(bool NewState)
 {
+	if (!HUD)
+	{
+		UE_LOG(LogTemplateVehicle, Error, TEXT("AExMa_RePawn::ProcessTogglePickupState: HUD is nullptr."));
+		return;
+	}
+
 	bIsPickingItems = NewState;
 
 	if (HUD)
