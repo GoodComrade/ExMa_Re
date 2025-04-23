@@ -105,6 +105,9 @@ void UWeaponSlot::AddWeaponInSlot(UWeaponItemObject* WeaponToSet)
 		return;
 	}
 
+	if (InstalledWeapon)
+		ReturnWeaponObjectToInventory();
+
 	if (WeaponToSet->IsRotated())
 		WeaponToSet->Rotate();
 
@@ -161,8 +164,21 @@ void UWeaponSlot::SetWeaponActor()
 	//call spawn weapon actor from game state & set returned value to InstalledWeaponActor;
 }
 
+void UWeaponSlot::ReturnWeaponObjectToInventory()
+{
+	AExMa_RePawn* OwnerPawn = Cast<AExMa_RePawn>(SlotOwner);
+	if (!OwnerPawn)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWeaponSlot::AddWeaponInSlot: OwnerPawn IS NULLPTR!"));
+		return;
+	}
+
+	OwnerPawn->AddItemObjectToInventory(InstalledWeapon);
+	InstalledWeapon = nullptr;
+}
+
 bool UWeaponSlot::IsSlotAvaliable(UWeaponItemObject* InWeapon, FTileStruct SlotSize)
 {
-	return IsDimentionsMatching(InWeapon, SlotSize) && HasWeaponInSlot() == false;
+	return IsDimentionsMatching(InWeapon, SlotSize)/* && HasWeaponInSlot() == false*/;
 }
 

@@ -23,6 +23,7 @@ class UVehicleDataAsset;
 class AChestActor;
 class AVehiclePart;
 class AExMa_GameState;
+class UItemObject;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
@@ -56,11 +57,11 @@ public:
 
 	AExMa_GameState* GetGameState();
 
-	UPROPERTY(BlueprintReadOnly, Category = Camera)
-	FVector2D LookAtVector;
-
 	UFUNCTION(BlueprintCallable)
 	FVector GetCameraLookAtDirection() const;
+
+	UFUNCTION()
+	void AddItemObjectToInventory(UItemObject* ItemToAdd);
 
 private:
 	UPROPERTY()

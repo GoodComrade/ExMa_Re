@@ -100,6 +100,9 @@ private:
 	UFUNCTION()
 	void SetWeaponActor();
 
+	UFUNCTION()
+	void ReturnWeaponObjectToInventory();
+
 private:
 	UPROPERTY()
 	FTileStruct SlotDimentions;

@@ -318,6 +318,20 @@ void AExMa_RePawn::ToggleInventory(const FInputActionValue& Value)
 		HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(World));
 }
 
+void AExMa_RePawn::AddItemObjectToInventory(UItemObject* ItemToAdd)
+{
+	if (!ItemToAdd)
+		return;
+
+	if (InventoryComponent->TryAddItem(ItemToAdd))
+		return;
+
+	if (OutInventoryComponent->TryAddItem(ItemToAdd))
+		return;
+
+	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::AddItemObjectToInventory: Fail to return item to inventory"));
+}
+
 void AExMa_RePawn::ProcessPickupItems()
 {
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount before transfer: %i"), InterractedCrates.Num());
