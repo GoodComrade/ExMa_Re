@@ -63,6 +63,9 @@ public:
 	UFUNCTION()
 	void AddItemObjectToInventory(UItemObject* ItemToAdd);
 
+	UFUNCTION()
+	bool IsDead();
+
 private:
 	UPROPERTY()
 	AExMaHUD* HUD;

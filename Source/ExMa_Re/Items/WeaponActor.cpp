@@ -3,6 +3,7 @@
 
 #include "Items/WeaponActor.h"
 #include "AbilitySystemComponent.h"
+#include "ExMa_Re/Components/AbilityContainer.h"
 #include "Animation/AnimBlueprint.h"
 
 AWeaponActor::AWeaponActor()
@@ -19,6 +20,8 @@ AWeaponActor::AWeaponActor()
 
 	Attributes = CreateDefaultSubobject<UExMa_WeaponAttributes>(TEXT("WeaponAttributes"));
 	AbilitySystem->AddSpawnedAttribute(Attributes);
+
+	AbilityContainer = CreateDefaultSubobject<UAbilityContainer>(TEXT("AbilityContainer"));
 }
 
 void AWeaponActor::Tick(float Delta)
@@ -39,6 +42,21 @@ void AWeaponActor::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::BeginPlay: WeaponData IS NULLPTR!"));
 		return;
 	}
+
+	AbilityContainer->InitComponent();
+}
+
+#pragma region WeaponActor
+
+void AWeaponActor::SetWeaponData(UWeaponDataAsset* DataToSet)
+{
+	if (!DataToSet)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetWeaponData: DataToSet IS NULLPTR!"));
+		return;
+	}
+
+	WeaponData = DataToSet;
 }
 
 void AWeaponActor::SetWeaponOwner(AActor* OwnerToSet)
@@ -52,26 +70,45 @@ void AWeaponActor::SetWeaponOwner(AActor* OwnerToSet)
 	WeaponOwner = OwnerToSet;
 }
 
-void AWeaponActor::SetMesh(USkeletalMesh* MeshToSet)
+void AWeaponActor::SetWeaponParamsFromData()
 {
-	if (!MeshToSet)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetMesh: MeshToSet IS NULLPTR!"));
-		return;
-	}
-
-	Mesh->SetSkeletalMesh(MeshToSet);
+	SetMesh();
+	SetMeshAnimInstance();
+	SetWeaponAbilities();
+	SetAttributes();
 }
 
-void AWeaponActor::SetWeaponData(UWeaponDataAsset* DataToSet)
+#pragma endregion PublicPropertySetters
+
+#pragma region WeaponActor
+
+void AWeaponActor::SetMesh()
 {
-	if (!DataToSet)
+	if (!WeaponData)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetWeaponData: DataToSet IS NULLPTR!"));
+		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetMesh: WeaponData IS NULLPTR!"));
 		return;
 	}
 
-	WeaponData = DataToSet;
+	Mesh->SetSkeletalMesh(WeaponData->WeaponMesh);
+}
+
+void AWeaponActor::SetMeshAnimInstance()
+{
+	if (!WeaponData)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetMeshAnimInstance: WeaponData IS NULLPTR!"));
+		return;
+	}
+	Mesh->SetAnimInstanceClass(WeaponData->MeshABP->GeneratedClass);
+}
+
+void AWeaponActor::SetWeaponAbilities()
+{
+	if (!WeaponData)
+		return;
+
+	AbilityContainer->SetAbilities(WeaponData->FireAbility, WeaponData->ReloadAbility);
 }
 
 void AWeaponActor::SetAttributes()
@@ -104,6 +141,32 @@ void AWeaponActor::SetAttributes()
 
 	UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetAttributes: AimTime: %.f"), Attributes->GetAimTime());
 }
+
+void AWeaponActor::SetAnimMotages()
+{
+	if (!WeaponData)
+		return;
+
+	FireMontage = WeaponData->FireMontage;
+	ReloadMontage = WeaponData->ReloadMontage;
+}
+
+#pragma endregion PrivatePropertySetters
+
+#pragma region WeaponActor
+
+void AWeaponActor::RemoveWeaponParams()
+{
+	RemoveWeaponData();
+	RemoveWeaponOwner();
+	RemoveMesh();
+	RemovetMeshAnimInstance();
+	RemoveAttributes();
+}
+
+#pragma endregion PublicPropertyRemovers
+
+#pragma region WeaponActor
 
 void AWeaponActor::RemoveWeaponOwner()
 {
@@ -179,12 +242,24 @@ void AWeaponActor::RemoveAttributes()
 	Attributes->SetAimTime(0);
 }
 
-void AWeaponActor::SetMeshAnimInstance(UAnimBlueprint* AnimToSet)
+#pragma endregion PrivatePropertyRemovers
+
+bool AWeaponActor::CastAttack()
 {
-	if (!AnimToSet)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::SetMeshAnimInstance: AnimToSet IS NULLPTR!"));
-		return;
-	}
-	Mesh->SetAnimInstanceClass(AnimToSet->GeneratedClass);
+	return AbilityContainer->CastPrimaryAttack();
+}
+
+void AWeaponActor::CastReload() const
+{
+	AbilityContainer->CastReload();
+}
+
+void AWeaponActor::DisableAbilities()
+{
+	AbilityContainer->bCanCastAbilities = false;
+}
+
+void AWeaponActor::EnableAbilities()
+{
+	AbilityContainer->bCanCastAbilities = true;
 }

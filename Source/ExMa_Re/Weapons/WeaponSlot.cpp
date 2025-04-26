@@ -115,11 +115,10 @@ void UWeaponSlot::AddWeaponInSlot(UWeaponItemObject* WeaponToSet)
 	InstalledWeapon->SetItemOwner(SlotOwner);
 
 	InstalledWeaponActor->SetWeaponData(WeaponData);
-	InstalledWeaponActor->SetMesh(WeaponData->WeaponMesh);
-	InstalledWeaponActor->SetMeshAnimInstance(WeaponData->MeshABP);
 	InstalledWeaponActor->SetWeaponOwner(SlotOwner);
+	InstalledWeaponActor->SetWeaponParamsFromData();
 
-	InstalledWeaponActor->SetAttributes();
+	InstalledWeaponActor->EnableAbilities();
 
 	OnWeaponSlotChanged.Broadcast();
 }
@@ -131,12 +130,8 @@ void UWeaponSlot::RemoveWeaponFromSlot(UWeaponItemObject* WeaponToRemove)
 
 	InstalledWeapon = nullptr;
 
-	InstalledWeaponActor->RemoveWeaponOwner();
-	InstalledWeaponActor->RemoveMesh();
-	InstalledWeaponActor->RemovetMeshAnimInstance();
-	InstalledWeaponActor->RemoveWeaponData();
-
-	InstalledWeaponActor->RemoveAttributes();
+	InstalledWeaponActor->RemoveWeaponParams();
+	InstalledWeaponActor->DisableAbilities();
 
 	OnWeaponSlotChanged.Broadcast();
 }

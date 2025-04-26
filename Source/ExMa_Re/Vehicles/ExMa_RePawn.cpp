@@ -332,6 +332,11 @@ void AExMa_RePawn::AddItemObjectToInventory(UItemObject* ItemToAdd)
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::AddItemObjectToInventory: Fail to return item to inventory"));
 }
 
+bool AExMa_RePawn::IsDead()
+{
+	return false;
+}
+
 void AExMa_RePawn::ProcessPickupItems()
 {
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount before transfer: %i"), InterractedCrates.Num());

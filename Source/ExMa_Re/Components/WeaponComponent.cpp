@@ -76,11 +76,7 @@ void UWeaponComponent::DestroyWeaponSlots()
 		{
 			if (WeaponSlot->GetInstalledWeaponActor())
 			{
-				WeaponSlot->GetInstalledWeaponActor()->SetWeaponData(nullptr);
-				WeaponSlot->GetInstalledWeaponActor()->SetMesh(nullptr);
-				WeaponSlot->GetInstalledWeaponActor()->SetMeshAnimInstance(nullptr);
-				WeaponSlot->GetInstalledWeaponActor()->SetWeaponOwner(nullptr);
-
+				WeaponSlot->GetInstalledWeaponActor()->RemoveWeaponParams();
 				WeaponSlot->GetInstalledWeaponActor()->Destroy();
 			}
 		}

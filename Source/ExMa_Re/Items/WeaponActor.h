@@ -11,6 +11,7 @@
 #include "WeaponActor.generated.h"
 
 class UAbilitySystemComponent;
+class UAbilityContainer;
 class USkeletalMesh;
 
 UCLASS(Blueprintable, BlueprintType)
@@ -29,29 +30,37 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(BlueprintReadOnly, Category = Abilities)
-	UAbilitySystemComponent* AbilitySystem;
-
-	UPROPERTY(BlueprintReadOnly, Category = Abilities)
-	UExMa_WeaponAttributes* Attributes;
+#pragma region WeaponActor
 
 public:
-	UFUNCTION()
-	void SetWeaponOwner(AActor* OwnerToSet);
-
-	UFUNCTION()
-	void SetMesh(USkeletalMesh* MeshToSet);
-
-	UFUNCTION()
-	void SetMeshAnimInstance(UAnimBlueprint* AnimToSet);
-
 	UFUNCTION()
 	void SetWeaponData(UWeaponDataAsset* DataToSet);
 
 	UFUNCTION()
+	void SetWeaponOwner(AActor* OwnerToSet);
+
+	UFUNCTION()
+	void SetWeaponParamsFromData();
+
+private:
+	void SetMesh();
+
+	void SetMeshAnimInstance();
+
+	void SetWeaponAbilities();
+
 	void SetAttributes();
 
+	void SetAnimMotages();
+
+#pragma endregion PropertySetters
+
+#pragma region WeaponActor
 public:
+	UFUNCTION()
+	void RemoveWeaponParams();
+
+private:
 	UFUNCTION()
 	void RemoveWeaponOwner();
 
@@ -67,6 +76,19 @@ public:
 	UFUNCTION()
 	void RemoveAttributes();
 
+#pragma endregion PropertyRemovers
+
+public:
+	UFUNCTION(BlueprintCallable)
+	bool CastAttack();
+
+	UFUNCTION(BlueprintCallable)
+	void CastReload() const;
+
+public:
+	void DisableAbilities();
+	void EnableAbilities();
+
 public:
 	UFUNCTION(BlueprintCallable)
 	AActor* GetWeaponOwner() const { return WeaponOwner; };
@@ -80,15 +102,35 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UWeaponDataAsset* GetWeaponData() const { return WeaponData; };
 
+	UFUNCTION(BlueprintCallable)
+	UAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilitySystem; };
+
+	UFUNCTION(BlueprintCallable)
+	UAbilityContainer* GetAbilityContainer() const { return AbilityContainer; };
 
 private:
-
-	UPROPERTY(Category = Weapon, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USkeletalMeshComponent> Mesh;
 
-	UPROPERTY(Category = Weapon, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UWeaponDataAsset* WeaponData;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Abilities)
+	UAbilitySystemComponent* AbilitySystem;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Abilities)
+	UAbilityContainer* AbilityContainer;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Abilities)
+	UExMa_WeaponAttributes* Attributes;
 
 	UPROPERTY()
 	AActor* WeaponOwner = nullptr;
+
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = Montage)
+	UAnimMontage* FireMontage;
+
+	UPROPERTY(BlueprintReadOnly, Category = Montage)
+	UAnimMontage* ReloadMontage;
 };

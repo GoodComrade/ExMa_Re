@@ -9,6 +9,7 @@
 #include "WeaponDataAsset.generated.h"
 
 class AWeaponActor;
+class UGameplayAbility;
 
 UCLASS(BlueprintType, Blueprintable)
 class EXMA_RE_API UWeaponDataAsset : public UItemDataAsset
@@ -29,6 +30,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UAnimBlueprint* MeshABP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UGameplayAbility> FireAbility;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UGameplayAbility> ReloadAbility;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* FireMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* ReloadMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTagContainer WeaponType;

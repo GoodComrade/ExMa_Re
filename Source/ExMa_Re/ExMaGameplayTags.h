@@ -1,0 +1,53 @@
+#pragma once
+
+#include "NativeGameplayTags.h"
+
+namespace ExMaGameplayTags
+{
+	// Abilities
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_Damage);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_Damage_Decrease);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_Damage_Factor);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_ReloadTime);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_Cost);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_MagazineSize);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_BulletsCount);
+
+	//AbilityDamageTypes
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_Damage_Bullet);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_Damage_Explosion);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_Damage_Energy);
+
+	//DamageTypes
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Damage_Bullet);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Damage_Explosion);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Damage_Energy);
+
+	//ItemTypes
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Item_Cargo);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Item_Weapon);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Item_Vehicle_Upgrade);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Item_Vehicle_Reinforce);
+
+	//WeaponTypes
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_LightMachineGun);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_MediumMachineGun);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_HeavyMachineGun);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_LightArtilery);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_MediumArtilery);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_SideArtilery);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_LightShotgun);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_MediumShotgun);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_RocketLauncher);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_SideRocketLauncher);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_Canon);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_LightPlasmaGun);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_MediumPlasmaGun);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponType_PlasmaCanon);
+
+	// Status
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Status_Death);
+
+	// Weapons
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Weapon);
+}
