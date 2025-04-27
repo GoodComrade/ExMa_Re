@@ -49,4 +49,11 @@ namespace ExMaGameplayTags
 
 	// Weapon
 	UE_DEFINE_GAMEPLAY_TAG(TAG_Weapon, "Weapon");
+
+	// WeaponGroups
+	UE_DEFINE_GAMEPLAY_TAG(TAG_WeaponGroup_One, "WeaponGroup.One");
+	UE_DEFINE_GAMEPLAY_TAG(TAG_WeaponGroup_Two, "WeaponGroup.Two");
+	UE_DEFINE_GAMEPLAY_TAG(TAG_WeaponGroup_Three, "WeaponGroup.Three");
+	UE_DEFINE_GAMEPLAY_TAG(TAG_WeaponGroup_Four, "WeaponGroup.Four");
+	UE_DEFINE_GAMEPLAY_TAG(TAG_WeaponGroup_Five, "WeaponGroup.Five");
 }

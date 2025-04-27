@@ -55,6 +55,8 @@ void UExMaGameplayAbility::CreateStootLineTrace(TArray<FGameplayEffectSpecHandle
 		{
 			UE_LOG(LogTemplateVehicle, Warning, TEXT("UExMaGameplayAbility::CreateStootLineTrace: LineTraceHitSomething!"));
 
+			DrawDebugLine(World, TraceStart, HitResult.ImpactPoint, FColor::Red, false, -1.0f, 0, 2.0f);
+
 			AActor* HitActor = Cast<AActor>(HitResult.GetActor());
 
 			if (!HitActor || HitActor == TraceInstigator|| HitActor == InstigatorWeapon->GetWeaponOwner())
@@ -67,7 +69,7 @@ void UExMaGameplayAbility::CreateStootLineTrace(TArray<FGameplayEffectSpecHandle
 
 			ApplyTraceEffectsToTarget(TraceEffects, Target->GetAbilitySystemComponent());
 
-			DrawDebugLine(World, TraceStart, HitResult.ImpactPoint, FColor::Red, false, -1.0f, 0, 2.0f);
+			
 
 			UE_LOG(LogTemplateVehicle, Warning, TEXT("UExMaGameplayAbility::CreateStootLineTrace: LineTraceHitActor!"));
 		}

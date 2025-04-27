@@ -50,4 +50,11 @@ namespace ExMaGameplayTags
 
 	// Weapons
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Weapon);
+
+	// WeaponGroups
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponGroup_One);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponGroup_Two);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponGroup_Three);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponGroup_Four);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_WeaponGroup_Five);
 }

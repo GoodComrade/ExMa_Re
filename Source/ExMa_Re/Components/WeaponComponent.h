@@ -7,6 +7,7 @@
 #include "ExMa_Re/Structs/TileStruct.h"
 #include "Components/StaticMeshComponent.h"
 #include "ExMa_Re/Structs/WeaponSlotInfo.h"
+#include "GameplayTagContainer.h"
 #include "WeaponComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponSlotsCreated, TArray<UWeaponSlot*>, CreatedSlot);
@@ -42,6 +43,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DestroyWeaponSlots();
+
+	UFUNCTION(BlueprintCallable)
+	void ShootWeaponGroup(FGameplayTag GroupTag);
 
 private:
 	TArray<UWeaponSlot*> WeaponSlots;

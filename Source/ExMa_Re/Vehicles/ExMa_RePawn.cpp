@@ -31,6 +31,8 @@
 #include "ExMa_VehicleAttributes.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 
+#include "ExMaGameplayTags.h"
+
 #include "Kismet/GameplayStatics.h"
 
 
@@ -130,6 +132,13 @@ void AExMa_RePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 
 		// reset the vehicle 
 		EnhancedInputComponent->BindAction(ResetVehicleAction, ETriggerEvent::Triggered, this, &AExMa_RePawn::ResetVehicle);
+
+		//FireGroups
+		EnhancedInputComponent->BindAction(FireGroupOneAction, ETriggerEvent::Triggered, this, &AExMa_RePawn::ShootFireGroupOne);
+		EnhancedInputComponent->BindAction(FireGroupTwoAction, ETriggerEvent::Triggered, this, &AExMa_RePawn::ShootFireGroupTwo);
+		EnhancedInputComponent->BindAction(FireGroupThreeAction, ETriggerEvent::Triggered, this, &AExMa_RePawn::ShootFireGroupThree);
+		EnhancedInputComponent->BindAction(FireGroupFourAction, ETriggerEvent::Triggered, this, &AExMa_RePawn::ShootFireGroupFour);
+		EnhancedInputComponent->BindAction(FireGroupFiveAction, ETriggerEvent::Triggered, this, &AExMa_RePawn::ShootFireGroupFive);
 
 	}
 	else
@@ -422,6 +431,36 @@ void AExMa_RePawn::ResetVehicle(const FInputActionValue& Value)
 	GetMesh()->SetPhysicsLinearVelocity(FVector::ZeroVector);
 
 	UE_LOG(LogTemplateVehicle, Error, TEXT("Reset Vehicle"));
+}
+
+void AExMa_RePawn::ShootFireGroupOne(const FInputActionValue& Value)
+{
+	if (WeaponComponent)
+		WeaponComponent->ShootWeaponGroup(ExMaGameplayTags::TAG_WeaponGroup_One);
+}
+
+void AExMa_RePawn::ShootFireGroupTwo(const FInputActionValue& Value)
+{
+	if (WeaponComponent)
+		WeaponComponent->ShootWeaponGroup(ExMaGameplayTags::TAG_WeaponGroup_Two);
+}
+
+void AExMa_RePawn::ShootFireGroupThree(const FInputActionValue& Value)
+{
+	if (WeaponComponent)
+		WeaponComponent->ShootWeaponGroup(ExMaGameplayTags::TAG_WeaponGroup_Three);
+}
+
+void AExMa_RePawn::ShootFireGroupFour(const FInputActionValue& Value)
+{
+	if (WeaponComponent)
+		WeaponComponent->ShootWeaponGroup(ExMaGameplayTags::TAG_WeaponGroup_Four);
+}
+
+void AExMa_RePawn::ShootFireGroupFive(const FInputActionValue& Value)
+{
+	if (WeaponComponent)
+		WeaponComponent->ShootWeaponGroup(ExMaGameplayTags::TAG_WeaponGroup_Five);
 }
 
 int AExMa_RePawn::GetHealth() const

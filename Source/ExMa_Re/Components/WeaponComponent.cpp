@@ -6,6 +6,7 @@
 #include "ExMa_Re/Structs/TileStruct.h"
 #include "Engine/StaticMeshSocket.h"
 #include "Components/StaticMeshComponent.h"
+#include "ExMaGameplayTags.h"
 #include "ExMa_Re/Structs/WeaponSlotInfo.h"
 
 // Sets default values for this component's properties
@@ -54,6 +55,7 @@ void UWeaponComponent::AddWeaponSlots(TArray<FWeaponSlotInfo> SlotsArray, UStati
 		FName SlotName = GetSocketNameWithPrefix(TargetMesh, *SlotInfo.Key);
 
 		WeaponSlot->InitWeaponSlot(GetOwner(), SlotInfo.Value, SlotName);
+		WeaponSlot->SetFireGroupTag(ExMaGameplayTags::TAG_WeaponGroup_One);
 
 		WeaponSlots.AddUnique(WeaponSlot);
 
@@ -83,6 +85,20 @@ void UWeaponComponent::DestroyWeaponSlots()
 	}
 
 	WeaponSlots.Empty();
+}
+
+void UWeaponComponent::ShootWeaponGroup(FGameplayTag GroupTag)
+{
+	for (UWeaponSlot* Slot : WeaponSlots)
+	{
+		if (Slot && Slot->GetFireGroupTag() == GroupTag)
+		{
+			if (AWeaponActor* Weapon = Slot->GetInstalledWeaponActor())
+			{
+				Weapon->CastAttack();
+			}
+		}
+	}
 }
 
 FName UWeaponComponent::GetSocketNameWithPrefix(UStaticMeshComponent* StaticMeshComponent, const FString& Prefix)

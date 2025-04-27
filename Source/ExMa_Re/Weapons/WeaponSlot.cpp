@@ -149,6 +149,11 @@ bool UWeaponSlot::HasWeaponInSlot()
 	return InstalledWeapon != nullptr ? true : false;
 }
 
+void UWeaponSlot::SetFireGroupTag(FGameplayTag InFireGroupTag)
+{
+	FireGroupTag = InFireGroupTag;
+}
+
 void UWeaponSlot::SetSlotSocketName(FName SocketName)
 {
 	SlotSocket = SocketName;

@@ -37,11 +37,11 @@ void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!WeaponData)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AWeaponActor::BeginPlay: WeaponData IS NULLPTR!"));
-		return;
-	}
+	//if (!WeaponData)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("AWeaponActor::BeginPlay: WeaponData IS NULLPTR!"));
+	//	return;
+	//}
 
 	AbilityContainer->InitComponent();
 }

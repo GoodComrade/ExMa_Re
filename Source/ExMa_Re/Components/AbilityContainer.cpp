@@ -41,11 +41,14 @@ void UAbilityContainer::CastReload()
 void UAbilityContainer::InitComponent()
 {
     const AWeaponActor* Weapon = Cast<AWeaponActor>(GetOwner());
-    check(Weapon);
+
+    if (!Weapon)
+    {
+        UE_LOG(LogTemp, Error, TEXT("UAbilityContainer::InitComponent: WeaponOwner IS NULLPTR!"));
+        return;
+    }
 
     AbilitySystem = Weapon->GetAbilitySystemComponent();
-
-    
 }
 
 void UAbilityContainer::SetAbilities(TSubclassOf<class UGameplayAbility> InPrimaryAttack, 
@@ -59,6 +62,12 @@ void UAbilityContainer::SetAbilities(TSubclassOf<class UGameplayAbility> InPrima
 
 void UAbilityContainer::InitAbilities()
 {
+    if (!AbilitySystem)
+    {
+        UE_LOG(LogTemp, Error, TEXT("UAbilityContainer::InitAbilities: AbilitySystem IS NULLPTR!"));
+        return;
+    }
+
     if (IsValid(PrimaryAttack))
     {
         //UGameplayAbility *Ability = PrimaryAttack->GetDefaultObject<UGameplayAbility>();

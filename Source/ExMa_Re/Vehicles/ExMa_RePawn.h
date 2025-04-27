@@ -135,6 +135,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* ResetVehicleAction;
 
+	//Fire Groups Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* FireGroupOneAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* FireGroupTwoAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* FireGroupThreeAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* FireGroupFourAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* FireGroupFiveAction;
+
 	/** Keeps track of which camera is active */
 	bool bFrontCameraActive = false;
 
@@ -175,6 +191,13 @@ protected:
 	/** Called when the brake lights are turned on or off */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Vehicle")
 	void BrakeLights(bool bBraking);
+
+	//FireGroupBindings
+	void ShootFireGroupOne(const FInputActionValue& Value);
+	void ShootFireGroupTwo(const FInputActionValue& Value);
+	void ShootFireGroupThree(const FInputActionValue& Value);
+	void ShootFireGroupFour(const FInputActionValue& Value);
+	void ShootFireGroupFive(const FInputActionValue& Value);
 #pragma endregion ActionBindings
 
 #pragma region Vehicle

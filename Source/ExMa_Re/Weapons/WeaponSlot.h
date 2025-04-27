@@ -70,6 +70,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool HasWeaponInSlot();
 
+	UFUNCTION(BlueprintCallable)
+	void SetFireGroupTag(FGameplayTag InFireGroupTag);
+
 private:
 	void SetSlotOwner(AActor* OwnerToSet);
 
@@ -95,7 +98,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	AActor* GetSlotOwner() const { return SlotOwner; };
 
-
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FGameplayTag GetFireGroupTag() const { return FireGroupTag; };
 private:
 	UFUNCTION()
 	void SetWeaponActor();
@@ -118,4 +122,7 @@ private:
 
 	UPROPERTY()
 	AActor* SlotOwner = nullptr;
+
+	UPROPERTY()
+	FGameplayTag FireGroupTag;
 };
