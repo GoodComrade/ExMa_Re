@@ -192,13 +192,13 @@ void AExMa_RePawn::BeginPlay()
 
 	InventoryComponent->TileSize = GameInstance->TileSize;
 
-	HUD = Cast<AExMaHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-
-	if (HUD)
-	{
-		HUD->InitInteractionWidget(GetInventoryComponent(), GetOutInventoryComponent(), GetWeaponComponent());
-		HUD->InitPickupHintWidget();
-	}
+	//HUD = Cast<AExMaHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	//
+	//if (HUD)
+	//{
+	//	HUD->InitInteractionWidget(GetInventoryComponent(), GetOutInventoryComponent(), GetWeaponComponent());
+	//	HUD->InitPickupHintWidget();
+	//}
 
 	SetupBaseVehicleAttributes();
 }
@@ -325,8 +325,10 @@ void AExMa_RePawn::ToggleInventory(const FInputActionValue& Value)
 		ProcessSpawnCrate();
 	}
 
-	if (HUD)
-		HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(World));
+	ProcessToggleMainWidgetVisibility();
+
+	//if (HUD)
+	//	HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(World));
 }
 
 void AExMa_RePawn::AddItemObjectToInventory(UItemObject* ItemToAdd)
@@ -345,6 +347,8 @@ void AExMa_RePawn::AddItemObjectToInventory(UItemObject* ItemToAdd)
 
 void AExMa_RePawn::ApplyDamage()
 {
+	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::ApplyDamage: DamageApplied! Remain Health: %d"), GetHealth());
+
 	if (IsDead())
 		OnDeath();
 }
@@ -360,6 +364,48 @@ void AExMa_RePawn::OnDeath()
 	// Detach all components? change all materials to death one & play death SFX
 
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::OnDeath: Vehicle exploded!"));
+}
+
+void AExMa_RePawn::ProcessToggleMainWidgetVisibility()
+{
+	AExMa_RePlayerController* PC = Cast<AExMa_RePlayerController>(GetController());
+
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::ProcessToggleMainWidget: PlayerController is NULLPTR!"));
+		return;
+	}
+
+	AExMaHUD* HUD = Cast<AExMaHUD>(PC->GetHUD());
+
+	if (!HUD)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::ProcessToggleMainWidget: HUD is NULLPTR!"));
+		return;
+	}
+
+	HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(GetWorld()));
+}
+
+void AExMa_RePawn::ProcessTogglePickupHintVisibility(bool bNewState)
+{
+	AExMa_RePlayerController* PC = Cast<AExMa_RePlayerController>(GetController());
+
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::ProcessTogglePickupHintVisibility: PlayerController is NULLPTR!"));
+		return;
+	}
+
+	AExMaHUD* HUD = Cast<AExMaHUD>(PC->GetHUD());
+
+	if (!HUD)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::ProcessTogglePickupHintVisibility: HUD is NULLPTR!"));
+		return;
+	}
+
+	HUD->TogglePickupHintVisibility(bNewState);
 }
 
 void AExMa_RePawn::ProcessPickupItems()
@@ -399,8 +445,10 @@ void AExMa_RePawn::ProcessItemsOverflow(TArray<AChestActor*> ChestActorsToProces
 	if (World == nullptr)
 		return;
 
-	if (HUD)
-		HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(World));
+	ProcessToggleMainWidgetVisibility();
+
+	//if (HUD)
+	//	HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(World));
 }
 
 void AExMa_RePawn::ProcessSpawnCrate()
@@ -413,16 +461,9 @@ void AExMa_RePawn::ProcessSpawnCrate()
 
 void AExMa_RePawn::ProcessTogglePickupState(bool NewState)
 {
-	if (!HUD)
-	{
-		UE_LOG(LogTemplateVehicle, Error, TEXT("AExMa_RePawn::ProcessTogglePickupState: HUD is nullptr."));
-		return;
-	}
-
 	bIsPickingItems = NewState;
 
-	if (HUD)
-		HUD->TogglePickupHintVisibility(NewState);
+	ProcessTogglePickupHintVisibility(NewState);
 }
 
 void AExMa_RePawn::SetVehicleData(UVehicleDataAsset* DataToSet)

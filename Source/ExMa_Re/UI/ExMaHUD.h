@@ -11,6 +11,7 @@
 
 class UMainInteractionWidget;
 class AExMa_GameState;
+class AExMa_RePawn;
 
 UCLASS()
 class EXMA_RE_API AExMaHUD : public AHUD
@@ -25,7 +26,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void InitInteractionWidget(UInventoryComponent* InInventoryComponentRef, UInventoryComponent* InOutInventoryComponentRef, UWeaponComponent* InWeaponComponent);
+	void InitInteractionWidget(AExMa_RePawn* TargetVehicle);
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleWidgetVisibility(bool bIsEnbale);

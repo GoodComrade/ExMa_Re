@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "ExMa_Re/UI/ExMaHUD.h"
 #include "ExMa_RePlayerController.generated.h"
 
 class UInputMappingContext;
@@ -45,8 +46,8 @@ protected:
 	/** Pointer to the UI widget */
 	TObjectPtr<UExMa_ReUI> VehicleUI;
 
-	
-
+	UPROPERTY()
+	AExMaHUD* HUD;
 	// Begin Actor interface
 protected:
 
@@ -65,4 +66,7 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 	// End PlayerController interface
+
+private:
+	void UpdateHUDWithNewVehicle(AExMa_RePawn* InVehicle);
 };

@@ -48,10 +48,29 @@ void AExMa_RePlayerController::Tick(float Delta)
 	}
 }
 
+void AExMa_RePlayerController::UpdateHUDWithNewVehicle(AExMa_RePawn* InVehicle)
+{
+	if (!InVehicle)
+		return;
+
+	if(!HUD)
+		HUD = Cast<AExMaHUD>(GetHUD());
+
+	if (HUD)
+	{
+		HUD->InitInteractionWidget(InVehicle);
+		HUD->InitPickupHintWidget();
+	}
+}
+
+
 void AExMa_RePlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
 	// get a pointer to the controlled pawn
 	VehiclePawn = CastChecked<AExMa_RePawn>(InPawn);
+
+	if (VehiclePawn)
+		UpdateHUDWithNewVehicle(VehiclePawn);
 }

@@ -22,6 +22,9 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void OnWeaponSlotsCreated(const TArray<UWeaponSlot*>& CreatedSlots);
 
+    UFUNCTION(BlueprintImplementableEvent)
+    void OnVehicleChanged();
+
     //UFUNCTION(BlueprintImplementableEvent)
     //void OnWeaponSlotCreated(TArray<UWeaponSlot*> CreatedSlots);
 

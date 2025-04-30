@@ -12,6 +12,8 @@
 
 #include "ExMa_Re/Game/ExMa_GameState.h"
 
+#include "ExMa_Re/Vehicles/ExMa_RePawn.h"
+
 AExMaHUD::AExMaHUD()
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -53,19 +55,28 @@ void AExMaHUD::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AExMaHUD::InitInteractionWidget(UInventoryComponent* InInventoryComponentRef, UInventoryComponent* InOutInventoryComponentRef, UWeaponComponent* InWeaponComponent)
+void AExMaHUD::InitInteractionWidget(AExMa_RePawn* TargetVehicle)
 {
-    MainWidgetRef = CreateWidget<UMainInteractionWidget>(GetOwningPlayerController(), MainWidgetClass);
+    if (!TargetVehicle || !MainWidgetClass) return;
+
+    if (!MainWidgetRef)
+    {
+        MainWidgetRef = CreateWidget<UMainInteractionWidget>(GetOwningPlayerController(), MainWidgetClass);
+        if (MainWidgetRef)
+        {
+            MainWidgetRef->AddToViewport();
+            MainWidgetRef->SetVisibility(ESlateVisibility::Collapsed);
+        }
+    }
 
     if (MainWidgetRef)
     {
         MainWidgetRef->SetPlayerController(GetOwningPlayerController());
-        MainWidgetRef->SetInventoryComponentRef(InInventoryComponentRef);
-        MainWidgetRef->SetOutInventoryComponentRef(InOutInventoryComponentRef);
-        MainWidgetRef->SetWeaponComponentRef(InWeaponComponent);
+        MainWidgetRef->SetInventoryComponentRef(TargetVehicle->GetInventoryComponent());
+        MainWidgetRef->SetOutInventoryComponentRef(TargetVehicle->GetOutInventoryComponent());
+        MainWidgetRef->SetWeaponComponentRef(TargetVehicle->GetWeaponComponent());
 
-        MainWidgetRef->AddToViewport();
-        MainWidgetRef->SetVisibility(ESlateVisibility::Collapsed);
+        MainWidgetRef->OnVehicleChanged();
     }
 }
 
@@ -101,16 +112,13 @@ void AExMaHUD::ToggleWidgetVisibility(bool bIsEnbale)
 //TODO: Rework this to hint factory because we will need different hints about picked items & NPC radio messages in future
 void AExMaHUD::InitPickupHintWidget()
 {
-    PickupHintRef = CreateWidget<UUserWidget>(GetOwningPlayerController(), PickupHintClass);
-
     if (!PickupHintRef)
     {
-		UE_LOG(LogTemp, Warning, TEXT("AExMaHUD::InitPickupHintWidget: PickupHintRef is nullptr"));
-		return;
-    }
+        PickupHintRef = CreateWidget<UUserWidget>(GetOwningPlayerController(), PickupHintClass);
 
-    PickupHintRef->AddToViewport();
-    PickupHintRef->SetVisibility(ESlateVisibility::Collapsed);
+        PickupHintRef->AddToViewport();
+        PickupHintRef->SetVisibility(ESlateVisibility::Collapsed);
+    }
 }
 
 void AExMaHUD::TogglePickupHintVisibility(bool bNewState)

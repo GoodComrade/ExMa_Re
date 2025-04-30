@@ -53,7 +53,7 @@ void UExMaGameplayAbility::CreateStootLineTrace(TArray<FGameplayEffectSpecHandle
 
 		if (World->LineTraceSingleByChannel(OUT HitResult, TraceStart, TraceTarget, ECollisionChannel::ECC_GameTraceChannel2, CollisionParams, CollisionResponse))
 		{
-			UE_LOG(LogTemplateVehicle, Warning, TEXT("UExMaGameplayAbility::CreateStootLineTrace: LineTraceHitSomething!"));
+			//UE_LOG(LogTemplateVehicle, Warning, TEXT("UExMaGameplayAbility::CreateStootLineTrace: LineTraceHitSomething!"));
 
 			DrawDebugLine(World, TraceStart, HitResult.ImpactPoint, FColor::Red, false, -1.0f, 0, 2.0f);
 
@@ -71,7 +71,7 @@ void UExMaGameplayAbility::CreateStootLineTrace(TArray<FGameplayEffectSpecHandle
 
 			
 
-			UE_LOG(LogTemplateVehicle, Warning, TEXT("UExMaGameplayAbility::CreateStootLineTrace: LineTraceHitActor!"));
+			//UE_LOG(LogTemplateVehicle, Warning, TEXT("UExMaGameplayAbility::CreateStootLineTrace: LineTraceHitActor!"));
 		}
 	}
 }
@@ -136,7 +136,7 @@ void UExMaGameplayAbility::ApplyTraceEffectsToTarget(TArray<FGameplayEffectSpecH
 	for (const FGameplayEffectSpecHandle& EffectSpecHandle : TraceEffects)
 	{
 		float Damage = EffectSpecHandle.Data->GetSetByCallerMagnitude(ExMaGameplayTags::TAG_Ability_Damage);
-		UE_LOG(LogTemp, Warning, TEXT("UExMaGameplayAbility::ApplyTraceEffectsToTarget: DamageApplied: %.f"), Damage);
+		//UE_LOG(LogTemp, Warning, TEXT("UExMaGameplayAbility::ApplyTraceEffectsToTarget: DamageApplied: %.f"), Damage);
 		//if (Weapon && CurrentEnemyHitCount > 1 && Weapon->GetWeaponConfig().PassedEnemiesDamageMultiplier.Num() >= CurrentEnemyHitCount)
 		//{
 		//    Damage = Weapon->GetWeaponConfig().Damage * Weapon->GetWeaponConfig().PassedEnemiesDamageMultiplier[CurrentEnemyHitCount - 2];

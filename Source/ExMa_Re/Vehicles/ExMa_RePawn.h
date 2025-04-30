@@ -7,7 +7,7 @@
 #include "GameplayEffectTypes.h"
 #include "WheeledVehiclePawn.h"
 #include "ExMa_Re/ConfigStruct/VehicleConfigs/VehicleConfigStruct.h"
-#include "ExMa_Re/UI/ExMaHUD.h"
+//#include "ExMa_Re/UI/ExMaHUD.h"
 #include "Components/SphereComponent.h"
 #include "ExMa_RePawn.generated.h"
 
@@ -78,11 +78,11 @@ public:
 	bool IsDead();
 
 private:
-	UPROPERTY()
-	AExMaHUD* HUD;
 	UFUNCTION()
 	void OnDeath();
 
+	void ProcessToggleMainWidgetVisibility();
+	void ProcessTogglePickupHintVisibility(bool bNewState);
 
 protected:
 	virtual void BeginPlay() override;
