@@ -387,6 +387,153 @@ AWeaponActor* AExMa_GameState::SpawnWeaponActor(AActor* TargetOwner, FName Targe
 	return nullptr;
 }
 
+void AExMa_GameState::SpawnCarNPC(FVehicleConfigStruct TargetVehicleConfigRow, 
+								  FCarBodyConfigStruct TargetCarBodyConfigRow, 
+								  FName TargetWeaponName,
+								  UDataTable* ItemsDT,
+								  UDataTable* WeaponsDT,
+								  FVector SpawnLocation)
+{
+	//Init Vehicle DataAsset
+	UVehicleDataAsset* VehicleData = MakeVehicleDataAsset(TargetVehicleConfigRow);
+	if (VehicleData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: VehicleData is NULLPTR!"));
+		return;
+	}
+
+	//Init CarBodyDataAsset
+	UCarBodyDataAsset* CarBodyData = MakeCarBodyDataAsset(TargetCarBodyConfigRow);
+	if (CarBodyData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: CarBodyData is NULLPTR!"));
+		return;
+	}
+
+	//Start spawn config vehicle
+	if (UWorld* World = GetWorld())
+	{
+		AExMa_RePawn* NewPlayerPawn = CreateVehicleNPC(VehicleData, SpawnLocation, World);
+		if (NewPlayerPawn == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: NewPlayerPawn ISN'T CREATED!"));
+			return;
+		}
+
+		//start spawn & apply car body
+		AVehiclePart* NewCarBody = CreateVehiclePart(CarBodyData, NewPlayerPawn, SpawnLocation, World);
+		if (NewCarBody == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: NewCarBody ISN'T CREATED!"));
+			return;
+		}
+
+		//NewCarBody->SetVehiclePartData(CarBodyData);
+
+		NewPlayerPawn->SetVehicleBody(NewCarBody);
+
+		UItemObject* NewItem = CreateItem(TargetWeaponName, ItemsDT, WeaponsDT);
+		UWeaponItemObject* NewWeapon = Cast<UWeaponItemObject>(NewItem);
+
+		if (NewWeapon)
+			NewPlayerPawn->GetWeaponComponent()->GetSlotByIndex(0)->AddWeaponInSlot(NewWeapon);
+	}
+}
+
+void AExMa_GameState::SpawnTruckNPC(FVehicleConfigStruct TargetVehicleConfigRow, 
+									FTruckCabinConfigStruct TargetTruckCabinConfigRow, 
+									FTruckBodyConfigStruct TargetTruckBodyConfigRow, 
+									FName TargetWeaponName,
+									UDataTable* ItemsDT,
+									UDataTable* WeaponsDT,
+									FVector SpawnLocation)
+{
+	//Init Vehicle DataAsset
+	UVehicleDataAsset* VehicleData = MakeVehicleDataAsset(TargetVehicleConfigRow);
+	if (VehicleData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: VehicleData is NULLPTR!"));
+		return;
+	}
+
+	//Init Cabin DataAsset
+	UTruckCabinDataAsset* TruckCabinData = MakeTruckCabinDataAsset(TargetTruckCabinConfigRow);
+	if (TruckCabinData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: TruckCabinData is NULLPTR!"));
+		return;
+	}
+
+	//Init Body DataAsset
+	UTruckBodyDataAsset* TruckBodyData = MakeTruckBodyDataAsset(TargetTruckBodyConfigRow);
+	if (TruckBodyData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: CarBodyData is NULLPTR!"));
+		return;
+	}
+
+	//Start spawn config vehicle
+	if (UWorld* World = GetWorld())
+	{
+		AExMa_RePawn* NewPlayerPawn = CreateVehicleNPC(VehicleData, SpawnLocation, World);
+		if (NewPlayerPawn == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: NewPlayerPawn ISN'T CREATED!"));
+			return;
+		}
+
+		//start spawn & apply Truck cabin
+		AVehiclePart* NewTruckCabin = CreateVehiclePart(TruckCabinData, NewPlayerPawn, SpawnLocation, World);
+		if (NewTruckCabin == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: NewTruckCabin ISN'T CREATED!"));
+			return;
+		}
+
+		//NewTruckCabin->SetVehiclePartData(TruckCabinData);
+
+		//start spawn & apply Truck body
+		AVehiclePart* NewTruckBody = CreateVehiclePart(TruckBodyData, NewPlayerPawn, SpawnLocation, World);
+		if (NewTruckCabin == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AExMa_GameState:: NewTruckCabin ISN'T CREATED!"));
+			return;
+		}
+
+		//NewTruckBody->SetVehiclePartData(TruckBodyData);
+		NewPlayerPawn->SetVehicleCabin(NewTruckCabin);
+		NewPlayerPawn->SetVehicleBody(NewTruckBody);
+
+		UItemObject* NewItem = CreateItem(TargetWeaponName, ItemsDT, WeaponsDT);
+		UWeaponItemObject* NewWeapon = Cast<UWeaponItemObject>(NewItem);
+
+		if(NewWeapon)
+			NewPlayerPawn->GetWeaponComponent()->GetSlotByIndex(0)->AddWeaponInSlot(NewWeapon);
+	}
+}
+
+AExMa_RePawn* AExMa_GameState::CreateVehicleNPC(UVehicleDataAsset* VehicleData, FVector SpawnLocation, UWorld* World)
+{
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	TSubclassOf<AExMa_RePawn> PawnClassToSpawn = VehicleData->GetPawnClass();
+	if (PawnClassToSpawn == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AExMa_GameState::CreateAndPossessVehicle: PawnClassToSpawn is NULLPTR!"));
+		return nullptr;
+	}
+
+	AExMa_RePawn* NewPlayerPawn = World->SpawnActor<AExMa_RePawn>(PawnClassToSpawn, SpawnLocation, FRotator(), SpawnParams);
+	if (NewPlayerPawn == nullptr)
+		return nullptr;
+
+	NewPlayerPawn->SetVehicleData(VehicleData);
+	NewPlayerPawn->SetupBaseVehicleAttributes();
+
+	return NewPlayerPawn;
+}
+
 UVehicleDataAsset* AExMa_GameState::MakeVehicleDataAsset(FVehicleConfigStruct TargetVehicleConfigRow)
 {
 	UVehicleDataAsset* VehicleData = TargetVehicleConfigRow.VehicleData;

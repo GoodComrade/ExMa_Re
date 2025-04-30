@@ -112,7 +112,7 @@ bool UInventoryComponent::IsRoomAvaliable(UItemObject* ItemToCheck, int TopLeftI
 			
 			if (IsTileValid(TileToCheck) == false)
 			{
-				UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: Invalid Tile!"));
+				//UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: Invalid Tile!"));
 				return false;
 			}
 
@@ -120,7 +120,7 @@ bool UInventoryComponent::IsRoomAvaliable(UItemObject* ItemToCheck, int TopLeftI
 
 			if (Items.IsValidIndex(TileIndex) == false)
 			{
-				UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: Invalid Index!"));
+				//UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: Invalid Index!"));
 				return false;
 			}
 
@@ -128,13 +128,13 @@ bool UInventoryComponent::IsRoomAvaliable(UItemObject* ItemToCheck, int TopLeftI
 
 			if (ItemAtIndex != nullptr)
 			{
-				UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: Has Item at index!"));
+				//UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: Has Item at index!"));
 				return false;
 			}
 		}
 	}
 
-	UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: has space to add item!"));
+	//UE_LOG(LogTemp, Error, TEXT("UInventoryComponent:: has space to add item!"));
 	return true;
 }
 

@@ -21,6 +21,8 @@
 #include "ExMa_Re/DataAssets/Vehicles/VehicleParts/Truck/TruckBodyDataAsset.h"
 
 #include "ExMa_Re/Game/ExMa_GameInstance.h"
+#include "ExMa_Re/Game/ExMa_GameState.h"
+#include "ExMa_Re/Game/ExMa_RePlayerController.h"
 
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -341,14 +343,28 @@ void AExMa_RePawn::AddItemObjectToInventory(UItemObject* ItemToAdd)
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::AddItemObjectToInventory: Fail to return item to inventory"));
 }
 
+void AExMa_RePawn::ApplyDamage()
+{
+	if (IsDead())
+		OnDeath();
+}
+
 bool AExMa_RePawn::IsDead()
 {
-	return false;
+	return GetHealth() <= 0 ? true : false;
+}
+
+void AExMa_RePawn::OnDeath()
+{
+	//TODO: implement here death logic
+	// Detach all components? change all materials to death one & play death SFX
+
+	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::OnDeath: Vehicle exploded!"));
 }
 
 void AExMa_RePawn::ProcessPickupItems()
 {
-	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount before transfer: %i"), InterractedCrates.Num());
+	//UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount before transfer: %i"), InterractedCrates.Num());
 
 	TArray<AChestActor*> ChestActors = TArray<AChestActor*>(&InterractedCrates.GetData()[0], InterractedCrates.Num());
 	for (AChestActor* Chest : ChestActors)
@@ -356,11 +372,11 @@ void AExMa_RePawn::ProcessPickupItems()
 		if (Chest->TryTransferStoredItems(InventoryComponent) == false)
 		{
 			ProcessItemsOverflow(ChestActors);
-			UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: NO FREE SPACE IN INVENTORY: %i"), InterractedCrates.Num());
+			//UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: NO FREE SPACE IN INVENTORY: %i"), InterractedCrates.Num());
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount after transfer: %i"), InterractedCrates.Num());
+	//UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: InterractedCratesAmount after transfer: %i"), InterractedCrates.Num());
 }
 
 void AExMa_RePawn::ProcessItemsOverflow(TArray<AChestActor*> ChestActorsToProcess)
@@ -373,7 +389,7 @@ void AExMa_RePawn::ProcessItemsOverflow(TArray<AChestActor*> ChestActorsToProces
 	{
 		if (OutChest->TryTransferStoredItems(OutInventoryComponent) == false)
 		{
-			UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn:: NO FREE SPACE IN OUT INVENTORY: %i"), InterractedCrates.Num());
+			//UE_LOG(LogTemp, Error, TEXT("AExMa_RePawn:: NO FREE SPACE IN OUT INVENTORY: %i"), InterractedCrates.Num());
 			return;
 		}
 	}
@@ -668,19 +684,13 @@ void AExMa_RePawn::OnCollectSphereBeginOverlap(UPrimitiveComponent* OverlappedCo
 	if (AChestActor* Chest = Cast<AChestActor>(OtherActor))
 	{
 		InterractedCrates.AddUnique(Chest);
+
+		if (bIsPickingItems == false)
+		{
+			ProcessTogglePickupState(true);
+		}
 		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: Add interacted crate to array"));
 	}
-	
-	ProcessTogglePickupState(InterractedCrates.Num() > 0 && !bIsPickingItems);
-
-	//if (InterractedCrates.Num() > 0)
-	//{
-	//	bIsPickingItems = true;
-	//
-	//	if (HUD)
-	//		HUD->TogglePickupHintVisibility(true);
-	//}
-
 }
 
 void AExMa_RePawn::OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex)
@@ -691,19 +701,15 @@ void AExMa_RePawn::OnCollectSphereEndOverlap(UPrimitiveComponent* OverlappedComp
 		{
 			int32 IndexToRemove = InterractedCrates.Find(Chest);
 			InterractedCrates.RemoveAt(IndexToRemove);
+
+			if (bIsPickingItems)
+			{
+				ProcessTogglePickupState(false);
+			}
+
 			UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn:: Remove interacted crate to array"));
 		}
 	}
-	
-	ProcessTogglePickupState(InterractedCrates.Num() > 0 && bIsPickingItems);
-
-	//if (InterractedCrates.Num() <= 0)
-	//{
-	//	bIsPickingItems = false;
-	//
-	//	if (HUD)
-	//		HUD->TogglePickupHintVisibility(false);
-	//}
 }
 
 #undef LOCTEXT_NAMESPACE

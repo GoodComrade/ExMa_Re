@@ -105,6 +105,11 @@ public:
 	FGameplayAttributeData EnergyResistance;
 	ATTRIBUTE_ACCESSORS(UExMa_VehicleAttributes, EnergyResistance);
 
+
+	UPROPERTY(BlueprintReadOnly, Category = "Damage")
+	FGameplayAttributeData IncomeDamage;
+	ATTRIBUTE_ACCESSORS(UExMa_VehicleAttributes, IncomeDamage);
+
 	UFUNCTION(BlueprintCallable)
 	float GetAttribute(EVehicleAttributeType IVehicleAttributeType) const;
 };

@@ -68,9 +68,9 @@ void UExMaDamageExecution::Execute_Implementation(const FGameplayEffectCustomExe
 	if (Damage > 0.0f)
 	{
 		// Apply a damage modifier, this gets turned into - health on the target
-		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UExMa_WeaponAttributes::GetDamageAttribute(), EGameplayModOp::Additive, Damage));
+		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UExMa_VehicleAttributes::GetIncomeDamageAttribute(), EGameplayModOp::Additive, Damage));
 
-		// TODO Refactoring. Damage for shields
+		// Apply Weapon deterioration
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UExMa_WeaponAttributes::GetHealthAttribute(), EGameplayModOp::Additive, -Damage));
 	}
 

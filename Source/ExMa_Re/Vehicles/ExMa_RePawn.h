@@ -11,18 +11,26 @@
 #include "Components/SphereComponent.h"
 #include "ExMa_RePawn.generated.h"
 
-class UCameraComponent;
-class USpringArmComponent;
 class UInputAction;
 class UChaosWheeledVehicleMovementComponent;
+
 class UExMa_VehicleAttributes;
+class AExMa_RePlayerController;
+
+class UCameraComponent;
+class USpringArmComponent;
+
 class UInventoryComponent;
 class UWeaponComponent;
 class UStructuralComponent;
+
 class UVehicleDataAsset;
+
 class AChestActor;
 class AVehiclePart;
+
 class AExMa_GameState;
+
 class UItemObject;
 struct FInputActionValue;
 
@@ -64,11 +72,17 @@ public:
 	void AddItemObjectToInventory(UItemObject* ItemToAdd);
 
 	UFUNCTION()
+	void ApplyDamage();
+
+	UFUNCTION()
 	bool IsDead();
 
 private:
 	UPROPERTY()
 	AExMaHUD* HUD;
+	UFUNCTION()
+	void OnDeath();
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -215,6 +229,7 @@ public:
 
 	virtual void SetVehicleCabin(AVehiclePart* CabinToSet);
 	virtual void SetVehicleBody(AVehiclePart* BodyToSet);
+
 protected:
 	UPROPERTY(EditAnywhere, Category = Attributes)
 	class UExMa_VehicleAttributes* Attributes;

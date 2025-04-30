@@ -47,7 +47,6 @@ public:
 	UItemObject* CreateItem(FName TargetItemName, UDataTable* ItemsDT, UDataTable* WeaponsDT);
 
 public:
-
 	UFUNCTION(BlueprintCallable)
 	void SpawnCarPawn(FVehicleConfigStruct TargetVehicleConfigRow, FCarBodyConfigStruct TargetCarBodyConfigRow);
 
@@ -57,6 +56,27 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	AWeaponActor* SpawnWeaponActor(AActor* TargetOwner, FName TargetSlotSocket);
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void SpawnCarNPC(FVehicleConfigStruct TargetVehicleConfigRow, 
+					 FCarBodyConfigStruct TargetCarBodyConfigRow, 
+					 FName TargetWeaponName, 
+					 UDataTable* ItemsDT, 
+					 UDataTable* WeaponsDT,
+					 FVector SpawnLocation);
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnTruckNPC(FVehicleConfigStruct TargetVehicleConfigRow, 
+					   FTruckCabinConfigStruct TargetTruckCabinConfigRow, 
+					   FTruckBodyConfigStruct TargetTruckBodyConfigRow, 
+					   FName TargetWeaponName,
+					   UDataTable* ItemsDT,
+					   UDataTable* WeaponsDT,
+					   FVector SpawnLocation);
+
+private:
+	AExMa_RePawn* CreateVehicleNPC(UVehicleDataAsset* VehicleData, FVector SpawnLocation, UWorld* World);
 
 private:
 	UWeaponItemObject* CreateWeaponItem(FItemConfigStruct TargetItemRow, FName TargetWeaponName, UDataTable* WeaponsDT);

@@ -136,12 +136,13 @@ void UExMaGameplayAbility::ApplyTraceEffectsToTarget(TArray<FGameplayEffectSpecH
 	for (const FGameplayEffectSpecHandle& EffectSpecHandle : TraceEffects)
 	{
 		float Damage = EffectSpecHandle.Data->GetSetByCallerMagnitude(ExMaGameplayTags::TAG_Ability_Damage);
+		UE_LOG(LogTemp, Warning, TEXT("UExMaGameplayAbility::ApplyTraceEffectsToTarget: DamageApplied: %.f"), Damage);
 		//if (Weapon && CurrentEnemyHitCount > 1 && Weapon->GetWeaponConfig().PassedEnemiesDamageMultiplier.Num() >= CurrentEnemyHitCount)
 		//{
 		//    Damage = Weapon->GetWeaponConfig().Damage * Weapon->GetWeaponConfig().PassedEnemiesDamageMultiplier[CurrentEnemyHitCount - 2];
 		//}
 
-		EffectSpecHandle.Data->SetSetByCallerMagnitude(ExMaGameplayTags::TAG_Ability_Damage, Damage);
+		//EffectSpecHandle.Data->SetSetByCallerMagnitude(ExMaGameplayTags::TAG_Ability_Damage, Damage);
 		Target->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
 	}
 }
