@@ -95,31 +95,35 @@ void AExMa_ReOffroadCar::BeginPlay()
 
 void AExMa_ReOffroadCar::OnDeath()
 {
-	Super::OnDeath();
-
 	ProcessDetachWheels();
-	StructuralComponent->ProcessDetachComponentsOnDeath();
 	WeaponComponent->ProcessDetachWeaponsOnDeath();
+	StructuralComponent->ProcessDetachComponentsOnDeath();
+
+	Super::OnDeath();
 }
 
 void AExMa_ReOffroadCar::ProcessDetachWheels()
 {
 	TireFrontLeft->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	TireFrontLeft->SetCollisionProfileName(FName("BlockAll"));
 	TireFrontLeft->SetSimulatePhysics(true);
 	FVector TireFrontLeftImpulseDirection = (TireFrontLeft->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
 	TireFrontLeft->AddImpulse(TireFrontLeftImpulseDirection * 500.0f, NAME_None, true);
 
 	TireFrontRight->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	TireFrontRight->SetCollisionProfileName(FName("BlockAll"));
 	TireFrontRight->SetSimulatePhysics(true);
 	FVector TireFrontRightImpulseDirection = (TireFrontRight->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
 	TireFrontRight->AddImpulse(TireFrontRightImpulseDirection * 500.0f, NAME_None, true);
 
 	TireRearLeft->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	TireRearLeft->SetCollisionProfileName(FName("BlockAll"));
 	TireRearLeft->SetSimulatePhysics(true);
 	FVector TireRearLeftImpulseDirection = (TireRearLeft->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
 	TireRearLeft->AddImpulse(TireRearLeftImpulseDirection * 500.0f, NAME_None, true);
 
 	TireRearRight->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	TireRearRight->SetCollisionProfileName(FName("BlockAll"));
 	TireRearRight->SetSimulatePhysics(true);
 	FVector TireRearRightImpulseDirection = (TireRearRight->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
 	TireRearRight->AddImpulse(TireRearRightImpulseDirection * 500.0f, NAME_None, true);

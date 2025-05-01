@@ -366,6 +366,8 @@ void AExMa_RePawn::OnDeath()
 	// Detach all components? change all materials to death one & play death SFX
 
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::OnDeath: Vehicle exploded!"));
+
+	//SetLifeSpan(10.0f);
 }
 
 void AExMa_RePawn::ProcessToggleMainWidgetVisibility()

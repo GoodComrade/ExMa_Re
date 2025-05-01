@@ -8,12 +8,11 @@
 #include "ExMa_Re/Components/WeaponComponent.h"
 #include "ExMa_Re/Weapons/WeaponSlot.h"
 
-#include "ExMa_Re/Game/ExMa_RePlayerController.h"
-
 #include "ExMaHUD.generated.h"
 
 class UMainInteractionWidget;
 class AExMa_GameState;
+class AExMa_RePlayerController;
 class AExMa_RePawn;
 
 UCLASS()

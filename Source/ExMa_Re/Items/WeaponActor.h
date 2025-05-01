@@ -27,6 +27,9 @@ public:
 	//UFUNCTION(BlueprintCallable)
 	//void SetWeaponAttributes(FWeaponConfigStruct WeaponConfig);
 
+	UFUNCTION(BlueprintCallable)
+	void ProcessDeathLogic();
+
 protected:
 	virtual void BeginPlay() override;
 

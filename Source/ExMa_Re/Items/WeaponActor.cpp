@@ -8,13 +8,19 @@
 
 AWeaponActor::AWeaponActor()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
-	Mesh->BodyInstance.bSimulatePhysics = false;
-	Mesh->BodyInstance.bNotifyRigidBodyCollision = false;
-	Mesh->BodyInstance.bUseCCD = false;
-	Mesh->SetGenerateOverlapEvents(false);
-	Mesh->SetCanEverAffectNavigation(false);
-	RootComponent = Mesh;
+	Mesh->SetupAttachment(RootComponent);
+	//Mesh->BodyInstance.bSimulatePhysics = false;
+	//Mesh->BodyInstance.bNotifyRigidBodyCollision = false;
+	//Mesh->BodyInstance.bUseCCD = false;
+	//Mesh->SetGenerateOverlapEvents(false);
+	//Mesh->SetCanEverAffectNavigation(false);
+
+	Mesh->SetupAttachment(RootComponent);
 
 	AbilitySystem = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AblitySystem"));
 
@@ -32,6 +38,7 @@ void AWeaponActor::Tick(float Delta)
 //void AWeaponActor::SetWeaponAttributes(FWeaponConfigStruct WeaponConfig)
 //{
 //}
+
 
 void AWeaponActor::BeginPlay()
 {
@@ -262,4 +269,36 @@ void AWeaponActor::DisableAbilities()
 void AWeaponActor::EnableAbilities()
 {
 	AbilityContainer->bCanCastAbilities = true;
+}
+
+void AWeaponActor::ProcessDeathLogic()
+{
+	if (!Mesh)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AWeaponActor::ProcessDeathLogic: Mesh == nullptr"));
+		return;
+	}
+
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+	Mesh->SetCollisionProfileName(FName("BlockAll"));
+
+	Mesh->RecreatePhysicsState();
+
+	Mesh->SetEnableGravity(true);
+	Mesh->SetUseCCD(true);
+	Mesh->SetSimulatePhysics(true);
+
+	Mesh->SetAllBodiesSimulatePhysics(true);
+	Mesh->WakeAllRigidBodies();
+	Mesh->SetCollisionProfileName(TEXT("Ragdoll"));
+
+	Mesh->BreakConstraint(FVector::ZeroVector, FVector::ZeroVector, FName("GunBase"));
+
+	FVector UpwardImpulse(0.0f, 0.0f, 900.0f);
+	Mesh->AddImpulse(UpwardImpulse, NAME_None, true);
+
+	UE_LOG(LogTemp, Warning, TEXT("AWeaponActor::ProcessDeathLogic:WeaponMesh Detached"));
+
+	//SetLifeSpan(10.0f);
 }

@@ -31,6 +31,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetVehiclePartMesh(UStaticMesh* MeshToSet);
 
+	UFUNCTION(BlueprintCallable)
+	void ProcessDeathLogic();
 
 protected:
 	// Called when the game starts or when spawned
