@@ -182,3 +182,19 @@ bool UWeaponSlot::IsSlotAvaliable(UWeaponItemObject* InWeapon, FTileStruct SlotS
 	return IsDimentionsMatching(InWeapon, SlotSize)/* && HasWeaponInSlot() == false*/;
 }
 
+void UWeaponSlot::ProcessDetachWeaponActor()
+{
+	if (InstalledWeaponActor)
+	{
+		InstalledWeaponActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+		UPrimitiveComponent* WeaponRoot = Cast<UPrimitiveComponent>(InstalledWeaponActor->GetRootComponent());
+		if (WeaponRoot)
+		{
+			WeaponRoot->SetSimulatePhysics(true);
+			FVector UpwardImpulse(0.0f, 0.0f, 900.0f);
+			WeaponRoot->AddImpulse(UpwardImpulse, NAME_None, true);
+		}
+	}
+}
+

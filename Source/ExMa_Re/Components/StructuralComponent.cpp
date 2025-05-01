@@ -108,3 +108,40 @@ void UStructuralComponent::DestroyBody()
 		VehicleBody->Destroy();
 }
 
+void UStructuralComponent::ProcessDetachComponentsOnDeath()
+{
+	if (ChassisMesh)
+	{
+		ChassisMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		ChassisMesh->SetSimulatePhysics(true);
+		FVector UpwardImpulse(0.0f, 0.0f, 800.0f);
+		ChassisMesh->AddImpulse(UpwardImpulse, NAME_None, true);
+	}
+
+	if (VehicleCabin)
+	{
+		VehicleCabin->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+		UPrimitiveComponent* CabinRoot = Cast<UPrimitiveComponent>(VehicleCabin->GetRootComponent());
+		if (CabinRoot)
+		{
+			CabinRoot->SetSimulatePhysics(true);
+			FVector UpwardImpulse(0.0f, 0.0f, 1000.0f);
+			CabinRoot->AddImpulse(UpwardImpulse, NAME_None, true);
+		}
+	}
+
+	if (VehicleBody)
+	{
+		VehicleBody->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+		UPrimitiveComponent* BodyRoot = Cast<UPrimitiveComponent>(VehicleBody->GetRootComponent());
+		if (BodyRoot)
+		{
+			BodyRoot->SetSimulatePhysics(true);
+			FVector UpwardImpulse(0.0f, 0.0f, 1000.0f);
+			BodyRoot->AddImpulse(UpwardImpulse, NAME_None, true);
+		}
+	}
+}
+

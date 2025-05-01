@@ -101,6 +101,14 @@ void UWeaponComponent::ShootWeaponGroup(FGameplayTag GroupTag)
 	}
 }
 
+void UWeaponComponent::ProcessDetachWeaponsOnDeath()
+{
+	for (UWeaponSlot* Slot : WeaponSlots)
+	{
+		Slot->ProcessDetachWeaponActor();
+	}
+}
+
 FName UWeaponComponent::GetSocketNameWithPrefix(UStaticMeshComponent* StaticMeshComponent, const FString& Prefix)
 {
 	FName SocketName;

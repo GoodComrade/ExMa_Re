@@ -45,6 +45,9 @@ public:
 	UFUNCTION()
 	void DestroyBody();
 
+	UFUNCTION()
+	void ProcessDetachComponentsOnDeath();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* ChassisMesh;
 private:

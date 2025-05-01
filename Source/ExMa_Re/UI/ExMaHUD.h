@@ -7,6 +7,9 @@
 #include "ExMa_Re/Components/InventoryComponent.h"
 #include "ExMa_Re/Components/WeaponComponent.h"
 #include "ExMa_Re/Weapons/WeaponSlot.h"
+
+#include "ExMa_Re/Game/ExMa_RePlayerController.h"
+
 #include "ExMaHUD.generated.h"
 
 class UMainInteractionWidget;
@@ -26,14 +29,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void InitInteractionWidget(AExMa_RePawn* TargetVehicle);
+	void InitInteractionWidget(AExMa_RePawn* TargetVehicle, AExMa_RePlayerController* TargetPlayerController);
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleWidgetVisibility(bool bIsEnbale);
 
 	//TODO: Rework this to hint factory because we will need different hints about picked items & NPC radio messages in future
 	UFUNCTION(BlueprintCallable)
-	void InitPickupHintWidget();
+	void InitPickupHintWidget(AExMa_RePlayerController* TargetPlayerController);
 
 	UFUNCTION(BlueprintCallable)
 	void TogglePickupHintVisibility(bool bNewState);
@@ -61,8 +64,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dev")
 	TSubclassOf<UUserWidget> DevConsoleClass;
 	
+	UPROPERTY()
 	UMainInteractionWidget* MainWidgetRef;
+
+	UPROPERTY()
 	UUserWidget* PickupHintRef;
+
+	UPROPERTY()
 	UUserWidget* DevConsoleRef;
 
 private:

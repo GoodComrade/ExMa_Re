@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "ExMa_Re/UI/ExMaHUD.h"
 #include "ExMa_RePlayerController.generated.h"
 
 class UInputMappingContext;
 class AExMa_RePawn;
+class AExMaHUD;
 class UExMa_ReUI;
 
 /**

@@ -43,6 +43,9 @@ class EXMA_RE_API UWeaponSlot : public UObject
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION()
+	void ProcessDetachWeaponActor();
+public:
 	UPROPERTY(BlueprintAssignable, Category = "Event Dispatchers")
 	FOnWeaponSlotChanged OnWeaponSlotChanged;
 

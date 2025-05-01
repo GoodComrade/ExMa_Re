@@ -9,6 +9,9 @@
 #include "Engine/CollisionProfile.h"
 #include "ExMa_Re/Components/InventoryComponent.h"
 #include "ExMa_Re/Components/StructuralComponent.h"
+#include "ExMa_Re/Components/WeaponComponent.h"
+
+#include "ExMa_Re/Weapons/WeaponSlot.h"
 
 #include "ExMa_Re/ConfigStruct/ItemConfigStruct.h"
 #include "ExMa_Re/ConfigStruct/WeaponConfigStruct.h"

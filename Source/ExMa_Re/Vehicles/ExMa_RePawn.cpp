@@ -106,6 +106,8 @@ void AExMa_RePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
+		EnhancedInputComponent->bBlockInput = false;
+
 		// steering 
 		EnhancedInputComponent->BindAction(SteeringAction, ETriggerEvent::Triggered, this, &AExMa_RePawn::Steering);
 		EnhancedInputComponent->BindAction(SteeringAction, ETriggerEvent::Completed, this, &AExMa_RePawn::Steering);
@@ -370,20 +372,20 @@ void AExMa_RePawn::ProcessToggleMainWidgetVisibility()
 {
 	AExMa_RePlayerController* PC = Cast<AExMa_RePlayerController>(GetController());
 
-	if (!PC)
+	if (!PC || !PC->IsLocalController())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::ProcessToggleMainWidget: PlayerController is NULLPTR!"));
 		return;
 	}
 
 	AExMaHUD* HUD = Cast<AExMaHUD>(PC->GetHUD());
-
+	
 	if (!HUD)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::ProcessToggleMainWidget: HUD is NULLPTR!"));
 		return;
 	}
-
+	
 	HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(GetWorld()));
 }
 
@@ -391,7 +393,7 @@ void AExMa_RePawn::ProcessTogglePickupHintVisibility(bool bNewState)
 {
 	AExMa_RePlayerController* PC = Cast<AExMa_RePlayerController>(GetController());
 
-	if (!PC)
+	if (!PC || !PC->IsLocalController())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::ProcessTogglePickupHintVisibility: PlayerController is NULLPTR!"));
 		return;
@@ -427,8 +429,6 @@ void AExMa_RePawn::ProcessPickupItems()
 
 void AExMa_RePawn::ProcessItemsOverflow(TArray<AChestActor*> ChestActorsToProcess)
 {
-	bIsPickingItems = false;
-
 	//If have items to transfer but player inventory is already full.
 	//Transfer unplaced items into out inventory.
 	for (AChestActor* OutChest : ChestActorsToProcess)
@@ -447,6 +447,7 @@ void AExMa_RePawn::ProcessItemsOverflow(TArray<AChestActor*> ChestActorsToProces
 
 	ProcessToggleMainWidgetVisibility();
 
+	bIsPickingItems = false;
 	//if (HUD)
 	//	HUD->ToggleWidgetVisibility(!UGameplayStatics::IsGamePaused(World));
 }
@@ -570,7 +571,6 @@ void AExMa_RePawn::SetupBaseVehicleAttributes()
 
 	ApplyVehicleAttributes();
 }
-
 
 void AExMa_RePawn::SetVehicleCabin(AVehiclePart* CabinToSet)
 {

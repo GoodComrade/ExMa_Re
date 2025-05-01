@@ -4,6 +4,7 @@
 #include "ExMa_RePlayerController.h"
 #include "ExMa_Re/Vehicles/ExMa_RePawn.h"
 #include "ExMa_Re/UI/ExMa_ReUI.h"
+#include "ExMa_Re/UI/ExMaHUD.h"
 #include "EnhancedInputSubsystems.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 
@@ -58,8 +59,8 @@ void AExMa_RePlayerController::UpdateHUDWithNewVehicle(AExMa_RePawn* InVehicle)
 
 	if (HUD)
 	{
-		HUD->InitInteractionWidget(InVehicle);
-		HUD->InitPickupHintWidget();
+		HUD->InitInteractionWidget(InVehicle, this);
+		HUD->InitPickupHintWidget(this);
 	}
 }
 

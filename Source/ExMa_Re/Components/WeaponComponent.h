@@ -47,6 +47,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ShootWeaponGroup(FGameplayTag GroupTag);
 
+public:
+	UFUNCTION()
+	void ProcessDetachWeaponsOnDeath();
+
 private:
 	TArray<UWeaponSlot*> WeaponSlots;
 

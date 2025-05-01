@@ -77,10 +77,10 @@ public:
 	UFUNCTION()
 	bool IsDead();
 
-private:
-	UFUNCTION()
-	void OnDeath();
+protected:
+	virtual void OnDeath();
 
+private:
 	void ProcessToggleMainWidgetVisibility();
 	void ProcessTogglePickupHintVisibility(bool bNewState);
 

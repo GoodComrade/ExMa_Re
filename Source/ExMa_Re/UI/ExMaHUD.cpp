@@ -11,6 +11,7 @@
 #include "ExMa_Re/UI/MainInteractionWidget.h"
 
 #include "ExMa_Re/Game/ExMa_GameState.h"
+#include "ExMa_Re/Game/ExMa_RePlayerController.h"
 
 #include "ExMa_Re/Vehicles/ExMa_RePawn.h"
 
@@ -55,28 +56,36 @@ void AExMaHUD::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AExMaHUD::InitInteractionWidget(AExMa_RePawn* TargetVehicle)
+void AExMaHUD::InitInteractionWidget(AExMa_RePawn* TargetVehicle, AExMa_RePlayerController* TargetPlayerController)
 {
     if (!TargetVehicle || !MainWidgetClass) return;
 
-    if (!MainWidgetRef)
+    if (MainWidgetRef)
     {
-        MainWidgetRef = CreateWidget<UMainInteractionWidget>(GetOwningPlayerController(), MainWidgetClass);
-        if (MainWidgetRef)
-        {
-            MainWidgetRef->AddToViewport();
-            MainWidgetRef->SetVisibility(ESlateVisibility::Collapsed);
-        }
+        MainWidgetRef->RemoveFromParent();
+        MainWidgetRef = nullptr;
     }
+
+    MainWidgetRef = CreateWidget<UMainInteractionWidget>(TargetPlayerController, MainWidgetClass);
 
     if (MainWidgetRef)
     {
-        MainWidgetRef->SetPlayerController(GetOwningPlayerController());
+        MainWidgetRef->SetPlayerController(TargetPlayerController);
         MainWidgetRef->SetInventoryComponentRef(TargetVehicle->GetInventoryComponent());
         MainWidgetRef->SetOutInventoryComponentRef(TargetVehicle->GetOutInventoryComponent());
         MainWidgetRef->SetWeaponComponentRef(TargetVehicle->GetWeaponComponent());
 
+        //MainWidgetRef->InvalidateLayoutAndVolatility();
+        //if (TSharedPtr<SWidget> SlateMainWidget = MainWidgetRef->GetCachedWidget())
+        //{
+        //    SlateMainWidget->SlatePrepass();
+        //    SlateMainWidget->Invalidate(EInvalidateWidgetReason::LayoutAndVolatility);
+        //}
+        
         MainWidgetRef->OnVehicleChanged();
+
+        MainWidgetRef->AddToViewport();
+        MainWidgetRef->SetVisibility(ESlateVisibility::Collapsed);
     }
 }
 
@@ -89,6 +98,7 @@ void AExMaHUD::ToggleWidgetVisibility(bool bIsEnbale)
         FInputModeGameOnly InputMode;
         GetOwningPlayerController()->SetInputMode(InputMode);
         GetOwningPlayerController()->SetShowMouseCursor(false);
+        UE_LOG(LogTemp, Error, TEXT("AExMaHUD::ToggleWidgetVisibility MainWidgetRef IS Collapsed & ImputMode is GameOnly!"));
     }
     else
     {
@@ -101,6 +111,8 @@ void AExMaHUD::ToggleWidgetVisibility(bool bIsEnbale)
 
         GetOwningPlayerController()->SetInputMode(InputMode);
         GetOwningPlayerController()->SetShowMouseCursor(true);
+
+        UE_LOG(LogTemp, Error, TEXT("AExMaHUD::ToggleWidgetVisibility MainWidgetRef IS Visible & ImputMode is GameAndUI!"));
     }
 
     if (GetGameState() == nullptr)
@@ -110,15 +122,27 @@ void AExMaHUD::ToggleWidgetVisibility(bool bIsEnbale)
 }
 
 //TODO: Rework this to hint factory because we will need different hints about picked items & NPC radio messages in future
-void AExMaHUD::InitPickupHintWidget()
+void AExMaHUD::InitPickupHintWidget(AExMa_RePlayerController* TargetPlayerController)
 {
-    if (!PickupHintRef)
+    if (PickupHintRef)
     {
-        PickupHintRef = CreateWidget<UUserWidget>(GetOwningPlayerController(), PickupHintClass);
+        PickupHintRef->RemoveFromParent();
+        PickupHintRef = nullptr;
+    }
 
+    PickupHintRef = CreateWidget<UUserWidget>(TargetPlayerController, PickupHintClass);
+
+    if (PickupHintRef)
+    {
         PickupHintRef->AddToViewport();
         PickupHintRef->SetVisibility(ESlateVisibility::Collapsed);
     }
+    //PickupHintRef->InvalidateLayoutAndVolatility();
+    //if (TSharedPtr<SWidget> SlatePickupWidget = PickupHintRef->GetCachedWidget())
+    //{
+    //    SlatePickupWidget->SlatePrepass();
+    //    SlatePickupWidget->Invalidate(EInvalidateWidgetReason::LayoutAndVolatility);
+    //}
 }
 
 void AExMaHUD::TogglePickupHintVisibility(bool bNewState)

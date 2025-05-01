@@ -5,6 +5,7 @@
 #include "ExMa_Re/Wheels/Offroad/ExMa_ReOffroadWheelFront.h"
 #include "ExMa_Re/Wheels/Offroad/ExMa_ReOffroadWheelRear.h"
 #include "ExMa_Re/Components/StructuralComponent.h"
+#include "ExMa_Re/Components/WeaponComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -90,4 +91,36 @@ AExMa_ReOffroadCar::AExMa_ReOffroadCar()
 void AExMa_ReOffroadCar::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AExMa_ReOffroadCar::OnDeath()
+{
+	Super::OnDeath();
+
+	ProcessDetachWheels();
+	StructuralComponent->ProcessDetachComponentsOnDeath();
+	WeaponComponent->ProcessDetachWeaponsOnDeath();
+}
+
+void AExMa_ReOffroadCar::ProcessDetachWheels()
+{
+	TireFrontLeft->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	TireFrontLeft->SetSimulatePhysics(true);
+	FVector TireFrontLeftImpulseDirection = (TireFrontLeft->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
+	TireFrontLeft->AddImpulse(TireFrontLeftImpulseDirection * 500.0f, NAME_None, true);
+
+	TireFrontRight->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	TireFrontRight->SetSimulatePhysics(true);
+	FVector TireFrontRightImpulseDirection = (TireFrontRight->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
+	TireFrontRight->AddImpulse(TireFrontRightImpulseDirection * 500.0f, NAME_None, true);
+
+	TireRearLeft->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	TireRearLeft->SetSimulatePhysics(true);
+	FVector TireRearLeftImpulseDirection = (TireRearLeft->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
+	TireRearLeft->AddImpulse(TireRearLeftImpulseDirection * 500.0f, NAME_None, true);
+
+	TireRearRight->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	TireRearRight->SetSimulatePhysics(true);
+	FVector TireRearRightImpulseDirection = (TireRearRight->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
+	TireRearRight->AddImpulse(TireRearRightImpulseDirection * 500.0f, NAME_None, true);
 }
