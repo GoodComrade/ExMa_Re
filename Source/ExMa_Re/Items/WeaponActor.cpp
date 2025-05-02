@@ -15,11 +15,6 @@ AWeaponActor::AWeaponActor()
 
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	Mesh->SetupAttachment(RootComponent);
-	//Mesh->BodyInstance.bSimulatePhysics = false;
-	//Mesh->BodyInstance.bNotifyRigidBodyCollision = false;
-	//Mesh->BodyInstance.bUseCCD = false;
-	//Mesh->SetGenerateOverlapEvents(false);
-	//Mesh->SetCanEverAffectNavigation(false);
 
 	Mesh->SetupAttachment(RootComponent);
 
@@ -36,20 +31,9 @@ void AWeaponActor::Tick(float Delta)
 	Super::Tick(Delta);
 }
 
-//void AWeaponActor::SetWeaponAttributes(FWeaponConfigStruct WeaponConfig)
-//{
-//}
-
-
 void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//if (!WeaponData)
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("AWeaponActor::BeginPlay: WeaponData IS NULLPTR!"));
-	//	return;
-	//}
 
 	AbilityContainer->InitComponent();
 }
