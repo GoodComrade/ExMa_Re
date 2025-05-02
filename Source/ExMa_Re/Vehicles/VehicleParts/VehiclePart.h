@@ -8,8 +8,13 @@
 
 #include "Engine/PointLight.h"
 #include "Particles/ParticleSystemComponent.h"
+
 #include "Components/PointLightComponent.h"
 #include "Components/TimelineComponent.h"
+#include "Components/AudioComponent.h"
+
+#include "Sound/SoundBase.h"
+
 #include "Curves/CurveVector.h"
 
 #include "VehiclePart.generated.h"
@@ -42,58 +47,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ProcessDeathLogic(UTexture2D* InDeathTexture);
 
-//------------Death VFX Settings----------------------//
-private:
-
-	UPROPERTY(EditAnywhere, Category = "VFX")
-	UParticleSystem* FireParticle;
-
-	UPROPERTY(EditAnywhere, Category = "VFX")
-	UParticleSystem* ExplosionParticle;
-
-	UPROPERTY(EditAnywhere, Category = "VFX")
-	FName FireSocketname;
-
-	UPROPERTY(EditAnywhere, Category = "VFX")
-	FName ExplosionSocketname;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireLight")
-	float LightIntensity;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireLight")
-	float LightRadius;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireLight")
-	bool bIsLight;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireTransform")
-	FVector FireDirection;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireTransform")
-	FVector FireScale;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireTransform")
-	FVector ExplosionScale;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireAngle")
-	float RandomStartAngleMax;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireAngle")
-	float RandomStartAngleMin;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireOscilator")
-	float OscilatorSpeed;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireOscilator")
-	bool bIsOscilate;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireSettings")
-	bool bDistortionEmitterEnable;
-
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireSettings")
-	bool bSmokeEmitterEnable;
-
-//------------Death VFX Settings End----------------------//
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -106,16 +59,22 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* VehiclePartMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VFX")
-	UParticleSystemComponent* FireParticleComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SFX")
+	UAudioComponent* DeathFireSoundComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SFX")
+	UAudioComponent* DeathExplosionSoundComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VFX")
 	UPointLightComponent* FireLightPointComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VFX")
+	UParticleSystemComponent* FireParticleComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VFX")
 	UParticleSystemComponent* ExplosionParticleComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VFX/|TimeLine")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TimeLine")
 	UTimelineComponent* EffectTimelineComponent;
 
 public:	
@@ -123,6 +82,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UFUNCTION()
+	void SetupDeathSFX();
+
+	UFUNCTION()
+	void ProcessExplosionSFX();
+
+	UFUNCTION()
+	void ProcessFireSFX();
 
 	UFUNCTION()
 	void SetupDeathVFX();
@@ -133,9 +100,8 @@ private:
 	//Declare our delegate function to be binded with TimelineUpdate
 	FOnTimelineVector VectorUpdate{};
 
-	UPROPERTY(EditAnywhere, Category = "TimeLine")
-	class UCurveVector* VCurve;
-
 	UFUNCTION()
 	void TimelineUpdate(FVector DirVector);
+
+	FTimerHandle FireAudioDelayHandle;
 };

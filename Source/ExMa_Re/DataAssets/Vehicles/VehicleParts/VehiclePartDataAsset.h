@@ -57,59 +57,67 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FWeaponSlotInfo> WeaponSlots;
 
-//------------Death VFX Settings----------------------//
-	UPROPERTY(EditAnywhere, Category = "VFX")
+#pragma region VehiclePart
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SFX")
+	USoundBase* DeathFireSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SFX")
+	USoundBase* DeathExplosionSound;
+#pragma endregion SFX
+
+#pragma region VehiclePart
+	UPROPERTY(EditAnywhere, Category = "VFX|Particles")
 	UParticleSystem* FireParticle;
 
-	UPROPERTY(EditAnywhere, Category = "VFX")
+	UPROPERTY(EditAnywhere, Category = "VFX|Particles")
 	UParticleSystem* ExplosionParticle;
 
-	UPROPERTY(EditAnywhere, Category = "VFX")
-	FName FireSocketname;
+	UPROPERTY(EditAnywhere, Category = "VFX|ParticleSocket")
+	FName FireSocketName;
 
-	UPROPERTY(EditAnywhere, Category = "VFX")
-	FName ExplosionSocketname;
+	UPROPERTY(EditAnywhere, Category = "VFX|ParticleSocket")
+	FName ExplosionSocketName;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireLight")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireLight")
 	float LightIntensity;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireLight")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireLight")
 	float LightRadius;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireLight")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireLight")
 	bool bIsLight;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireTransform")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireTransform")
 	FVector FireDirection;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireTransform")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireTransform")
 	FVector FireScale;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireTransform")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireTransform")
 	FVector ExplosionScale;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireAngle")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireAngle")
 	float RandomStartAngleMax;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireAngle")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireAngle")
 	float RandomStartAngleMin;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireOscilator")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireOscilator")
 	float OscilatorSpeed;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireOscilator")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireOscilator")
 	bool bIsOscilate;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireSettings")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireSettings")
 	bool bDistortionEmitterEnable;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|FireSettings")
+	UPROPERTY(EditAnywhere, Category = "VFX|FireSettings")
 	bool bSmokeEmitterEnable;
 
-	UPROPERTY(EditAnywhere, Category = "VFX/|TimeLine")
+	UPROPERTY(EditAnywhere, Category = "VFX|TimeLine")
 	class UCurveVector* VCurve;
+#pragma endregion VFX
 
-//------------Death VFX Settings End----------------------//
 #if WITH_EDITOR
 	virtual void PostInitProperties() override;
 #endif
