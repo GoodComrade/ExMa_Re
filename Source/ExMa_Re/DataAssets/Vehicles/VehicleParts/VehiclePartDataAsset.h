@@ -57,6 +57,59 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FWeaponSlotInfo> WeaponSlots;
 
+//------------Death VFX Settings----------------------//
+	UPROPERTY(EditAnywhere, Category = "VFX")
+	UParticleSystem* FireParticle;
+
+	UPROPERTY(EditAnywhere, Category = "VFX")
+	UParticleSystem* ExplosionParticle;
+
+	UPROPERTY(EditAnywhere, Category = "VFX")
+	FName FireSocketname;
+
+	UPROPERTY(EditAnywhere, Category = "VFX")
+	FName ExplosionSocketname;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireLight")
+	float LightIntensity;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireLight")
+	float LightRadius;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireLight")
+	bool bIsLight;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireTransform")
+	FVector FireDirection;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireTransform")
+	FVector FireScale;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireTransform")
+	FVector ExplosionScale;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireAngle")
+	float RandomStartAngleMax;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireAngle")
+	float RandomStartAngleMin;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireOscilator")
+	float OscilatorSpeed;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireOscilator")
+	bool bIsOscilate;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireSettings")
+	bool bDistortionEmitterEnable;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|FireSettings")
+	bool bSmokeEmitterEnable;
+
+	UPROPERTY(EditAnywhere, Category = "VFX/|TimeLine")
+	class UCurveVector* VCurve;
+
+//------------Death VFX Settings End----------------------//
 #if WITH_EDITOR
 	virtual void PostInitProperties() override;
 #endif
@@ -68,11 +121,5 @@ protected:
 	//TODO: implement AVehiclePart class & set their static version here 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<AVehiclePart> VehiclePartClass;
-
-
-	//TODO: Переделать тут массив слотов под оружие в виде TMap
-	// где 'ключ - Искомый префикс в названии меша', а 'значение - FTileStruct'
-	// Эта карта затем будет передана в WeaponComponent вместе со всеми собранными с игрока сокетами
-	// Префикс должен задаваться в формате "X x Y_" где X Y это значения из FTileStruct
 
 };

@@ -367,7 +367,7 @@ void AExMa_RePawn::OnDeath()
 
 	UE_LOG(LogTemp, Warning, TEXT("AExMa_RePawn::OnDeath: Vehicle exploded!"));
 
-	//SetLifeSpan(10.0f);
+	Destroy();
 }
 
 void AExMa_RePawn::ProcessToggleMainWidgetVisibility()

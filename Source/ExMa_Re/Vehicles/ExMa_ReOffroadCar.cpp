@@ -2,6 +2,7 @@
 
 
 #include "ExMa_ReOffroadCar.h"
+#include "ExMa_Re/Vehicles/VehicleParts/DestroyedPart.h"
 #include "ExMa_Re/Wheels/Offroad/ExMa_ReOffroadWheelFront.h"
 #include "ExMa_Re/Wheels/Offroad/ExMa_ReOffroadWheelRear.h"
 #include "ExMa_Re/Components/StructuralComponent.h"
@@ -109,27 +110,48 @@ void AExMa_ReOffroadCar::OnDeath()
 
 void AExMa_ReOffroadCar::ProcessDetachWheels()
 {
-	TireFrontLeft->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	TireFrontLeft->SetCollisionProfileName(FName("BlockAll"));
-	TireFrontLeft->SetSimulatePhysics(true);
-	FVector TireFrontLeftImpulseDirection = (TireFrontLeft->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
-	TireFrontLeft->AddImpulse(TireFrontLeftImpulseDirection * 500.0f, NAME_None, true);
+	FTransform TireFrontLeftWorldTransform = TireFrontLeft->GetComponentTransform();
+	FTransform TireFrontRightWorldTransform = TireFrontRight->GetComponentTransform();
+	FTransform TireRearLeftWorldTransform = TireRearLeft->GetComponentTransform();
+	FTransform TireRearRightWorldTransform = TireRearRight->GetComponentTransform();
 
-	TireFrontRight->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	TireFrontRight->SetCollisionProfileName(FName("BlockAll"));
-	TireFrontRight->SetSimulatePhysics(true);
-	FVector TireFrontRightImpulseDirection = (TireFrontRight->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
-	TireFrontRight->AddImpulse(TireFrontRightImpulseDirection * 500.0f, NAME_None, true);
+	ADestroyedPart* TireFrontLeftDestroyed = GetWorld()->SpawnActor<ADestroyedPart>(ADestroyedPart::StaticClass(), TireFrontLeftWorldTransform);
+	if (TireFrontLeftDestroyed)
+		TireFrontLeftDestroyed->Init(TireFrontLeft->GetStaticMesh(), GetActorLocation(), TruckDeathColorTexture);
 
-	TireRearLeft->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	TireRearLeft->SetCollisionProfileName(FName("BlockAll"));
-	TireRearLeft->SetSimulatePhysics(true);
-	FVector TireRearLeftImpulseDirection = (TireRearLeft->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
-	TireRearLeft->AddImpulse(TireRearLeftImpulseDirection * 500.0f, NAME_None, true);
+	//TireFrontLeft->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	//TireFrontLeft->SetCollisionProfileName(FName("BlockAll"));
+	//TireFrontLeft->SetSimulatePhysics(true);
+	//FVector TireFrontLeftImpulseDirection = (TireFrontLeft->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
+	//TireFrontLeft->AddImpulse(TireFrontLeftImpulseDirection * 500.0f, NAME_None, true);
 
-	TireRearRight->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	TireRearRight->SetCollisionProfileName(FName("BlockAll"));
-	TireRearRight->SetSimulatePhysics(true);
-	FVector TireRearRightImpulseDirection = (TireRearRight->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
-	TireRearRight->AddImpulse(TireRearRightImpulseDirection * 500.0f, NAME_None, true);
+	ADestroyedPart* TireFrontRightDestroyed = GetWorld()->SpawnActor<ADestroyedPart>(ADestroyedPart::StaticClass(), TireFrontRightWorldTransform);
+	if (TireFrontRightDestroyed)
+		TireFrontRightDestroyed->Init(TireFrontRight->GetStaticMesh(), GetActorLocation(), TruckDeathColorTexture);
+
+	//TireFrontRight->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	//TireFrontRight->SetCollisionProfileName(FName("BlockAll"));
+	//TireFrontRight->SetSimulatePhysics(true);
+	//FVector TireFrontRightImpulseDirection = (TireFrontRight->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
+	//TireFrontRight->AddImpulse(TireFrontRightImpulseDirection * 500.0f, NAME_None, true);
+
+	ADestroyedPart* TireRearLeftDestroyed = GetWorld()->SpawnActor<ADestroyedPart>(ADestroyedPart::StaticClass(), TireRearLeftWorldTransform);
+	if (TireRearLeftDestroyed)
+		TireRearLeftDestroyed->Init(TireRearLeft->GetStaticMesh(), GetActorLocation(), TruckDeathColorTexture);
+
+	//TireRearLeft->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	//TireRearLeft->SetCollisionProfileName(FName("BlockAll"));
+	//TireRearLeft->SetSimulatePhysics(true);
+	//FVector TireRearLeftImpulseDirection = (TireRearLeft->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
+	//TireRearLeft->AddImpulse(TireRearLeftImpulseDirection * 500.0f, NAME_None, true);
+
+	ADestroyedPart* TireRearRightDestroyed = GetWorld()->SpawnActor<ADestroyedPart>(ADestroyedPart::StaticClass(), TireRearRightWorldTransform);
+	if (TireRearRightDestroyed)
+		TireRearRightDestroyed->Init(TireRearRight->GetStaticMesh(), GetActorLocation(), TruckDeathColorTexture);
+
+	//TireRearRight->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	//TireRearRight->SetCollisionProfileName(FName("BlockAll"));
+	//TireRearRight->SetSimulatePhysics(true);
+	//FVector TireRearRightImpulseDirection = (TireRearRight->GetComponentLocation() - GetActorLocation()).GetSafeNormal();
+	//TireRearRight->AddImpulse(TireRearRightImpulseDirection * 500.0f, NAME_None, true);
 }

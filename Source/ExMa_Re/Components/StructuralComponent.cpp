@@ -3,6 +3,7 @@
 
 #include "Components/StructuralComponent.h"
 #include "Engine/Texture2D.h"
+#include "ExMa_Re/Vehicles/VehicleParts/DestroyedPart.h"
 #include "Engine/StaticMeshSocket.h"
 
 // Sets default values for this component's properties
@@ -113,30 +114,36 @@ void UStructuralComponent::ProcessDetachComponentsOnDeath(UTexture2D* InDeathTex
 {
 	if (ChassisMesh)
 	{
-		int32 MaterialCount = ChassisMesh->GetNumMaterials();
+		FTransform TireFrontLeftWorldTransform = ChassisMesh->GetComponentTransform();
 
-		for (int32 Index = 0; Index < MaterialCount; ++Index)
-		{
-			UMaterialInterface* BaseMaterial = ChassisMesh->GetMaterial(Index);
-			if (!BaseMaterial) continue;
+		ADestroyedPart* TireFrontLeftDestroyed = GetWorld()->SpawnActor<ADestroyedPart>(ADestroyedPart::StaticClass(), TireFrontLeftWorldTransform);
+		if (TireFrontLeftDestroyed)
+			TireFrontLeftDestroyed->Init(ChassisMesh->GetStaticMesh(), GetOwner()->GetActorLocation(), InDeathTexture);
 
-			UMaterialInstanceDynamic* DynMaterial = ChassisMesh->CreateAndSetMaterialInstanceDynamicFromMaterial(Index, BaseMaterial);
-			if (!DynMaterial) continue;
-
-			DynMaterial->SetTextureParameterValue("TargetColor", InDeathTexture);
-		}
-		
-		ChassisMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-		ChassisMesh->SetCollisionProfileName(FName("BlockAll"));
-
-		ChassisMesh->RecreatePhysicsState();
-
-		ChassisMesh->SetEnableGravity(true);
-		ChassisMesh->SetSimulatePhysics(true);
-		ChassisMesh->SetUseCCD(true);
-
-		FVector UpwardImpulse(0.0f, 0.0f, 400.0f);
-		ChassisMesh->AddImpulse(UpwardImpulse, NAME_None, true);
+		//int32 MaterialCount = ChassisMesh->GetNumMaterials();
+		//
+		//for (int32 Index = 0; Index < MaterialCount; ++Index)
+		//{
+		//	UMaterialInterface* BaseMaterial = ChassisMesh->GetMaterial(Index);
+		//	if (!BaseMaterial) continue;
+		//
+		//	UMaterialInstanceDynamic* DynMaterial = ChassisMesh->CreateAndSetMaterialInstanceDynamicFromMaterial(Index, BaseMaterial);
+		//	if (!DynMaterial) continue;
+		//
+		//	DynMaterial->SetTextureParameterValue("TargetColor", InDeathTexture);
+		//}
+		//
+		//ChassisMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		//ChassisMesh->SetCollisionProfileName(FName("BlockAll"));
+		//
+		//ChassisMesh->RecreatePhysicsState();
+		//
+		//ChassisMesh->SetEnableGravity(true);
+		//ChassisMesh->SetSimulatePhysics(true);
+		//ChassisMesh->SetUseCCD(true);
+		//
+		//FVector UpwardImpulse(0.0f, 0.0f, 400.0f);
+		//ChassisMesh->AddImpulse(UpwardImpulse, NAME_None, true);
 
 		UE_LOG(LogTemp, Warning, TEXT("UStructuralComponent::ProcessDetachComponentsOnDeath: ChassisMesh detached!"));
 	}

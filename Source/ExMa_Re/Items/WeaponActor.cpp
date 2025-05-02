@@ -280,6 +280,8 @@ void AWeaponActor::ProcessDeathLogic(UTexture2D* InDeathTexture)
 		return;
 	}
 
+	Mesh->SetAnimInstanceClass(nullptr);
+
 	int32 MaterialCount = Mesh->GetNumMaterials();
 
 	for (int32 Index = 0; Index < MaterialCount; ++Index)
