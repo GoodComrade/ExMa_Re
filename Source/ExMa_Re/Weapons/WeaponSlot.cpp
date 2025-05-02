@@ -7,6 +7,7 @@
 #include "ExMa_Re/Vehicles/ExMa_RePawn.h"
 #include "ExMa_Re/Game/ExMa_GameState.h"
 #include "ExMa_Re/Items/WeaponActor.h"
+#include "Engine/Texture2D.h"
 #include "Kismet/GameplayStatics.h"
 
 FWeaponSlotStruct UWeaponSlot::GetWeaponObjectAtSlot() const
@@ -182,11 +183,11 @@ bool UWeaponSlot::IsSlotAvaliable(UWeaponItemObject* InWeapon, FTileStruct SlotS
 	return IsDimentionsMatching(InWeapon, SlotSize)/* && HasWeaponInSlot() == false*/;
 }
 
-void UWeaponSlot::ProcessDetachWeaponActor()
+void UWeaponSlot::ProcessDetachWeaponActor(UTexture2D* InDeathTexture)
 {
 	if (InstalledWeaponActor)
 	{
-		InstalledWeaponActor->ProcessDeathLogic();
+		InstalledWeaponActor->ProcessDeathLogic(InDeathTexture);
 	}
 }
 

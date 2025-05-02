@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "ExMa_Re/Vehicles/VehicleParts/VehiclePart.h"
+#include "Engine/Texture2D.h"
 #include "StructuralComponent.generated.h"
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -46,7 +47,7 @@ public:
 	void DestroyBody();
 
 	UFUNCTION()
-	void ProcessDetachComponentsOnDeath();
+	void ProcessDetachComponentsOnDeath(UTexture2D* InDeathTexture);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* ChassisMesh;

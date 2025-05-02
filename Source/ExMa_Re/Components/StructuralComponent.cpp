@@ -2,6 +2,7 @@
 
 
 #include "Components/StructuralComponent.h"
+#include "Engine/Texture2D.h"
 #include "Engine/StaticMeshSocket.h"
 
 // Sets default values for this component's properties
@@ -108,10 +109,23 @@ void UStructuralComponent::DestroyBody()
 		VehicleBody->Destroy();
 }
 
-void UStructuralComponent::ProcessDetachComponentsOnDeath()
+void UStructuralComponent::ProcessDetachComponentsOnDeath(UTexture2D* InDeathTexture)
 {
 	if (ChassisMesh)
 	{
+		int32 MaterialCount = ChassisMesh->GetNumMaterials();
+
+		for (int32 Index = 0; Index < MaterialCount; ++Index)
+		{
+			UMaterialInterface* BaseMaterial = ChassisMesh->GetMaterial(Index);
+			if (!BaseMaterial) continue;
+
+			UMaterialInstanceDynamic* DynMaterial = ChassisMesh->CreateAndSetMaterialInstanceDynamicFromMaterial(Index, BaseMaterial);
+			if (!DynMaterial) continue;
+
+			DynMaterial->SetTextureParameterValue("TargetColor", InDeathTexture);
+		}
+		
 		ChassisMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		ChassisMesh->SetCollisionProfileName(FName("BlockAll"));
 
@@ -129,14 +143,14 @@ void UStructuralComponent::ProcessDetachComponentsOnDeath()
 
 	if (VehicleCabin)
 	{
-		VehicleCabin->ProcessDeathLogic();
+		VehicleCabin->ProcessDeathLogic(InDeathTexture);
 
 		UE_LOG(LogTemp, Warning, TEXT("UStructuralComponent::ProcessDetachComponentsOnDeath: VehicleCabin detached!"));
 	}
 
 	if (VehicleBody)
 	{
-		VehicleBody->ProcessDeathLogic();
+		VehicleBody->ProcessDeathLogic(InDeathTexture);
 
 		UE_LOG(LogTemp, Warning, TEXT("UStructuralComponent::ProcessDetachComponentsOnDeath: VehicleBody detached!"));
 	}

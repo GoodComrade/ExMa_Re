@@ -11,6 +11,7 @@
 #include "ExMa_Re/Items/WeaponItemObject.h"
 #include "ExMa_Re/Items/WeaponActor.h"
 #include "Templates/Tuple.h"
+#include "Engine/Texture2D.h"
 #include "WeaponSlot.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponSlotChanged);
@@ -44,7 +45,7 @@ class EXMA_RE_API UWeaponSlot : public UObject
 	
 public:
 	UFUNCTION()
-	void ProcessDetachWeaponActor();
+	void ProcessDetachWeaponActor(UTexture2D* InDeathTexture);
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Event Dispatchers")
 	FOnWeaponSlotChanged OnWeaponSlotChanged;

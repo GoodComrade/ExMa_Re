@@ -8,6 +8,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "ExMa_Re/Structs/WeaponSlotInfo.h"
 #include "GameplayTagContainer.h"
+#include "Engine/Texture2D.h"
 #include "WeaponComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponSlotsCreated, TArray<UWeaponSlot*>, CreatedSlot);
@@ -49,7 +50,7 @@ public:
 
 public:
 	UFUNCTION()
-	void ProcessDetachWeaponsOnDeath();
+	void ProcessDetachWeaponsOnDeath(UTexture2D* InDeathTexture);
 
 private:
 	TArray<UWeaponSlot*> WeaponSlots;

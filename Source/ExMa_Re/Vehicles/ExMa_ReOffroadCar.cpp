@@ -96,8 +96,13 @@ void AExMa_ReOffroadCar::BeginPlay()
 void AExMa_ReOffroadCar::OnDeath()
 {
 	ProcessDetachWheels();
-	WeaponComponent->ProcessDetachWeaponsOnDeath();
-	StructuralComponent->ProcessDetachComponentsOnDeath();
+
+	WeaponComponent->ProcessDetachWeaponsOnDeath(WeaponDeathColorTexture);
+
+	if(StructuralComponent->GetCabin() == nullptr)
+		StructuralComponent->ProcessDetachComponentsOnDeath(CarDeathColorTexture);
+	else
+		StructuralComponent->ProcessDetachComponentsOnDeath(TruckDeathColorTexture);
 
 	Super::OnDeath();
 }

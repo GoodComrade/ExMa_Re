@@ -8,6 +8,7 @@
 #include "ExMa_Re/DataAssets/WeaponDataAsset.h"
 #include "Animation/AnimBlueprint.h"
 #include "Animation/AnimInstance.h"
+#include "Engine/Texture2D.h"
 #include "WeaponActor.generated.h"
 
 class UAbilitySystemComponent;
@@ -28,7 +29,7 @@ public:
 	//void SetWeaponAttributes(FWeaponConfigStruct WeaponConfig);
 
 	UFUNCTION(BlueprintCallable)
-	void ProcessDeathLogic();
+	void ProcessDeathLogic(UTexture2D* InDeathTexture);
 
 protected:
 	virtual void BeginPlay() override;

@@ -7,6 +7,7 @@
 #include "Engine/StaticMeshSocket.h"
 #include "Components/StaticMeshComponent.h"
 #include "ExMaGameplayTags.h"
+#include "Engine/Texture2D.h"
 #include "ExMa_Re/Structs/WeaponSlotInfo.h"
 
 // Sets default values for this component's properties
@@ -101,11 +102,11 @@ void UWeaponComponent::ShootWeaponGroup(FGameplayTag GroupTag)
 	}
 }
 
-void UWeaponComponent::ProcessDetachWeaponsOnDeath()
+void UWeaponComponent::ProcessDetachWeaponsOnDeath(UTexture2D* InDeathTexture)
 {
 	for (UWeaponSlot* Slot : WeaponSlots)
 	{
-		Slot->ProcessDetachWeaponActor();
+		Slot->ProcessDetachWeaponActor(InDeathTexture);
 	}
 }
 

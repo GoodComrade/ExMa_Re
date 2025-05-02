@@ -2,6 +2,7 @@
 
 
 #include "Vehicles/VehicleParts/VehiclePart.h"
+#include "Engine/Texture2D.h"
 #include "ExMa_Re/DataAssets/Vehicles/VehicleParts/VehiclePartDataAsset.h"
 
 // Sets default values
@@ -26,13 +27,27 @@ void AVehiclePart::SetVehiclePartMesh(UStaticMesh* MeshToSet)
 	VehiclePartMesh->SetStaticMesh(MeshToSet);
 }
 
-void AVehiclePart::ProcessDeathLogic()
+void AVehiclePart::ProcessDeathLogic(UTexture2D* InDeathTexture)
 {
 	if (!VehiclePartMesh)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AVehiclePart::ProcessDeathLogic: VehiclePartMesh == nullptr"));
 		return;
 	}
+
+	int32 MaterialCount = VehiclePartMesh->GetNumMaterials();
+
+	for (int32 Index = 0; Index < MaterialCount; ++Index)
+	{
+		UMaterialInterface* BaseMaterial = VehiclePartMesh->GetMaterial(Index);
+		if (!BaseMaterial) continue;
+
+		UMaterialInstanceDynamic* DynMaterial = VehiclePartMesh->CreateAndSetMaterialInstanceDynamicFromMaterial(Index, BaseMaterial);
+		if (!DynMaterial) continue;
+
+		DynMaterial->SetTextureParameterValue("TargetColor", InDeathTexture);
+	}
+
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 
 	VehiclePartMesh->SetCollisionProfileName(FName("BlockAll"));

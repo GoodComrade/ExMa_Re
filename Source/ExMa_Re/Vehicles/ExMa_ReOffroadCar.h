@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "ExMa_Re/Vehicles/ExMa_RePawn.h"
+
+#include "Engine/Texture2D.h"
+
 #include "ExMa_ReOffroadCar.generated.h"
 
 /**
@@ -46,4 +49,14 @@ protected:
 
 private:
 	void ProcessDetachWheels();
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UTexture2D* CarDeathColorTexture;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UTexture2D* TruckDeathColorTexture;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UTexture2D* WeaponDeathColorTexture;
 };

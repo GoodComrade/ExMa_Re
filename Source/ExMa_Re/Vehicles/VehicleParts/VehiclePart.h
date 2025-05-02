@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/Texture2D.h"
 #include "VehiclePart.generated.h"
 
 class UVehiclePartDataAsset;
@@ -32,7 +33,7 @@ public:
 	void SetVehiclePartMesh(UStaticMesh* MeshToSet);
 
 	UFUNCTION(BlueprintCallable)
-	void ProcessDeathLogic();
+	void ProcessDeathLogic(UTexture2D* InDeathTexture);
 
 protected:
 	// Called when the game starts or when spawned

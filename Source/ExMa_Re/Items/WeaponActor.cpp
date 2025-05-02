@@ -4,6 +4,7 @@
 #include "Items/WeaponActor.h"
 #include "AbilitySystemComponent.h"
 #include "ExMa_Re/Components/AbilityContainer.h"
+#include "Engine/Texture2D.h"
 #include "Animation/AnimBlueprint.h"
 
 AWeaponActor::AWeaponActor()
@@ -271,12 +272,25 @@ void AWeaponActor::EnableAbilities()
 	AbilityContainer->bCanCastAbilities = true;
 }
 
-void AWeaponActor::ProcessDeathLogic()
+void AWeaponActor::ProcessDeathLogic(UTexture2D* InDeathTexture)
 {
 	if (!Mesh)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AWeaponActor::ProcessDeathLogic: Mesh == nullptr"));
 		return;
+	}
+
+	int32 MaterialCount = Mesh->GetNumMaterials();
+
+	for (int32 Index = 0; Index < MaterialCount; ++Index)
+	{
+		UMaterialInterface* BaseMaterial = Mesh->GetMaterial(Index);
+		if (!BaseMaterial) continue;
+
+		UMaterialInstanceDynamic* DynMaterial = Mesh->CreateAndSetMaterialInstanceDynamicFromMaterial(Index, BaseMaterial);
+		if (!DynMaterial) continue;
+
+		DynMaterial->SetTextureParameterValue("TargetColor", InDeathTexture);
 	}
 
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
